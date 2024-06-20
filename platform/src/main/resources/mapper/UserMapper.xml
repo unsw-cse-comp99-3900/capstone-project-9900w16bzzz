@@ -1,0 +1,28 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzz.platform.api.user.dao.UserDao">
+
+    <select id="getByLoginName" resultType="com.zzz.platform.api.user.entity.UserEntity">
+        SELECT *
+        FROM t_user
+        <where>
+            login_name = #{loginName}
+        </where>
+    </select>
+
+    <select id="getUserById" resultType="com.zzz.platform.api.user.domain.UserVO">
+        SELECT t_user.*
+        FROM t_user
+        where t_user.user_id = #{userId}
+    </select>
+
+    <update id="updatePassword">
+        UPDATE t_user
+        SET login_pwd = #{loginPwd}
+        WHERE user_id = #{userId}
+    </update>
+
+    <insert id="addUser">
+        INSERT INTO t_user (login_name, login_pwd)
+        VALUES (#{loginName}, #{loginPwd})
+    </insert>
+</mapper>

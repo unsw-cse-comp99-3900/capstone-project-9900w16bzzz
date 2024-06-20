@@ -49,3 +49,17 @@ http:
     read-timeout: 50000
     write-timeout: 50000
     keep-alive: 300000
+
+classified-protect:
+  # Number of consecutive login failures to lock the account, -1 means no limit, allowing infinite login attempts
+  login-max-fail-times: 5
+  # Duration of lock after consecutive login failures (in seconds), -1 means no lock, it is recommended to lock for 30 minutes
+  login-fail-locked-seconds: 1800
+  # Password complexity enabled (default complexity: at least three types of characters, minimum 8 characters), true to enable, false to disable, it is recommended to enable
+  password-complexity-enabled: true
+
+sa-token:
+  # Minimum token active frequency (in seconds), if the token has not accessed the system within this time, it will be frozen, default -1 means no restriction, never freeze
+  active-timeout: 1800
+  # Token validity period (in seconds), 1 day (86400 seconds), -1 means permanently valid
+  timeout: 86400
