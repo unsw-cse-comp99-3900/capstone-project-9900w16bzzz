@@ -2,6 +2,7 @@ package com.zzz.platform.api.login.domain;
 
 import com.zzz.platform.api.login.domain.captcha.CaptchaForm;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotBlank;
  * @version: v1.0.0
  * @date: 2024/6/19
  */
+@Data
 public class LoginForm extends CaptchaForm {
 
 

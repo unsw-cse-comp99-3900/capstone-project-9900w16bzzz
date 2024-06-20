@@ -26,6 +26,9 @@
         <!--tools-->
         <hutool.version>5.7.22</hutool.version>
         <kaptcha.version>2.3.2</kaptcha.version>
+        <bcprov.version>1.59</bcprov.version>
+        <sa-token.version>1.37.0</sa-token.version>
+        <google-linkedhashmap.version>1.4.2</google-linkedhashmap.version>
     </properties>
     <dependencies>
         <dependency>
@@ -118,7 +121,14 @@
             <artifactId>hutool-all</artifactId>
             <version>${hutool.version}</version>
         </dependency>
-        <!-- Hibernate Validator 依赖 -->
+
+        <!-- Sa-Token token authentication -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-spring-boot-starter</artifactId>
+            <version>${sa-token.version}</version>
+        </dependency>
+        <!-- Hibernate Validator dependency -->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
@@ -130,11 +140,17 @@
             <artifactId>kaptcha</artifactId>
             <version>${kaptcha.version}</version>
         </dependency>
-        <!-- Spring Context 支持缓存 -->
+        <!-- Spring Context support cache -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
             <version>5.3.23</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
+            <artifactId>concurrentlinkedhashmap-lru</artifactId>
+            <version>${google-linkedhashmap.version}</version>
         </dependency>
 
         <dependency>
@@ -146,6 +162,12 @@
                     <groupId>com.google.errorprone</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+            <version>${bcprov.version}</version>
         </dependency>
     </dependencies>
     <dependencyManagement>
