@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 public class EnumValidator implements ConstraintValidator<CheckEnum, Object> {
 
     /**
-     * 枚举类实例集合
+     * Collection of instances of enumerated classes
      */
     private List<Object> enumValList;
 
@@ -27,7 +27,7 @@ public class EnumValidator implements ConstraintValidator<CheckEnum, Object> {
 
     @Override
     public void initialize(CheckEnum constraintAnnotation) {
-        // 获取注解传入的枚举类对象
+        // Get the object of the enumerated class passed in by the annotation
         required = constraintAnnotation.required();
         Class<? extends BaseEnum> enumClass = constraintAnnotation.value();
         enumValList = Stream.of(enumClass.getEnumConstants()).map(BaseEnum::getValue).collect(Collectors.toList());

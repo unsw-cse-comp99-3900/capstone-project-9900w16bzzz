@@ -42,7 +42,7 @@ public class BeanUtils {
             return null;
         }
         try {
-            T newInstance = target.newInstance();
+            T newInstance = target.getDeclaredConstructor().newInstance();
             org.springframework.beans.BeanUtils.copyProperties(source, newInstance);
             return newInstance;
         } catch (Exception e) {

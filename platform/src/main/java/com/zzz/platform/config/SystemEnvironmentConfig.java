@@ -3,6 +3,7 @@ package com.zzz.platform.config;
 
 import com.zzz.platform.common.domain.SystemEnvironment;
 import com.zzz.platform.common.enumeration.SystemEnvironmentEnum;
+import com.zzz.platform.utils.EnumUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,8 +26,8 @@ public class SystemEnvironmentConfig implements Condition {
     private String projectName;
 
     @Override
-    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-        return false;
+    public boolean matches(ConditionContext conditionContext, AnnotatedTypeMetadata annotatedTypeMetadata) {
+        return isDevOrTest(conditionContext);
     }
 
     /**
@@ -39,7 +40,7 @@ public class SystemEnvironmentConfig implements Condition {
 
     @Bean("systemEnvironment")
     public SystemEnvironment initEnvironment() {
-        SystemEnvironmentEnum currentEnvironment = SystemEnvironmentEnum.valueOf(this.systemEnvironment);
+        SystemEnvironmentEnum currentEnvironment = EnumUtil.getEnumByValue(systemEnvironment, SystemEnvironmentEnum.class);
         if (StringUtils.isBlank(projectName)) {
             throw new ExceptionInInitializerError("Can not get the project name, please fill the application.yml file：project.name");
         }

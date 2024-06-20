@@ -1,0 +1,26 @@
+# ????: ???????
+project:
+  name: platform
+  log-directory: ../${project.name}/${spring.profiles.active}
+
+# ?????url???
+server:
+  port: 9900
+  servlet:
+    context-path: /
+
+# ??
+spring:
+  profiles:
+    active: dev
+
+# swagger??
+swagger:
+  host: localhost:${server.port}
+
+#logging:
+#  level:
+#    org:
+#      springframework: DEBUG
+#    io:
+#      springfox: DEBUG

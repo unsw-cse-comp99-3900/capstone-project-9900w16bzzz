@@ -10,7 +10,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum SystemEnvironmentEnum implements BaseEnum{
+public enum SystemEnvironmentEnum implements BaseEnum {
 
     /**
      * dev
@@ -37,4 +37,5 @@ public enum SystemEnvironmentEnum implements BaseEnum{
         public static final String TEST = "test";
         public static final String PROD = "prod";
     }
+
 }

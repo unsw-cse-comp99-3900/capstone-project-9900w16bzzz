@@ -12,7 +12,6 @@ import org.springdoc.core.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * @author: zuoming yan
@@ -21,7 +20,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @Slf4j
 @Configuration
-@EnableSwagger2
 @Conditional(SystemEnvironmentConfig.class)
 public class SwaggerConfig {
 

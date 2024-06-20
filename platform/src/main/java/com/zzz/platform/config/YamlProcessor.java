@@ -43,7 +43,7 @@ public class YamlProcessor implements EnvironmentPostProcessor {
     private void loadProperty(MutablePropertySources propertySources) {
         PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         try {
-            Resource[] resources = resolver.getResources("classpath*:*.yaml");
+            Resource[] resources = resolver.getResources("classpath*:**/*.yaml");
             if (resources.length < 1) {
                 return;
             }

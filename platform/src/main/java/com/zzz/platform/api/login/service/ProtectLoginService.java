@@ -2,13 +2,9 @@ package com.zzz.platform.api.login.service;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zzz.platform.api.login.dao.LoginFailDao;
-import com.zzz.platform.api.login.domain.LoginFailQueryForm;
-import com.zzz.platform.api.login.domain.LoginFailVO;
 import com.zzz.platform.api.login.entity.LoginFailEntity;
 import com.zzz.platform.common.code.UserErrorCode;
-import com.zzz.platform.common.domain.PageResult;
 import com.zzz.platform.common.domain.ResponseDTO;
 import com.zzz.platform.common.enumeration.UserTypeEnum;
 import org.springframework.beans.factory.annotation.Value;
@@ -146,18 +142,6 @@ public class ProtectLoginService {
         loginFailDao.deleteByUserIdAndUserType(userId, userType.getValue());
     }
 
-    /**
-     * query page
-     *
-     * @param queryForm
-     * @return
-     */
-    public PageResult<LoginFailVO> queryPage(LoginFailQueryForm queryForm) {
-        Page<?> page = SmartPageUtil.convert2PageQuery(queryForm);
-        List<LoginFailVO> list = loginFailDao.queryPage(page, queryForm);
-        PageResult<LoginFailVO> pageResult = SmartPageUtil.convert2PageResult(page, list);
-        return pageResult;
-    }
 
     /**
      * batch delete

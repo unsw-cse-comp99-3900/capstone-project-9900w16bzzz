@@ -17,6 +17,6 @@ public class LoginResultVO {
     @Schema(description = "token")
     private String token;
 
-    @Schema(description = "上次登录时间")
+    @Schema(description = "last login time")
     private LocalDateTime lastLoginTime;
 }

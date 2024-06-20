@@ -28,7 +28,7 @@ public class LoginFailVO {
     @Schema(description = "login fail count")
     private Integer loginFailCount;
 
-    @Schema(description = "lock falg: 1 lock，0 unlock")
+    @Schema(description = "lock flag: 1 lock，0 unlock")
     private Integer lockFlag;
 
     @Schema(description = "Continuous Login Failure Lockout Start Time")
