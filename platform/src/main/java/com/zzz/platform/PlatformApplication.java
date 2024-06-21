@@ -17,5 +17,6 @@ public class PlatformApplication {
         // Add a log listener so that log4j2-spring.xml can indirectly read the properties of the configuration file.
         application.addListeners(new LogVariableListener());
         application.run(args);
+        System.out.println("Application started...");
     }
 }

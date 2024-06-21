@@ -57,7 +57,10 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
+            <version>10.0.1</version>
         </dependency>
+
+
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
@@ -211,7 +214,6 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.zzz.platform.PlatformApplication</mainClass>
-                    <skip>true</skip>
                 </configuration>
                 <executions>
                     <execution>
