@@ -1,45 +1,84 @@
-DROP DATABASE IF EXISTS 'e_invoice_db';
-CREATE DATABASE IF NOT EXISTS 'e_invoice_db';
-USE 'e_invoice_db';
+/*
+ Navicat Premium Data Transfer
+
+ Source Server         : localhost
+ Source Server Type    : MySQL
+ Source Server Version : 80032
+ Source Host           : localhost:3306
+ Source Schema         : e-invoice
+
+ Target Server Type    : MySQL
+ Target Server Version : 80032
+ File Encoding         : 65001
+
+ Date: 21/06/2024 14:13:56
+*/
 
 SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
 
+-- ----------------------------
+-- Table structure for t_file
+-- ----------------------------
+DROP TABLE IF EXISTS `t_file`;
+CREATE TABLE `t_file`  (
+                           `file_id` int(0) NOT NULL,
+                           `file_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+                           `user_id` bigint(0) NOT NULL,
+                           `file_content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+                           `file_validation` tinyint(0) NULL DEFAULT NULL,
+                           PRIMARY KEY (`file_id`, `user_id`) USING BTREE,
+                           INDEX `file`(`user_id`) USING BTREE,
+                           CONSTRAINT `file` FOREIGN KEY (`user_id`) REFERENCES `t_user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
--- t_user table create
-DROP TABLE IF EXISTS 't_user';
-CREATE TABLE 't_user' (
-                        user_id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                        email VARCHAR(255) NOT NULL,
-                        firstname VARCHAR(255),
-                        lastname VARCHAR(255),
-                        username VARCHAR(255),
-                        password VARCHAR(255) NOT NULL,
-                        update_time DATETIME,
-                        create_time DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+-- ----------------------------
+-- Records of t_file
+-- ----------------------------
 
--- t_file table create
-DROP TABLE IF EXISTS 't_file';
-CREATE TABLE 't_file' (
-                        file_id INT PRIMARY KEY AUTO_INCREMENT,
-                        file_name VARCHAR(255) NOT NULL,
-                        user_id BIGINT NOT NULL,
-                        file_content LONGTEXT,
-                        file_validation TINYINT(1),
-                        FOREIGN KEY (user_id) REFERENCES t_user(user_id)
-);
+-- ----------------------------
+-- Table structure for t_login_fail
+-- ----------------------------
+DROP TABLE IF EXISTS `t_login_fail`;
+CREATE TABLE `t_login_fail`  (
+                                 `login_fail_id` bigint(0) NOT NULL,
+                                 `user_id` bigint(0) NULL DEFAULT NULL,
+                                 `user_type` int(0) NULL DEFAULT NULL,
+                                 `login_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+                                 `lock_flag` tinyint(0) NULL DEFAULT NULL,
+                                 `login_fail_count` int(0) NULL DEFAULT NULL,
+                                 `login_lock_begin_time` datetime(0) NULL DEFAULT NULL,
+                                 `update_time` datetime(0) NULL DEFAULT NULL,
+                                 `create_time` datetime(0) NULL DEFAULT NULL,
+                                 PRIMARY KEY (`login_fail_id`) USING BTREE,
+                                 INDEX `login_fail`(`user_id`) USING BTREE,
+                                 CONSTRAINT `login_fail` FOREIGN KEY (`user_id`) REFERENCES `t_user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
--- t_login_fail create
-DROP TABLE IF EXISTS 't_login_fail';
-CREATE TABLE 't_login_fail' (
-                              login_fail_id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                              user_id BIGINT,
-                              user_type INT,
-                              login_name VARCHAR(255),
-                              lock_flag TINYINT(1),
-                              login_fail_count INT,
-                              login_lock_begin_time DATETIME,
-                              update_time DATETIME,
-                              create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
-                              FOREIGN KEY (user_id) REFERENCES t_user(user_id)
-);
+-- ----------------------------
+-- Records of t_login_fail
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for t_user
+-- ----------------------------
+DROP TABLE IF EXISTS `t_user`;
+CREATE TABLE `t_user`  (
+                           `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                           `firstname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+                           `lastname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+                           `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+                           `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+                           `update_time` datetime(0) NULL DEFAULT NULL,
+                           `create_time` datetime(0) NULL DEFAULT NULL,
+                           `user_id` bigint(0) NOT NULL,
+                           PRIMARY KEY (`user_id`) USING BTREE,
+                           INDEX `username`(`username`) USING BTREE,
+                           INDEX `user_id`(`user_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of t_user
+-- ----------------------------
+
+SET FOREIGN_KEY_CHECKS = 1;
