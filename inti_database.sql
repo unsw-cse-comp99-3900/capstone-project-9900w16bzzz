@@ -1,19 +1,6 @@
-/*
- Navicat Premium Data Transfer
-
- Source Server         : localhost
- Source Server Type    : MySQL
- Source Server Version : 80032
- Source Host           : localhost:3306
- Source Schema         : e-invoice
-
- Target Server Type    : MySQL
- Target Server Version : 80032
- File Encoding         : 65001
-
- Date: 21/06/2024 14:13:56
-*/
-
+DROP DATABASE IF EXISTS `e-invoice`;
+CREATE DATABASE IF NOT EXISTS `e-invoice` ;
+USE `e-invoice`;
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
