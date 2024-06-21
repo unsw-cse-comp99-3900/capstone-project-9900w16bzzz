@@ -33,17 +33,12 @@ public class ProtectedPasswordService {
     private AesEncryptService aesEncryptService;
 
     /**
-     * validate password complexity
+     * validate password not empty
      *
      * @return
      */
     public ResponseDTO<String> validatePassComplexity(String password) {
-
         if (StringUtils.isEmpty(password)) {
-            return ResponseDTO.userErrorParam(PASSWORD_FORMAT_MSG);
-        }
-
-        if (!password.matches(PASSWORD_PATTERN)) {
             return ResponseDTO.userErrorParam(PASSWORD_FORMAT_MSG);
         }
 

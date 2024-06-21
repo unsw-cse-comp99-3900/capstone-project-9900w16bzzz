@@ -39,7 +39,7 @@ public class LoginService {
     /**
      * Secondary Cache for Login Information
      */
-    private final ConcurrentMap<Long, RequestUser> loginEmployeeCache = new ConcurrentLinkedHashMap.Builder<Long, RequestUser>().maximumWeightedCapacity(CACHE_MAX_ONLINE_PERSON_COUNT).build();
+    private final ConcurrentMap<Long, RequestUser> loginUserCache = new ConcurrentLinkedHashMap.Builder<Long, RequestUser>().maximumWeightedCapacity(CACHE_MAX_ONLINE_PERSON_COUNT).build();
 
     @Resource
     private CaptchaService captchaService;
@@ -74,7 +74,7 @@ public class LoginService {
             return ResponseDTO.userErrorParam("Login name does not exist! ");
         }
         // Decrypting front-end encrypted passwords
-        String requestPassword = protectedPasswordService.decryptPassword(loginForm.getPassword());
+        String requestPassword = protectedPasswordService.decryptPassword(loginForm.getLoginPwd());
 
         // Log-in failures were verified in accordance with the requirements for isochronous logins
         ResponseDTO<LoginFailEntity> loginFailEntityResponseDTO = protectLoginService.checkLogin(userEntity.getUserId(), UserTypeEnum.NORMAL);
@@ -99,7 +99,7 @@ public class LoginService {
         requestUser.setIp(ip);
         requestUser.setUserAgent(userAgent);
         // save in cache
-        loginEmployeeCache.put(userEntity.getUserId(), requestUser);
+        loginUserCache.put(userEntity.getUserId(), requestUser);
 
         // remove failed login
         protectLoginService.removeLoginFail(userEntity.getUserId(), UserTypeEnum.NORMAL);
@@ -129,7 +129,7 @@ public class LoginService {
             return null;
         }
 
-        RequestUser requestUser = loginEmployeeCache.get(requestEmployeeId);
+        RequestUser requestUser = loginUserCache.get(requestEmployeeId);
         if (requestUser == null) {
             // user entity
             UserEntity userEntity = userService.getById(requestEmployeeId);
@@ -138,7 +138,7 @@ public class LoginService {
             }
 
             requestUser = BeanUtils.copy(userEntity, RequestUser.class);
-            loginEmployeeCache.put(requestEmployeeId, requestUser);
+            loginUserCache.put(requestEmployeeId, requestUser);
         }
 
         // update request ip and user agent
@@ -174,7 +174,7 @@ public class LoginService {
         StpUtil.logoutByTokenValue(token);
 
         // clear login cache
-        loginEmployeeCache.remove(requestUser.getUserId());
+        loginUserCache.remove(requestUser.getUserId());
 
         log.info("User: {} logout.", requestUser.getUserId());
 

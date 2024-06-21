@@ -19,7 +19,7 @@ public class AesEncryptService {
 
     private static final String CHARSET = "UTF-8";
 
-    private static final String AES_KEY = "1024abcd1024abcd1024abcd1024abcd";
+    private static final String AES_KEY = "9900zzz9900zzz99zzz00";
 
     static {
         Security.addProvider(new BouncyCastleProvider());
