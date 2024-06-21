@@ -7,13 +7,13 @@
 Description: Login
 
 
-| Parameters       | **Type** | **Description** | **Example Value** |
-| ---------------- | -------- | --------------- | ----------------- |
-| **Request Body** |          |                 |                   |
-| `captchaCode`    | `string` | Captcha code    | `"string"`        |
-| `captchaUuid`    | `string` | Captcha UUID    | `"string"`        |
-| `loginName`      | `string` | Login name      | `"string"`        |
-| `password`       | `string` | Password        | `"string"`        |
+| Parameters       | **Type** | **Description** | **Example Value**       |
+| ---------------- | -------- | --------------- | ----------------------- |
+| **Request Body** |          |                 |                         |
+| `captchaCode`    | `string` | Captcha code    | `"string"`              |
+| `captchaUuid`    | `string` | Captcha UUID    | `"string"`              |
+| `loginName`      | `string` | Login name      | `"zzz9900@unsw.edu.au"` |
+| `password`       | `string` | Password        | `"string"`              |
 
 #### Responses
 
@@ -38,7 +38,7 @@ Description: Login
 
 This table outlines the parameters and response structure for the `/login` endpoint.
 
-![image.png](assets/image01.png)
+![image.png](assets/image01.png?t=1718933432252)
 
 ### Endpoint: `GET /login/logout`
 
@@ -176,3 +176,31 @@ No parameters
 This table outlines the parameters and response structure for the `/captcha` endpoint.
 
 ![image.png](assets/image.png)
+
+
+## User Management
+
+### EndPoint: `POST /signup`
+
+
+| **Parameters** | **Description** | **Type** | **Example** |
+| -------------- | --------------- | -------- | ----------- |
+| None           |                 |          |             |
+
+#### Request Body
+
+
+| **Field** | **Type** | **Description** | **Example**               |
+| --------- | -------- | --------------- | ------------------------- |
+| loginName | String   |                 | "[zzz9900@unsw.edu.au]()" |
+| userName  | String   |                 | "string"                  |
+| loginPwd  | String   |                 | "string"                  |
+
+#### Responses
+
+
+| **Code** | **Description** | **Media Type** | **Schema Example**                                                                                                              |
+| -------- | --------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| 200      | OK              | \* / \*        | {<br>  "code": 0,<br>  "level": "string",<br>  "msg": "string",<br>  "ok": true,<br>  "data": "string",<br>  "dataType": 0<br>} |
+
+![image.png](assets/image06.png)

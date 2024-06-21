@@ -21,6 +21,8 @@ public class UserEntity {
 
     private String loginName;
 
+    private String userName;
+
     private String loginPwd;
 
     private LocalDateTime updateTime;

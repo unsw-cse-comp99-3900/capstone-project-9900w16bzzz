@@ -40,7 +40,7 @@ public class UserService {
 
         UserEntity entity = BeanUtils.copy(userAddForm, UserEntity.class);
         // save data
-        userDao.addUser(entity.getLoginName(), entity.getLoginPwd());
+        userDao.insert(entity);
         return ResponseDTO.ok();
     }
 
