@@ -1,5 +1,6 @@
 package com.zzz.platform.api.user.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zzz.platform.api.login.service.ProtectedPasswordService;
 import com.zzz.platform.api.user.dao.UserDao;
 import com.zzz.platform.api.user.domain.UserAddForm;
@@ -33,7 +34,8 @@ public class UserService {
      */
     public synchronized ResponseDTO<String> addUser(UserAddForm userAddForm) {
         // Check for duplicate names
-        UserEntity userEntity = userDao.getByLoginName(userAddForm.getLoginName());
+        UserEntity userEntity = userDao.selectOne(new QueryWrapper<UserEntity>().eq("user_name", userAddForm.getLoginName()));
+
         if (null != userEntity) {
             return ResponseDTO.userErrorParam("Duplicate login name");
         }

@@ -27,6 +27,7 @@
         <sa-token.version>1.37.0</sa-token.version>
         <log4j-spring-boot.version>2.17.2</log4j-spring-boot.version>
         <knife4j.version>4.3.0</knife4j.version>
+        <commons-codec.version>1.13</commons-codec.version>
         <google-linkedhashmap.version>1.4.2</google-linkedhashmap.version>
     </properties>
     <dependencies>
@@ -54,12 +55,6 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.26</version>
         </dependency>
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-            <version>10.0.1</version>
-        </dependency>
-
 
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -145,7 +140,11 @@
             <artifactId>knife4j-openapi3-spring-boot-starter</artifactId>
             <version>${knife4j.version}</version>
         </dependency>
-
+        <dependency>
+            <artifactId>commons-codec</artifactId>
+            <groupId>commons-codec</groupId>
+            <version>${commons-codec.version}</version>
+        </dependency>
         <!-- Sa-Token token authentication -->
         <dependency>
             <groupId>cn.dev33</groupId>

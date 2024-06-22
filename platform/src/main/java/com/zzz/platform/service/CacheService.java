@@ -1,9 +1,9 @@
 package com.zzz.platform.service;
 
 import com.google.common.collect.Lists;
-import org.springframework.stereotype.Service;
 import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -40,7 +40,7 @@ public class CacheService {
             return Lists.newArrayList();
         }
         Set<Object> cacheKey = cache.getNativeCache().asMap().keySet();
-        return cacheKey.stream().map(e -> e.toString()).collect(Collectors.toList());
+        return cacheKey.stream().map(Object::toString).collect(Collectors.toList());
     }
 
     /**

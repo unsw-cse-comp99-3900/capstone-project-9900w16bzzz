@@ -19,9 +19,6 @@ spring:
         enabled: false
       method:
         pointcut: com.zzz.platform..*Service.*
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
 
   # json serialisation config
   jackson:
@@ -83,3 +80,9 @@ sa-token:
   # Token validity period (in seconds), 1 day (86400 seconds), -1 means permanently valid
   timeout: 86400
   token-style: simple-uuid
+
+cache:
+  # key expiration time in cache
+  duration: 30
+  # maximum key in cache
+  maximum: 100
