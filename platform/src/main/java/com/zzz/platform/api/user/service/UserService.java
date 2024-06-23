@@ -34,7 +34,7 @@ public class UserService {
      */
     public synchronized ResponseDTO<String> addUser(UserAddForm userAddForm) {
         // Check for duplicate names
-        UserEntity userEntity = userDao.selectOne(new QueryWrapper<UserEntity>().eq("user_name", userAddForm.getLoginName()));
+        UserEntity userEntity = userDao.selectOne(new QueryWrapper<UserEntity>().eq("login_name", userAddForm.getLoginName()));
 
         if (null != userEntity) {
             return ResponseDTO.userErrorParam("Duplicate login name");
@@ -89,9 +89,32 @@ public class UserService {
     public UserEntity getByLoginName(String loginName) {
         return userDao.getByLoginName(loginName);
     }
+    public ResponseDTO<UserEntity> getByLoginName1(String loginName) {
+        UserEntity userEntity = userDao.getByLoginName(loginName);
+        return ResponseDTO.ok(userEntity);
+    }
 
+    /**
+     * get user by id
+     * @param userId
+     * @return
+     */
     public UserEntity getById(Long userId) {
         return userDao.selectById(userId);
     }
 
+    public ResponseDTO<UserEntity> getById1(Long userId) {
+        UserEntity userEntity = userDao.selectById(userId);
+        return ResponseDTO.ok(userEntity);
+    }
+
+    /**
+     * 删除操作
+     * @param userId
+     * @return
+     */
+    public ResponseDTO deleteById(Long userId) {
+        userDao.deleteById(userId);
+        return ResponseDTO.ok();
+    }
 }

@@ -33,4 +33,47 @@ public class UserController {
 
         return userService.addUser(userAddForm);
     }
+
+    /**
+     * @author Zhaoyue Zhang
+     * chang user password
+     * @param userPwdUpdateForm
+     * @return
+     */
+    @PostMapping("/updateUser")
+    public ResponseDTO<String> updatePassword(@Valid @RequestBody UserPwdUpdateForm userPwdUpdateForm) {
+        return userService.updatePassword(userPwdUpdateForm);
+    }
+
+    /**
+     * @author Zhaoyue Zhang
+     * 根据登录名查询用户信息
+     * @param loginName
+     * @return
+     */
+    @GetMapping("/getByLoginName/{loginName}")
+    public ResponseDTO<UserEntity> getByLoginName(@PathVariable("loginName") String loginName) {
+        return userService.getByLoginName1(loginName);
+    }
+
+    /**
+     * @author Zhaooyue Zhang
+     * 根据userId查询用户信息
+     * @param userId
+     * @return
+     */
+    @GetMapping("/getById/{userId}")
+    public ResponseDTO<UserEntity> getById(@PathVariable("userId") Long userId) {
+        return userService.getById1(userId);
+    }
+
+    /**
+     * 根据用户id删除用户
+     * @param userId
+     * @return
+     */
+    @PostMapping("/deleteById/{userId}")
+    public ResponseDTO deleteById(@PathVariable("userId") Long userId) {
+        return userService.deleteById(userId);
+    }
 }

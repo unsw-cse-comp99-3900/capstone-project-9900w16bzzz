@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 /**
  * @author: zuoming yan
@@ -29,5 +30,6 @@ public class UserAddForm {
 
     @Schema(description = "login pwd")
     @NotNull(message = "not null")
+    @Pattern(regexp = VerificationUtil.PWD_REGEXP, message = "6-15 digits (include numbers, upper and lower case letters or decimal points)")
     private String loginPwd;
 }

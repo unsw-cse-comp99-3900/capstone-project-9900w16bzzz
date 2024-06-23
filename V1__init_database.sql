@@ -52,12 +52,12 @@ CREATE TABLE `t_login_fail`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `t_user`;
 CREATE TABLE `t_user`  (
-                           `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                           `login_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
                            `user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-                           `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+                           `login_pwd` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
                            `update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                            `create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                           `user_id` bigint(0) NOT NULL,
+                           `user_id` bigint(0) NOT NULL AUTO_INCREMENT,
                            PRIMARY KEY (`user_id`) USING BTREE,
                            INDEX `username`(`user_name`) USING BTREE,
                            INDEX `user_id`(`user_id`) USING BTREE
