@@ -21,7 +21,7 @@ function Navbar(){
             </label>
             <ul className="menu">
                 <li><RouterLink to = "/">Home</RouterLink></li>
-                <li><Link to = "#">Create invoice</Link></li>
+                <li><RouterLink to = "/create-invoice">Create invoice</RouterLink></li>
                 <li><Link to = "#">My invoice</Link></li>
                 <li><RouterLink to = "/sign-up">Sign up</RouterLink></li>
             </ul>
