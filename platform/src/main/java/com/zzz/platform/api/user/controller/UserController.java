@@ -19,12 +19,14 @@ import javax.validation.Valid;
  * @version: v1.0.0
  * @date: 2024/6/21
  */
-@RestController()
+@RestController
 @Tag(name = "user management")
 public class UserController {
 
     @Resource
     private UserService userService;
+
+
 
     @NoNeedLogin
     @PostMapping("/signup")

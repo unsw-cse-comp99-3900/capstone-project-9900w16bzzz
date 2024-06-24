@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.zzz.platform.api.login.domain.LoginForm;
 import com.zzz.platform.api.login.domain.LoginResultVO;
+import com.zzz.platform.api.login.domain.RequestUser;
 import com.zzz.platform.api.login.domain.captcha.CaptchaVO;
 import com.zzz.platform.api.login.service.LoginService;
 import com.zzz.platform.common.annoation.NoNeedLogin;
@@ -61,5 +62,15 @@ public class LoginController {
     @NoNeedLogin
     public ResponseDTO<CaptchaVO> getCaptcha() {
         return loginService.getCaptcha();
+    }
+
+    @GetMapping("/getLoginName")
+    @Operation(summary = "get login name by token")
+    public ResponseDTO<RequestUser> getLoginName(HttpServletRequest request) {
+        String tokenValue = StpUtil.getTokenValue();
+        String loginId = (String) StpUtil.getLoginIdByToken(tokenValue);
+        RequestUser requestUser = loginService.getLoginUser(loginId, request);
+
+        return ResponseDTO.ok(requestUser);
     }
 }
