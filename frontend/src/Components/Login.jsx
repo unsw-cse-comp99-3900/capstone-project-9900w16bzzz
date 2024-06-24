@@ -1,13 +1,76 @@
-import React from "react";
+import React, {useState} from "react";
 import video from "../images/video1.mp4";
 import styled from "styled-components";
-import LoginInput from "./LoginInput";
 import SignupButton from "./SignupButton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 
 function Login (){
+    const [loginEmail, setEmail] = useState('');
+    const [loginPassword, setPassword] = useState('');
+    const navigate = useNavigate();
+
+    const handleLogin = async () => {
+        console.log("sign in email", loginEmail);
+        console.log("sign in password", loginPassword);
+      const requestBody = {
+        loginName: loginEmail,
+        loginPwd: loginPassword,
+      };
+
+      try {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Login successful:', data);
+          if(data.ok) {
+            localStorage.setItem("token",data.data.token);
+            getUserInformation();
+            navigate('/');
+          }
+        } else {
+          console.error('Login failed:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+
+
+    };
+
+    const getUserInformation = async () => {
+        const token = localStorage.getItem("token");
+        try {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/getLoginName`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-access-token': `${token}`
+              },
+            });
+    
+            if (response.ok) {
+              const data = await response.json();
+              if(data.ok){
+                localStorage.setItem("userData",data.data);
+              }
+              console.log('Get user info successful:', data);
+            } else {
+              console.error('Login failed:', response.statusText);
+            }
+          } catch (error) {
+            console.error('Error:', error);
+          }
+    }
+
     return(
         <div id = "main">
             <video autoPlay muted loop id="background-video-signup">
@@ -17,10 +80,10 @@ function Login (){
             <Maincontainer>
                 <LoginText>Log in</LoginText>
                 <InputContainer>    
-                    <LoginInput type = "text" placeholder="Email"/>
-                    <LoginInput type = "password" placeholder="Password"/>
+                    <StyledInput  type = "text" placeholder="Email" value={loginEmail} onChange={(e) => setEmail(e.target.value)}/>
+                    <StyledInput  type = "password" placeholder="Password" value={loginPassword} onChange={(e) => setPassword(e.target.value)}/>
                 </InputContainer>
-                <ButtonContainer>
+                <ButtonContainer onClick={handleLogin}>
                     <SignupButton content="Log in"/>
                 </ButtonContainer>
                 <StyledLink>Forget Password?</StyledLink>
@@ -28,6 +91,32 @@ function Login (){
         </div>
     )
 }
+
+const StyledInput = styled.input`
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2rem;
+    width: 80%;
+    height: 3rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    border: none;
+    outline: none;
+    color: #3c354e;
+    font-size: 1rem;
+    font-weight: bold;
+    &:focus {
+        display: inline-block;
+        box-shadow: 0 0 0 0.2rem #b9abe0;
+        backdrop-filter: blur(12rem);
+        border-radius: 2rem;
+    }
+    &::placeholder{
+        color: #ffffff;
+        font-weight: 100;
+        font-size: 1rem;
+    }
+`;
+
 const Maincontainer = styled.div`
     display: flex;
     position: relative;
