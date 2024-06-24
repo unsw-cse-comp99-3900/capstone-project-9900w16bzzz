@@ -37,7 +37,7 @@ public class LoginController {
     private LoginService loginService;
 
     @Resource
-    private UserService userService
+    private UserService userService;
 
     @NoNeedLogin
     @PostMapping("/login")
