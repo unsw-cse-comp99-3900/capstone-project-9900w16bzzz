@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class InvoiceEntity {
 
     @TableId(type = IdType.AUTO)
-    private integer fileId;
+    private int fileId;
 
     private String fileName;
 
