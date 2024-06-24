@@ -74,7 +74,8 @@ public class LoginService {
             return ResponseDTO.userErrorParam("Login name does not exist! ");
         }
         // Decrypting front-end encrypted passwords
-        String requestPassword = protectedPasswordService.decryptPassword(loginForm.getLoginPwd());
+        String requestPassword = loginForm.getLoginPwd();
+        // String requestPassword = protectedPasswordService.decryptPassword(loginForm.getLoginPwd());
 
         // Log-in failures were verified in accordance with the requirements for isochronous logins
         ResponseDTO<LoginFailEntity> loginFailEntityResponseDTO = protectLoginService.checkLogin(userEntity.getUserId(), UserTypeEnum.NORMAL);
