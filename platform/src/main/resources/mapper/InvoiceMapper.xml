@@ -9,6 +9,18 @@
         </where>
     </select>
 
+    <select id="getFileByName" resultType="com.zzz.platform.api.invoice.entity.InvoiceEntity">
+        SELECT *
+        FROM t_file
+        WHERE t_file.file_name =#{fileName}
+        /* 模糊查询
+           filename ———— 模糊查询内容
+         */
+    </select>
 
+    <insert id="addFile">
+        INSERT INTO t_file (file_name, user_id, file_content, file_validation)
+        VALUES (#{fileName},#{userId},#{fileContent},0)
+    </insert>
 
 </mapper>
