@@ -63,10 +63,10 @@ public class LoginService {
 
     public ResponseDTO<LoginResultVO> login(LoginForm loginForm, String ip, String userAgent) {
         // check captcha image
-        ResponseDTO<String> checkCaptcha = captchaService.checkCaptcha(loginForm);
+        /*ResponseDTO<String> checkCaptcha = captchaService.checkCaptcha(loginForm);
         if (!checkCaptcha.getOk()) {
             return ResponseDTO.error(UserErrorCode.PARAM_ERROR, checkCaptcha.getMsg());
-        }
+        }*/
 
         // verify login name
         UserEntity userEntity = userService.getByLoginName(loginForm.getLoginName());
