@@ -57,8 +57,7 @@ public class ProtectLoginService {
             return ResponseDTO.ok();
         }
 
-
-        LoginFailEntity loginFailEntity = loginFailDao.selectByUserIdAndUserType(userId, userType.getValue());
+        LoginFailEntity loginFailEntity = loginFailDao.selectById(userId);
         if (loginFailEntity == null) {
             return ResponseDTO.ok();
         }
@@ -139,7 +138,7 @@ public class ProtectLoginService {
             return;
         }
 
-        loginFailDao.deleteByUserIdAndUserType(userId, userType.getValue());
+        loginFailDao.deleteById(userId);
     }
 
 

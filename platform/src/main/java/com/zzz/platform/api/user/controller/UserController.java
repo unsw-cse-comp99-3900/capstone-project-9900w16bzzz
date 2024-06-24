@@ -19,7 +19,7 @@ import javax.validation.Valid;
  * @version: v1.0.0
  * @date: 2024/6/21
  */
-@RestController
+@RestController()
 @Tag(name = "user management")
 public class UserController {
 
@@ -40,7 +40,7 @@ public class UserController {
      * @param userPwdUpdateForm
      * @return
      */
-    @PostMapping("/updateUser")
+    @PostMapping("/user/updateUser")
     public ResponseDTO<String> updatePassword(@Valid @RequestBody UserPwdUpdateForm userPwdUpdateForm) {
         return userService.updatePassword(userPwdUpdateForm);
     }
@@ -51,7 +51,7 @@ public class UserController {
      * @param loginName
      * @return
      */
-    @GetMapping("/getByLoginName/{loginName}")
+    @GetMapping("/user/getByLoginName/{loginName}")
     public ResponseDTO<UserEntity> getByLoginName(@PathVariable("loginName") String loginName) {
         return userService.getByLoginName1(loginName);
     }
@@ -62,7 +62,7 @@ public class UserController {
      * @param userId
      * @return
      */
-    @GetMapping("/getById/{userId}")
+    @GetMapping("/user/getById/{userId}")
     public ResponseDTO<UserEntity> getById(@PathVariable("userId") Long userId) {
         return userService.getById1(userId);
     }
@@ -72,7 +72,7 @@ public class UserController {
      * @param userId
      * @return
      */
-    @PostMapping("/deleteById/{userId}")
+    @PostMapping("/user/deleteById/{userId}")
     public ResponseDTO deleteById(@PathVariable("userId") Long userId) {
         return userService.deleteById(userId);
     }
