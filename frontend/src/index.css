@@ -15,10 +15,6 @@ ul{
 a{
     text-decoration: none;
 }
-button{
-    outline: none;
-    border: none;
-}
 input{
     outline: none;
     border: none;
@@ -330,7 +326,7 @@ nav .menu-btn,
 	color:#cecece;
 	
 }
-.about-text button{
+.about-text{
     margin-top: 20px;
 	width: 140px;
 	height: 45px;
@@ -340,7 +336,7 @@ nav .menu-btn,
     color: #ffffff;
 	background-color:#FF1414;
 }
-.about-text button:hover{
+.about-text{
     box-shadow: 5px 10px 30px rgba(255, 2, 2, 0.336);
 	background-color: rgb(0, 0, 0);
     transition: all ease 0.3s;

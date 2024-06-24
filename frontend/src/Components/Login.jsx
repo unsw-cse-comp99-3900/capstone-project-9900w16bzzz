@@ -57,6 +57,7 @@ const InputContainer = styled.div`
     align-items: center;
     height: 35%;
     width: 100%;
+    margin: 10px 0px;
 `;
 const ButtonContainer = styled.div`
     margin-top: 2rem;
