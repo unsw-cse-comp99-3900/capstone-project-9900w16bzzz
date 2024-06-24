@@ -3,7 +3,7 @@ import video from "../images/video.mp4";
 
 function Header(){
     return(
-        <div id = "main">
+        <div>
             <video autoPlay muted loop id="background-video">
                 <source src={video} type="video/mp4" />
                 Your browser does not support the video tag.
