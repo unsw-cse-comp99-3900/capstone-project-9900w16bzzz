@@ -17,70 +17,74 @@ const InvoiceCreation = () => {
   };
 
   return (
-    <MainContainer>
-        <BackgroundVideo autoPlay muted loop id="background-video">
-              <source src={video} type="video/mp4" />
-              Your browser does not support the video tag.
-      </BackgroundVideo>
-      {step === 0 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={transition}
-        >
-          <GetStarted goToStep={goToStep} />
-        </motion.div>
-      )}
-      {step === 1 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={transition}
-        >
-          <UploadPage goToStep={goToStep} />
-        </motion.div>
-      )}
-      {step === 2 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={transition}
-        >
-          <ChooseConvertOption goToStep={goToStep} />
-        </motion.div>
-      )}
-      {step === 3 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={transition}
-        >
-          <InvoiceForm  goToStep={goToStep}/>
-        </motion.div>
-      )}
-      {step === 4 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={transition}
-        >
-          <h1 style={{ color: "white" }}>Invoice created! You can check your invoice in the{" "}
-            <Link to="/my-invoice" style={{ color: 'white', textDecoration: 'underline' }}>
-              MY INVOICE
-            </Link>{" "}
-            page.
-          </h1>
-          <StyledButton onClick={()=> goToStep(0)}>Create new one!</StyledButton>
-        </motion.div>
-      )}
-    </MainContainer>
+    <div>
+      <MainContainer id="main" style={{height: "auto"}}>
+          <BackgroundVideo autoPlay muted loop id="background-video">
+                <source src={video} type="video/mp4" />
+                Your browser does not support the video tag.
+        </BackgroundVideo>
+        {step === 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={transition}
+          >
+            <GetStarted goToStep={goToStep} />
+          </motion.div>
+        )}
+        {step === 1 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={transition}
+          >
+            <UploadPage goToStep={goToStep} />
+          </motion.div>
+        )}
+        {step === 2 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={transition}
+          >
+            <ChooseConvertOption goToStep={goToStep} />
+          </motion.div>
+        )}
+        {step === 3 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={transition}
+          >
+            <InvoiceForm  goToStep={goToStep}/>
+          </motion.div>
+        )}
+        {step === 4 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={transition}
+          >
+              <h1 style={{ color: "white" }}>Invoice created! You can check your invoice in the{" "}
+                <Link to="/my-invoice" style={{ color: 'white', textDecoration: 'underline' }}>
+                  MY INVOICE
+                </Link>{" "}
+                page.
+              </h1>
+            <StyledButton onClick={()=> goToStep(0)}>Create new one!</StyledButton>
+          </motion.div>
+        )}
+      </MainContainer>
+    </div>
   );
 };
+
+
 
 const MainContainer = styled.div`
     position: relative;
@@ -89,6 +93,7 @@ const MainContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    z-index: 1;
 `;
 
 const StyledButton = styled.button`

@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import styled from "styled-components";
 import video from "../images/video1.mp4";
 import SignupInput from "./SignupInput";
@@ -7,6 +7,41 @@ import { Link } from "react-router-dom";
 
 
 function Signup(){
+
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleSignUp = async () => {
+        console.log(email);
+        console.log(username);
+        console.log(password);
+      const requestBody = {
+        loginName: email,
+        userName: username,
+        loginPwd: password,
+      };
+
+      try {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/signup`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Sign up successful:', data);
+        } else {
+          console.error('Sign up  failed:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
     return(
         <div id = "main">
             <video autoPlay muted loop id="background-video-signup">
@@ -16,12 +51,12 @@ function Signup(){
             <Maincontainer>
                 <WelcomeText>Welcome</WelcomeText>
                 <InputContainer>
-                    <SignupInput type = "text" placeholder="Email"/>
-                    <SignupInput type = "text" placeholder="Username"/>
-                    <SignupInput type = "password" placeholder="Password"/>
+                    <SignupInput type = "text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+                    <SignupInput type = "text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)}/>
+                    <SignupInput type = "password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
                     <SignupInput type = "password" placeholder="Confirm password"/>
                 </InputContainer>
-                <ButtonContainer>
+                <ButtonContainer  onClick={handleSignUp}>
                     <SignupButton content="Sign up"/>
                 </ButtonContainer>
                 <StyledLink to="/log-in">Already have an account? Login</StyledLink>
