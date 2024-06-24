@@ -18,5 +18,5 @@ public class LoginUserVO {
     private String loginName;
 
     @Schema(description = "uuid")
-    private Long loginId;
+    private Long userId;
 }

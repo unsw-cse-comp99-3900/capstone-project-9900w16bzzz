@@ -74,8 +74,9 @@ public class LoginController {
     @Operation(summary = "get login name by token")
     public ResponseDTO<LoginUserVO> getLoginName(HttpServletRequest request) {
         String tokenValue = StpUtil.getTokenValue();
-        Long loginId = (Long) StpUtil.getLoginIdByToken(tokenValue);
-        UserEntity userEntity = userService.getById(loginId);
+        String token = (String) StpUtil.getLoginIdByToken(tokenValue);
+        Long userId = Long.parseLong(token.split(",")[1]);
+        UserEntity userEntity = userService.getById(userId);
         LoginUserVO loginUserVO = BeanUtils.copy(userEntity, LoginUserVO.class);
         return ResponseDTO.ok(loginUserVO);
     }
