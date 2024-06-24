@@ -1,21 +1,19 @@
 package com.zzz.platform.api.invoice.dao;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zzz.platform.api.invoice.domain.ValidateResultVO;
 import com.zzz.platform.api.invoice.entity.InvoiceEntity;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Component;
+import org.apache.ibatis.annotations.Select;
 
-/**
- * @author: zhaoyue zhang
- * @version: v1.0.0
- * @date: 2024/6/24
- */
 @Mapper
-@Component
-public interface InvoiceDao extends BaseMapper<InvoiceEntity> {
+public interface InvoiceDao {
 
+    @Select("SELECT * FROM t_file WHERE user_id = #{userId}")
+    InvoiceEntity getFileById(Long userId);
 
+    @Select("SELECT * FROM t_file WHERE file_name = #{fileName}")
+    InvoiceEntity getFileByName(String fileName);
 
+    @Insert("INSERT INTO t_file (file_name, user_id, file_content, file_validation) VALUES (#{fileName}, #{userId}, #{fileContent}, 0)")
+    void addFile(InvoiceEntity invoiceEntity);
 }
