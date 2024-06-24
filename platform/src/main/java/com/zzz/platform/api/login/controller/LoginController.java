@@ -4,12 +4,15 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import com.zzz.platform.api.login.domain.LoginForm;
 import com.zzz.platform.api.login.domain.LoginResultVO;
-import com.zzz.platform.api.login.domain.RequestUser;
+import com.zzz.platform.api.login.domain.LoginUserVO;
 import com.zzz.platform.api.login.domain.captcha.CaptchaVO;
 import com.zzz.platform.api.login.service.LoginService;
+import com.zzz.platform.api.user.entity.UserEntity;
+import com.zzz.platform.api.user.service.UserService;
 import com.zzz.platform.common.annoation.NoNeedLogin;
 import com.zzz.platform.common.constant.RequestHeaderConst;
 import com.zzz.platform.common.domain.ResponseDTO;
+import com.zzz.platform.utils.BeanUtils;
 import com.zzz.platform.utils.RequestUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,6 +35,9 @@ public class LoginController {
 
     @Resource
     private LoginService loginService;
+
+    @Resource
+    private UserService userService
 
     @NoNeedLogin
     @PostMapping("/login")
@@ -66,11 +72,11 @@ public class LoginController {
 
     @GetMapping("/getLoginName")
     @Operation(summary = "get login name by token")
-    public ResponseDTO<RequestUser> getLoginName(HttpServletRequest request) {
+    public ResponseDTO<LoginUserVO> getLoginName(HttpServletRequest request) {
         String tokenValue = StpUtil.getTokenValue();
-        String loginId = (String) StpUtil.getLoginIdByToken(tokenValue);
-        RequestUser requestUser = loginService.getLoginUser(loginId, request);
-
-        return ResponseDTO.ok(requestUser);
+        Long loginId = (Long) StpUtil.getLoginIdByToken(tokenValue);
+        UserEntity userEntity = userService.getById(loginId);
+        LoginUserVO loginUserVO = BeanUtils.copy(userEntity, LoginUserVO.class);
+        return ResponseDTO.ok(loginUserVO);
     }
 }
