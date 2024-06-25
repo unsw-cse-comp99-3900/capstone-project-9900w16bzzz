@@ -8,7 +8,9 @@ import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServic
 import org.springframework.cache.annotation.EnableCaching;
 
 @EnableCaching
-@MapperScan
+@MapperScan("com.zzz.platform.api.invoice.dao")
+@MapperScan("com.zzz.platform.api.login.dao")
+@MapperScan("com.zzz.platform.api.user.dao")
 @SpringBootApplication(exclude = UserDetailsServiceAutoConfiguration.class)
 public class PlatformApplication {
 
