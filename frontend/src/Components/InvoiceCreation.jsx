@@ -2,7 +2,7 @@ import InvoiceForm from "./InvoiceCreationComponents/InvoiceForm";
 import React, { useState } from 'react';
 import { color, motion } from 'framer-motion';
 import styled from "styled-components";
-import video from "../images/video.mp4";
+import video from "../images/video2.mp4";
 import { Link } from "react-router-dom";
 import GetStarted from "./InvoiceCreationComponents/GetStarted";
 import UploadPage from "./InvoiceCreationComponents/UploadPage";

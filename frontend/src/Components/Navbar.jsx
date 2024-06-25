@@ -24,15 +24,7 @@ function Navbar(){
                 <li><RouterLink to = "/">Home</RouterLink></li>
                 <li><RouterLink to = "/create-invoice">Create invoice</RouterLink></li>
                 <li><Link to = "#">My invoice</Link></li>
-                {token ? (
-                    <li>
-                        {username} 
-                    </li>
-                ) : (
-                    <li>
-                        <RouterLink to="/sign-up">Sign up</RouterLink>
-                    </li>
-                )}
+                <li><RouterLink to="/sign-up">Sign up</RouterLink></li>
             </ul>
 
         </nav>

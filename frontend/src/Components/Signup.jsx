@@ -23,7 +23,7 @@ function Signup(){
       };
 
       try {
-        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/signup`, {
+        const response = await fetch(`http://localhost:9900/signup`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
