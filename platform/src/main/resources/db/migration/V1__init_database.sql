@@ -9,7 +9,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `t_file`;
 CREATE TABLE `t_file`  (
-                           `file_id` int(0) NOT NULL,
+                           `file_id` int(0) NOT NULL AUTO_INCREMENT,
                            `file_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
                            `user_id` bigint(0) NOT NULL,
                            `file_content` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
