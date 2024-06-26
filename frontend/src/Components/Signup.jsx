@@ -3,7 +3,7 @@ import styled from "styled-components";
 import video from "../images/video1.mp4";
 import SignupInput from "./SignupInput";
 import SignupButton from "./SignupButton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 function Signup(){
@@ -11,6 +11,7 @@ function Signup(){
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleSignUp = async () => {
         console.log(email);
@@ -34,6 +35,7 @@ function Signup(){
         if (response.ok) {
           const data = await response.json();
           console.log('Sign up successful:', data);
+          navigate('/');
         } else {
           console.error('Sign up  failed:', response.statusText);
         }
