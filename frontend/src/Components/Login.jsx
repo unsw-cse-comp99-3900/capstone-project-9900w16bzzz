@@ -49,7 +49,7 @@ function Login (){
     const getUserInformation = async () => {
         const token = localStorage.getItem("token");
         try {
-            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/getLoginName`, {
+            const response = await fetch(`http://localhost:9900/getLoginName`, {
               method: 'GET',
               headers: {
                 'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ function Login (){
             if (response.ok) {
               const data = await response.json();
               if(data.ok){
-                localStorage.setItem("username",data.data.userId);
+                localStorage.setItem("username",data.data.userName);
                 window.dispatchEvent(new Event('localStorageChange'));
               }
               console.log('Get user info successful:', data);
