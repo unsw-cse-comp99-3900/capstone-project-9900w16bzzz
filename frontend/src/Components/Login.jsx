@@ -33,7 +33,7 @@ function Login (){
           console.log('Login successful:', data);
           if(data.ok) {
             localStorage.setItem("token",data.data.token);
-            getUserInformation();
+            await getUserInformation();
             navigate('/');
           }
         } else {
@@ -60,7 +60,8 @@ function Login (){
             if (response.ok) {
               const data = await response.json();
               if(data.ok){
-                localStorage.setItem("userData",data.data);
+                localStorage.setItem("username",data.data.userId);
+                window.dispatchEvent(new Event('localStorageChange'));
               }
               console.log('Get user info successful:', data);
             } else {
