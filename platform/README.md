@@ -1,206 +1,126 @@
-# Back-end API doc
+## How to use init.sql to init local database
 
-## System Login
+@author Zuoming yan @date 2024/07/01
 
-### Endpoint: `POST /login`
+#### 1. startup docker container mysql
 
-Description: Login
+Start the mysql container with the following command: 
 
+```
+docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=admin123 -e MYSQL_DATABASE=mydb -e MYSQL_USER=myuser -e MYSQL_PASSWORD=admin123 -p 3306:3306 -d mysql:latest
 
-| Parameters       | **Type** | **Description** | **Example Value**       |
-| ---------------- | -------- | --------------- | ----------------------- |
-| **Request Body** |          |                 |                         |
-| `captchaCode`    | `string` | Captcha code    | `"string"`              |
-| `captchaUuid`    | `string` | Captcha UUID    | `"string"`              |
-| `loginName`      | `string` | Login name      | `"zzz9900@unsw.edu.au"` |
-| `password`       | `string` | Password        | `"string"`              |
+```
 
-#### Responses
+When the docker mysql container starts normally you can see the following:
 
+```
+(base) yanzuoming@Johns-MacBook-Pro ~ % docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED       STATUS         PORTS                               NAMES
+3fb55d0ab501   mysql     "docker-entrypoint.s…"   11 days ago   Up 5 seconds   0.0.0.0:3306->3306/tcp, 33060/tcp   mysql-server
+```
 
-| **Code** | **Description** | **Media Type** | **Example Value**                                                                                                                                          |
-| -------- | --------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 200      | OK              | `*/*`          | `{ "code": 0, "level": "string", "msg": "string", "ok": true, "data": { "token": "string", "lastLoginTime": "2024-06-20T11:41:04.789Z" }, "dataType": 0 }` |
+Ensure that when 3306 -> 3306 exists in the PORTS column, this proves that the container's internal port is successfully mapped to the local port and the service can be accessed via localhost:3306.
 
-#### Response Schema
+#### 2. Copy local files inside the container
 
+```
+docker cp your_init_sql_file_path your_container_name:/init.sql
+```
 
-| **Field**            | **Type**  | **Description**            |
-| -------------------- | --------- | -------------------------- |
-| `code`               | `integer` | Response code              |
-| `level`              | `string`  | Message level              |
-| `msg`                | `string`  | Message text               |
-| `ok`                 | `boolean` | Operation status           |
-| `data`               | `object`  | Response data              |
-| `data.token`         | `string`  | Authentication token       |
-| `data.lastLoginTime` | `string`  | Last login time (ISO 8601) |
-| `dataType`           | `integer` | Data type                  |
+Above that `your_init_sql_file_path` fill in the absolute path to the V1__init_database.sql file, and fill in your container names in the `your_container_name` position, which is in the last column of the docker ps display
 
-This table outlines the parameters and response structure for the `/login` endpoint.
+#### 3. Go inside the container
 
-![image.png](assets/image01.png?t=1718933432252)
+```
+(base) yanzuoming@Johns-MacBook-Pro ~ % docker exec -it mysql-server bash
+bash-5.1# mysql -u root -p
+Enter password: 
+```
 
-### Endpoint: `GET /login/logout`
+and then enter the password 'admin123'
 
-#### Description: Logout
+```
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 12
+Server version: 8.4.0 MySQL Community Server - GPL
 
+Copyright (c) 2000, 2024, Oracle and/or its affiliates.
 
-| **Parameters**   | **Type** | **Description**       | **Example Value**     |
-| ---------------- | -------- | --------------------- | --------------------- |
-| `x-access-token` | `string` | Access token (header) | `"your_access_token"` |
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
 
-#### Responses
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 
+mysql> 
 
-| **Code** | **Description** | **Media Type** | **Example Value**                                                                                |
-| -------- | --------------- | -------------- | ------------------------------------------------------------------------------------------------ |
-| 200      | OK              | `*/*`          | `{ "code": 0, "level": "string", "msg": "string", "ok": true, "data": "string", "dataType": 0 }` |
 
-#### Response Schema
+```
 
+then execute: 
 
-| **Field**  | **Type**  | **Description**  |
-| ---------- | --------- | ---------------- |
-| `code`     | `integer` | Response code    |
-| `level`    | `string`  | Message level    |
-| `msg`      | `string`  | Message text     |
-| `ok`       | `boolean` | Operation status |
-| `data`     | `string`  | Response data    |
-| `dataType` | `integer` | Data type        |
+```
+mysql> source init.sql
+Query OK, 4 rows affected (0.10 sec)
 
-This table outlines the parameters and response structure for the `/login/logout` endpoint.
+Query OK, 1 row affected (0.01 sec)
 
-![image.png](assets/image02.png)
+Database changed
+Query OK, 0 rows affected (0.00 sec)
 
-### Endpoint: `GET /login/getLoginInfo`
+Query OK, 0 rows affected (0.00 sec)
 
-#### Description: Get Login Information
+Query OK, 0 rows affected (0.00 sec)
 
-#### Parameters
+Query OK, 0 rows affected (0.00 sec)
 
-No parameters
+Query OK, 0 rows affected (0.00 sec)
 
-#### Responses
+Query OK, 0 rows affected, 1 warning (0.00 sec)
 
+Query OK, 0 rows affected, 3 warnings (0.01 sec)
 
-| **Code** | **Description** | **Media Type** | **Example Value**                                                                                                                                          |
-| -------- | --------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 200      | OK              | `*/*`          | `{ "code": 0, "level": "string", "msg": "string", "ok": true, "data": { "token": "string", "lastLoginTime": "2024-06-20T12:08:40.097Z" }, "dataType": 0 }` |
+Query OK, 0 rows affected (0.00 sec)
 
-#### Response Schema
+Query OK, 0 rows affected (0.00 sec)
 
+Query OK, 0 rows affected (0.00 sec)
 
-| **Field**            | **Type**  | **Description**            |
-| -------------------- | --------- | -------------------------- |
-| `code`               | `integer` | Response code              |
-| `level`              | `string`  | Message level              |
-| `msg`                | `string`  | Message text               |
-| `ok`                 | `boolean` | Operation status           |
-| `data`               | `object`  | Response data              |
-| `data.token`         | `string`  | Authentication token       |
-| `data.lastLoginTime` | `string`  | Last login time (ISO 8601) |
-| `dataType`           | `integer` | Data type                  |
+Query OK, 0 rows affected (0.00 sec)
 
-This table outlines the parameters and response structure for the `/login/getLoginInfo` endpoint.
+Query OK, 0 rows affected (0.00 sec)
 
-![image.png](assets/image03.png)
+Query OK, 0 rows affected (0.00 sec)
 
-### Endpoint: `GET /login/getCaptcha`
+Query OK, 0 rows affected, 1 warning (0.00 sec)
 
-#### Description: Get Captcha
+Query OK, 0 rows affected, 5 warnings (0.01 sec)
 
-#### Parameters
+Query OK, 0 rows affected (0.00 sec)
 
-No parameters
+Query OK, 0 rows affected (0.00 sec)
 
-#### Responses
+Query OK, 0 rows affected (0.00 sec)
 
+Query OK, 0 rows affected (0.00 sec)
 
-| **Code** | **Description** | **Media Type** | **Example Value**                                                                                                                                                                                |
-| -------- | --------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 200      | OK              | `*/*`          | `{ "code": 0, "level": "string", "msg": "string", "ok": true, "data": { "captchaUuid": "string", "captchaText": "string", "captchaBase64Image": "string", "expireSeconds": 0 }, "dataType": 0 }` |
+Query OK, 0 rows affected (0.00 sec)
 
-#### Response Schema
+Query OK, 0 rows affected (0.00 sec)
 
+Query OK, 0 rows affected, 1 warning (0.00 sec)
 
-| **Field**                 | **Type**  | **Description**              |
-| ------------------------- | --------- | ---------------------------- |
-| `code`                    | `integer` | Response code                |
-| `level`                   | `string`  | Message level                |
-| `msg`                     | `string`  | Message text                 |
-| `ok`                      | `boolean` | Operation status             |
-| `data`                    | `object`  | Response data                |
-| `data.captchaUuid`        | `string`  | Captcha UUID                 |
-| `data.captchaText`        | `string`  | Captcha text                 |
-| `data.captchaBase64Image` | `string`  | Base64 encoded captcha image |
-| `data.expireSeconds`      | `integer` | Expiration time in seconds   |
-| `dataType`                | `integer` | Data type                    |
+Query OK, 0 rows affected, 1 warning (0.02 sec)
 
-This table outlines the parameters and response structure for the `/login/getCaptcha` endpoint.
+Query OK, 0 rows affected (0.00 sec)
 
-![image.png](assets/image04.png)
+Query OK, 0 rows affected (0.00 sec)
 
-## Captcha Service
+Query OK, 0 rows affected (0.00 sec)
 
-### Endpoint: `GET /captcha`
+Query OK, 0 rows affected (0.00 sec)
 
-#### Description: Get Graphical CAPTCHA
+```
 
-#### Parameters
-
-No parameters
-
-#### Responses
-
-
-| **Code** | **Description** | **Media Type** | **Example Value**                                                                                                                                                                                |
-| -------- | --------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 200      | OK              | `*/*`          | `{ "code": 0, "level": "string", "msg": "string", "ok": true, "data": { "captchaUuid": "string", "captchaText": "string", "captchaBase64Image": "string", "expireSeconds": 0 }, "dataType": 0 }` |
-
-#### Response Schema
-
-
-| **Field**                 | **Type**  | **Description**              |
-| ------------------------- | --------- | ---------------------------- |
-| `code`                    | `integer` | Response code                |
-| `level`                   | `string`  | Message level                |
-| `msg`                     | `string`  | Message text                 |
-| `ok`                      | `boolean` | Operation status             |
-| `data`                    | `object`  | Response data                |
-| `data.captchaUuid`        | `string`  | Captcha UUID                 |
-| `data.captchaText`        | `string`  | Captcha text                 |
-| `data.captchaBase64Image` | `string`  | Base64 encoded captcha image |
-| `data.expireSeconds`      | `integer` | Expiration time in seconds   |
-| `dataType`                | `integer` | Data type                    |
-
-This table outlines the parameters and response structure for the `/captcha` endpoint.
-
-![image.png](assets/image.png)
-
-
-## User Management
-
-### EndPoint: `POST /signup`
-
-
-| **Parameters** | **Description** | **Type** | **Example** |
-| -------------- | --------------- | -------- | ----------- |
-| None           |                 |          |             |
-
-#### Request Body
-
-
-| **Field** | **Type** | **Description** | **Example**               |
-| --------- | -------- | --------------- | ------------------------- |
-| loginName | String   |                 | "[zzz9900@unsw.edu.au]()" |
-| userName  | String   |                 | "string"                  |
-| loginPwd  | String   |                 | "string"                  |
-
-#### Responses
-
-
-| **Code** | **Description** | **Media Type** | **Schema Example**                                                                                                              |
-| -------- | --------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| 200      | OK              | \* / \*        | {<br>  "code": 0,<br>  "level": "string",<br>  "msg": "string",<br>  "ok": true,<br>  "data": "string",<br>  "dataType": 0<br>} |
-
-![image.png](assets/image06.png)
+If you see the above output, the database has been initialized successfully, and you can start the platform service after you have configured the idea project environment!
