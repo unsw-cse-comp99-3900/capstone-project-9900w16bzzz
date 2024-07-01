@@ -12,14 +12,14 @@ import javax.validation.constraints.NotNull;
  * 日期: 2024/6/24
  */
 @Data
-public class UploadFileForm {
+public class InvoiceUploadForm {
+
+    @Schema(description = "uuid")
+    @NotNull
+    private Long userId;
 
     @Schema(description = "file name", example = "bill invoice")
     @NotNull(message = "not null")
     @Length(max = 50, message = "maximum length 50")
     private String fileName;
-
-    @Schema(description = "file content")
-    @NotNull(message = "not null")
-    private String fileContent;
 }

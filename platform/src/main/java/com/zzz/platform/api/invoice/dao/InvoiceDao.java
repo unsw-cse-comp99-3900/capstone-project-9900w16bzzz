@@ -1,14 +1,13 @@
 package com.zzz.platform.api.invoice.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zzz.platform.api.invoice.entity.InvoiceEntity;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
 @Mapper
-public interface InvoiceDao {
+public interface InvoiceDao extends BaseMapper<InvoiceEntity> {
 
     InvoiceEntity getFileById(Long userId);
 

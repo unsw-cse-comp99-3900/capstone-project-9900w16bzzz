@@ -16,7 +16,6 @@ public class DeleteFileServiceImpl implements DeleteFileService {
     @Override
     public ResponseDTO<String> deleteFile(Integer fileId, Long userId) {
         InvoiceEntity invoiceEntity = new InvoiceEntity();
-        invoiceEntity.setFileId(fileId);
         invoiceEntity.setUserId(userId);
 
         invoiceDao.deleteFile(invoiceEntity);  // 调用DAO接口的方法

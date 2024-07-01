@@ -39,11 +39,11 @@ public class ResponseUtil {
         setDownloadFileHeader(response, fileName, null);
     }
 
-    public static void setDownloadFileHeader(HttpServletResponse response, String fileName, Long fileSize) {
+    public static void setDownloadFileHeader(HttpServletResponse response, String fileName, String fileSize) {
         response.setCharacterEncoding("utf-8");
         try {
             if (fileSize != null) {
-                response.setHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(fileSize));
+                response.setHeader(HttpHeaders.CONTENT_LENGTH, fileSize);
             }
 
             if (StringUtils.isNotEmpty(fileName)) {

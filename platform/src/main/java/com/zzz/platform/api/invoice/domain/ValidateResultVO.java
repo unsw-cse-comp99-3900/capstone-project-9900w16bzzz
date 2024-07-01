@@ -1,5 +1,6 @@
 package com.zzz.platform.api.invoice.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Map;
  * @date: 2024/6/22
  */
 @Data
+@AllArgsConstructor
 public class ValidateResultVO {
 
     private String customer;
@@ -19,6 +21,7 @@ public class ValidateResultVO {
     private Report report;
 
     @Data
+    @AllArgsConstructor
     public static class Report {
         private boolean successful;
         private String summary;
@@ -30,6 +33,7 @@ public class ValidateResultVO {
     }
 
     @Data
+    @AllArgsConstructor
     public static class RuleReport {
         private String rules;
         private boolean successful;

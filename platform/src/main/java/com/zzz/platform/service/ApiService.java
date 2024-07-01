@@ -2,11 +2,9 @@ package com.zzz.platform.service;
 
 import com.alibaba.fastjson2.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
@@ -22,10 +20,8 @@ public class ApiService {
     @Autowired
     private RestTemplate restTemplate;
 
-    public ResponseEntity<JSONObject> doPost(String url, HttpHeaders headers, Map<String,Object> body) {
-        headers.set(HttpHeaders.CONTENT_TYPE, "application/json");
-        headers.set(HttpHeaders.CONNECTION, "keep-alive");
-        HttpEntity<Map<String,Object>> entity = new HttpEntity<>(body, headers);
+    public ResponseEntity<JSONObject> doPost(String url, HttpHeaders headers, Object body) {
+        HttpEntity<Object> entity = new HttpEntity<>(body, headers);
 
         return restTemplate.exchange(
                 url,
@@ -33,5 +29,15 @@ public class ApiService {
                 entity,
                 JSONObject.class
         );
+    }
+
+    public ResponseEntity<JSONObject> doPostJson(String url, HttpHeaders headers, Map<String, Object> body) {
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return doPost(url,headers, body);
+    }
+
+    public ResponseEntity<JSONObject> doPostList(String url, HttpHeaders headers, MultiValueMap<String,Object> body) {
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        return doPost(url, headers, body);
     }
 }

@@ -3,7 +3,7 @@
 
     <select id="getFileById" resultType="com.zzz.platform.api.invoice.entity.InvoiceEntity">
         SELECT *
-        FROM t_file
+        FROM t_invoice
         <where>
             user_id = #{userId}
         </where>
@@ -11,28 +11,28 @@
 
     <select id="getFileByName" resultType="com.zzz.platform.api.invoice.entity.InvoiceEntity">
         SELECT *
-        FROM t_file
-        WHERE t_file.file_name =#{fileName}
+        FROM t_invoice
+        WHERE t_invoice.file_name =#{fileName}
         /* 模糊查询
            filename ———— 模糊查询内容 后续更改
          */
     </select>
 
     <insert id="addFile">
-        INSERT INTO t_file (file_name, user_id, file_content, file_validation)
+        INSERT INTO t_invoice (file_name, user_id, file_content, file_validation)
         VALUES (#{fileName},#{userId},#{fileContent},0)
     </insert>
 
     <select id="searchFile" resultType="com.zzz.platform.api.invoice.entity.InvoiceEntity">
         SELECT *
-        FROM t_file
+        FROM t_invoice
         WHERE file_name like CONCAT('%', ${fileName}, '%')
           AND user_id = #{userId}
     </select>
 
     <delete id="deleteFile">
         DELETE
-        FROM t_file
+        FROM t_invoice
         WHERE user_id = #{userId}
           AND file_id = #{fileId}
     </delete>

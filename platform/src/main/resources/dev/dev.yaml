@@ -20,6 +20,12 @@ spring:
       method:
         pointcut: com.zzz.platform..*Service.*
 
+  # upload file size
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
+
   # json serialisation config
   jackson:
     serialization:
@@ -45,10 +51,10 @@ server:
 http:
   pool:
     max-total: 20
-    connect-timeout: 50000
-    read-timeout: 50000
-    write-timeout: 50000
-    keep-alive: 300000
+    connect-timeout: 60000
+    read-timeout: 60000
+    write-timeout: 60000
+    keep-alive: 60000
 
 # Open API configuration
 springdoc:

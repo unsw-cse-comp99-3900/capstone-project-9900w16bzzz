@@ -1,9 +1,12 @@
-package com.zzz.platform.api.invoice.service;
+package com.zzz.platform.api.invoice.service.impl;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zzz.platform.api.invoice.domain.ValidateForm;
+import com.zzz.platform.api.invoice.domain.InvoiceJsonVO;
 import com.zzz.platform.api.invoice.domain.ValidateResultVO;
+import com.zzz.platform.api.invoice.domain.api.EssInvoiceValidateForm;
+import com.zzz.platform.api.invoice.domain.api.UpbrainExtractorForm;
+import com.zzz.platform.api.invoice.service.InvoiceApiService;
 import com.zzz.platform.common.code.InvoiceErrorCode;
 import com.zzz.platform.common.domain.ResponseDTO;
 import com.zzz.platform.service.ApiService;
@@ -12,13 +15,19 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,43 +36,93 @@ import java.util.stream.Stream;
 /**
  * @author: zuoming yan
  * @version: v1.0.0
- * @date: 2024/6/22
+ * @date: 2024/7/1
  */
-@Service
 @Slf4j
-public class InvoiceValidateService {
+@Service
+public class InvoiceApiServiceImpl implements InvoiceApiService {
 
     private final static String API_TOKEN_CACHE_KEY = "api_token";
+
     @Resource
     private ApiService apiService;
 
     @Resource
     private CacheService cacheService;
 
+    @Value("${upbrainsai.token}")
+    private String upbrainsaiToken;
+
+    /**
+     * Using Upbrainsai extractors extract invoice info from pdf and convert to json
+     * @param upbrainExtractorForm request body
+     * @return invoice json object
+     */
+    @Override
+    public ResponseDTO<InvoiceJsonVO> convertPdfToJson(UpbrainExtractorForm upbrainExtractorForm) {
+        String url = UpbrainSaiUrl.INVOICE_EXTRACTOR_URL.getUrl();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, upbrainsaiToken);
+        ByteArrayResource resource;
+        try {
+            MultipartFile file = upbrainExtractorForm.getFile();
+            resource = new ByteArrayResource(file.getBytes()) {
+                @Override
+                public String getFilename() {
+                    return file.getOriginalFilename();
+                }
+            };
+        } catch (IOException e) {
+            log.error("Reading file failed, {}", e.getMessage());
+            return ResponseDTO.error(InvoiceErrorCode.INVOICE_FILE_FORMAT_ERROR);
+        }
+
+        MultiValueMap<String,Object> body = new LinkedMultiValueMap<>();
+        body.add("file", resource);
+        // send post request to upbrainsai
+        ResponseEntity<JSONObject> response = apiService.doPostList(url, headers, body);
+        if(response.getStatusCode() == HttpStatus.OK && !ObjectUtils.isEmpty(response.getBody())){
+            JSONObject jsonObject = JSONObject.parseObject(response.getBody().toString());
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                InvoiceJsonVO invoiceJsonVO = objectMapper.readValue(jsonObject.get("result").toString(), InvoiceJsonVO.class);
+                return ResponseDTO.ok(invoiceJsonVO);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+        } else {
+            log.error("Upbrain Extractor api request failed, response: {}", response);
+        }
+
+        return ResponseDTO.error(InvoiceErrorCode.UPBRAINSAI_API_REQUEST_FAILED);
+    }
+
     /**
      *
-     * @param validateForm invoice validate parameters
-     * @return
+     * @param essInvoiceValidateForm invoice validate parameters
+     * @return validation report
      */
-    public ResponseDTO<ValidateResultVO> invoiceValidation(ValidateForm validateForm) {
+    @Override
+    public ResponseDTO<ValidateResultVO> essValidateInvoice(EssInvoiceValidateForm essInvoiceValidateForm) {
         String apiToken = getApiToken();
         if (ObjectUtils.isEmpty(apiToken)) {
             return ResponseDTO.error(InvoiceErrorCode.GET_API_TOKEN_FAILED);
         }
         /* concat params with url */
         String urlWithParams = new StringBuilder(EssApiUrl.VALIDATION_URL.getUrl())
-                .append("?rules=").append(validateForm.getRules())
-                .append("&customer=").append(validateForm.getCustomer())
+                .append("?rules=").append(essInvoiceValidateForm.getRules())
+                .append("&customer=").append(essInvoiceValidateForm.getCustomer())
                 .toString();
         /* check content md5 */
-        String content = validateForm.getContent();
-        String md5sum = validateForm.getMd5sum();
+        String content = essInvoiceValidateForm.getContent();
+        String md5sum = essInvoiceValidateForm.getChecksum();
         if (!md5sum.equals(DigestUtils.md5Hex(content))) {
             return ResponseDTO.error(InvoiceErrorCode.CONTENT_MD5_NOT_EQUAL);
         }
         /* build http body */
         HashMap<String, Object> body = new HashMap<>();
-        body.put("filename",validateForm.getFilename());
+        body.put("filename",essInvoiceValidateForm.getFileName());
         body.put("content",content);
         body.put("checksum",md5sum);
         /* build http header */
@@ -72,7 +131,7 @@ public class InvoiceValidateService {
         /* send POST request */
         for (int i = 0; i < 2; i++) {
             headers.add(HttpHeaders.AUTHORIZATION, apiToken);
-            response = apiService.doPost(urlWithParams, headers, body);
+            response = apiService.doPostJson(urlWithParams, headers, body);
             HttpStatus statusCode = response.getStatusCode();
             if (statusCode.is2xxSuccessful()) {
                 JSONObject jsonObject = response.getBody();
@@ -96,7 +155,7 @@ public class InvoiceValidateService {
 
     }
 
-    public String getApiToken() {
+    private String getApiToken() {
         // get from cache, otherwise send POST request to api
         String apiToken = cacheService.getValue(API_TOKEN_CACHE_KEY);
         if (!ObjectUtils.isEmpty(apiToken)) {
@@ -105,7 +164,7 @@ public class InvoiceValidateService {
         Map<String, Object> body = Stream.of(AuthTokenHeader.values())
                 .collect(Collectors.toMap(AuthTokenHeader::getKey, AuthTokenHeader::getValue));
 
-        ResponseEntity<JSONObject> response = apiService.doPost(EssApiUrl.AUTH_TOKEN_URL.getUrl(), new HttpHeaders(), body);
+        ResponseEntity<JSONObject> response = apiService.doPostJson(EssApiUrl.AUTH_TOKEN_URL.getUrl(), new HttpHeaders(), body);
         HttpStatus statusCode = response.getStatusCode();
         if (statusCode.is2xxSuccessful()) {
             JSONObject jsonObject = response.getBody();
@@ -119,6 +178,13 @@ public class InvoiceValidateService {
         }
     }
 
+    @AllArgsConstructor
+    @Getter
+    enum UpbrainSaiUrl {
+        INVOICE_EXTRACTOR_URL("https://xtract.upbrainsai.com/api/invoice"),
+        ;
+        private final String url;
+    }
 
     @AllArgsConstructor
     @Getter

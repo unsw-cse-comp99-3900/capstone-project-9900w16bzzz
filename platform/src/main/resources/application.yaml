@@ -18,6 +18,8 @@ spring:
 swagger:
   host: localhost:${server.port}
 
+upbrainsai:
+  token: wRRxw-vrrrL0Agi9oCx1lof4O7bmY8DMYwwqrXkVVEuxi4C9mV9czoV6P7i2
 #logging:
 #  level:
 #    org:
