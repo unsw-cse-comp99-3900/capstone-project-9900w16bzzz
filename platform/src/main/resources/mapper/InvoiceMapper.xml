@@ -34,7 +34,7 @@
         DELETE
         FROM t_invoice
         WHERE user_id = #{userId}
-          AND file_id = #{fileId}
+          AND invoice_id = #{invoiceId}
     </delete>
 
 </mapper>

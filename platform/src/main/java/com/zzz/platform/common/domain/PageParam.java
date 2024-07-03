@@ -16,6 +16,7 @@ import java.util.List;
  * @version: v1.0.0
  * @date: 2024/6/19
  */
+@Data
 public class PageParam {
 
     @Schema(description = "page num (not null)", example = "1")

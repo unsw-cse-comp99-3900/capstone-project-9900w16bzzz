@@ -1,25 +1,31 @@
 package com.zzz.platform.api.invoice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.zzz.platform.api.invoice.dao.InvoiceDao;
+import com.zzz.platform.api.invoice.dao.InvoiceFileDao;
 import com.zzz.platform.api.invoice.entity.InvoiceEntity;
+import com.zzz.platform.api.invoice.entity.InvoiceFileEntity;
 import com.zzz.platform.api.invoice.service.InvoiceFileService;
 import com.zzz.platform.common.code.InvoiceErrorCode;
 import com.zzz.platform.common.domain.ResponseDTO;
-import com.zzz.platform.common.enumeration.BaseEnum;
+import com.zzz.platform.common.enumeration.FileType;
 import com.zzz.platform.utils.EnumUtil;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class InvoiceFileServiceImpl implements InvoiceFileService {
 
     @Autowired
     private InvoiceDao invoiceDao;
+
+    @Autowired
+    private InvoiceFileDao invoiceFileDao;
 
     @Override
     public List<InvoiceEntity> searchFile(String fileName, Long userId) {
@@ -30,26 +36,29 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
     }
 
     @Override
-    public ResponseDTO<byte[]> download(Long fileId, String fileType) {
-        String columnName = EnumUtil.getEnumDescByValue(fileType, FileType.class);
-        List<Object> objs = invoiceDao.selectObjs(
-                new QueryWrapper<InvoiceEntity>().eq("file_id", fileId).select(columnName)
-        );
-        if (objs.isEmpty()) {
+    public ResponseDTO<byte[]> download(Long invoiceId, String fileType) {
+        FileType type = EnumUtil.getEnumByName(fileType, FileType.class);
+        if (ObjectUtils.isEmpty(type)) {
             return ResponseDTO.error(InvoiceErrorCode.INVOICE_FILE_DOES_NOT_EXIST);
         }
-        return ResponseDTO.ok((byte[]) objs.get(0));
+        InvoiceFileEntity invoiceFileEntity = invoiceFileDao.selectOne(
+                new QueryWrapper<InvoiceFileEntity>()
+                        .eq("invoice_id", invoiceId)
+                        .eq("file_type", type.getValue()));
+        if (ObjectUtils.isEmpty(invoiceFileEntity)) {
+            return ResponseDTO.error(InvoiceErrorCode.INVOICE_FILE_DOES_NOT_EXIST);
+        }
+        return ResponseDTO.ok(invoiceFileEntity.getContent());
     }
 
     @Override
-    public String searchFileNameById(Long fileId, String fileType) {
-        List<Object> objs = invoiceDao.selectObjs(
-                new QueryWrapper<InvoiceEntity>().eq("file_id", fileId).select("file_name")
-        );
-        if (objs.isEmpty()) {
+    public String searchFileNameById(Long invoiceId, String fileType) {
+        InvoiceEntity invoiceEntity = invoiceDao.selectOne(
+                new QueryWrapper<InvoiceEntity>().eq("invoice_id", invoiceId));
+        if (ObjectUtils.isEmpty(invoiceEntity)) {
             return "";
         }
-        String fileName = objs.get(0).toString();
+        String fileName = invoiceEntity.getFileName();
 
         int lastDotIndex = fileName.lastIndexOf('.');
         if (lastDotIndex == -1) {
@@ -62,15 +71,12 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
         return fileName;
     }
 
-    @AllArgsConstructor
-    @Getter
-    enum FileType implements BaseEnum{
-        JSON("json", "json_content"),
-        XML("xml","xml_content"),
-        PDF("pdf","pdf_content");
-        ;
-        final String value;
-        // column name in database
-        final String desc;
+    public void saveInvoiceContentInDB(Long invoiceId, byte[] content, FileType filetype) {
+        // save file to DB
+        InvoiceFileEntity invoiceFileEntity = new InvoiceFileEntity();
+        invoiceFileEntity.setFileType(filetype.getValue());
+        invoiceFileEntity.setInvoiceId(invoiceId);
+        invoiceFileEntity.setContent(content);
+        invoiceFileDao.insert(invoiceFileEntity);
     }
 }

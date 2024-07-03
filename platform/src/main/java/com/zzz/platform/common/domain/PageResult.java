@@ -1,6 +1,9 @@
 package com.zzz.platform.common.domain;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -9,6 +12,9 @@ import java.util.List;
  * @version: v1.0.0
  * @date: 2024/6/19
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PageResult<T> {
 
     /**

@@ -11,18 +11,18 @@ import java.time.LocalDateTime;
 @TableName("t_invoice")
 public class InvoiceEntity {
 
-    @TableId(type = IdType.AUTO)
-    private Long fileId;
+    @TableId(type = IdType.ASSIGN_UUID)
+    private Long invoiceId;
 
     private Long userId;
 
     private String fileName;
 
-    private byte[] pdfContent;
+    private Integer pdfFlag;
 
-    private byte[] jsonContent;
+    private Integer jsonFlag;
 
-    private byte[] xmlContent;
+    private Integer xmlFlag;
 
     private LocalDateTime updateTime;
 
