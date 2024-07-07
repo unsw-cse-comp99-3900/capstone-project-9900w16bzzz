@@ -9,9 +9,18 @@ import { Link, useNavigate } from "react-router-dom";
 function Login (){
     const [loginEmail, setEmail] = useState('');
     const [loginPassword, setPassword] = useState('');
+    const [emailError, setEmailError] = useState('');
+
     const navigate = useNavigate();
 
     const handleLogin = async () => {
+      setEmailError('');
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(loginEmail)) {
+        setEmailError('Please enter a valid email address.');
+        return;
+      }
+
         console.log("sign in email", loginEmail);
         console.log("sign in password", loginPassword);
       const requestBody = {
@@ -82,6 +91,7 @@ function Login (){
                 <LoginText>Log in</LoginText>
                 <InputContainer>    
                     <StyledInput  type = "text" placeholder="Email" value={loginEmail} onChange={(e) => setEmail(e.target.value)}/>
+                    {emailError && <ErrorText>{emailError}</ErrorText>}
                     <StyledInput  type = "password" placeholder="Password" value={loginPassword} onChange={(e) => setPassword(e.target.value)}/>
                 </InputContainer>
                 <ButtonContainer onClick={handleLogin}>
@@ -157,6 +167,14 @@ const ButtonContainer = styled.div`
     align-items: center;
     justify-content: center;
 `;
+const ErrorText = styled.div`
+  color: red;
+  margin-top: 0.5rem;
+  font-size: 0.7rem;
+  letter-spacing: 0rem;
+  font-weight: bold;
+`;
+
 const StyledLink = styled(Link)`
     margin-top: 2rem;
     color: #ffffff;
