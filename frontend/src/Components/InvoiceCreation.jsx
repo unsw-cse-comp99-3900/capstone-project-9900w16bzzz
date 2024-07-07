@@ -10,6 +10,8 @@ import ChooseConvertOption from "./InvoiceCreationComponents/ChooseConvertOption
 
 const InvoiceCreation = () => {
   const [step, setStep] = useState(0);
+  const [file, setFile] = useState(null);
+  console.log('setFile type:', typeof setFile);
 
   const goToStep = (stepNumber) => setStep(stepNumber);
   const transition = {
@@ -40,7 +42,7 @@ const InvoiceCreation = () => {
             exit={{ opacity: 0 }}
             transition={transition}
           >
-            <UploadPage goToStep={goToStep} />
+            <UploadPage goToStep={goToStep} setFile={setFile} file={file} />
           </motion.div>
         )}
         {step === 2 && (
@@ -50,7 +52,7 @@ const InvoiceCreation = () => {
             exit={{ opacity: 0 }}
             transition={transition}
           >
-            <ChooseConvertOption goToStep={goToStep} />
+            <ChooseConvertOption goToStep={goToStep} file={file} />
           </motion.div>
         )}
         {step === 3 && (

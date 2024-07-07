@@ -2,7 +2,7 @@ import React,{ useState} from "react";
 import styled from "styled-components";
 import { ReactComponent as ArrowIcon } from "../../images/arrow.svg";
 
-const ChooseConvertOption = ({ goToStep }) => {
+const ChooseConvertOption = ({ goToStep, file }) => {
     
   const [selectedAction, setSelectedAction] = useState(null);
 
@@ -17,6 +17,42 @@ const ChooseConvertOption = ({ goToStep }) => {
       goToStep(3);
     }
   };
+
+  const handleUpload = async (action) => {
+    console.log(file);
+
+    if (!file) {
+        alert('No file to upload!');
+        return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const userId = localStorage.getItem("userId");
+      let endpoint = `${process.env.REACT_APP_SERVER_URL}/invoice/upload`;
+      let token = localStorage.getItem("token");
+      const response = await fetch(`${endpoint}?userId=${userId}`, {
+        method: 'POST',
+        headers: {
+            'x-access-token': `${token}`
+        },
+        body: formData,
+      });
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      
+      if (!data.ok) {
+        throw new Error('Server response was not ok');
+      }
+      console.log('File processed successfully', data);
+    } catch (error) {
+      console.error('Error processing file:', error);
+      alert('An error occurred while processing the file. Please try again.');
+    }
+};
 
   return (
     <ActionContainer className="name">
@@ -35,7 +71,10 @@ const ChooseConvertOption = ({ goToStep }) => {
           </ActionOption>
         </ActionOptions>
       </div>
-      <ArrowButton onClick={handleNext} disabled={!selectedAction}>
+      <ArrowButton onClick={() => {
+        handleUpload(selectedAction);
+        handleNext();
+      }} disabled={!selectedAction}>
         <ArrowIcon />
       </ArrowButton>
   </ActionContainer>

@@ -1,13 +1,16 @@
-import React,{ useState} from "react";
+import React from "react";
 import styled from "styled-components";
 import { ReactComponent as ArrowIcon } from "../../images/arrow.svg";
 
-const UploadPage = ({ goToStep }) => {
-    
-    const [file, setFile] = useState(null);
+const UploadPage = ({ goToStep, setFile, file }) => {
 
     const handleFileChange = (event) => {
-        setFile(event.target.files[0]);
+      const selectedFile = event.target.files[0];
+      if (typeof setFile === 'function') {
+          setFile(selectedFile);
+      } else {
+          console.error('setFile is not a function');
+      }
     };
     return (
         <Container className="name">

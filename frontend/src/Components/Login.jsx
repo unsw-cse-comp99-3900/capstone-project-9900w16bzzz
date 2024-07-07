@@ -69,7 +69,8 @@ function Login (){
             if (response.ok) {
               const data = await response.json();
               if(data.ok){
-                localStorage.setItem("username",data.data.userName);
+                localStorage.setItem("username", data.data.userName);
+                localStorage.setItem("userId",data.data.userId);
                 window.dispatchEvent(new Event('localStorageChange'));
               }
               console.log('Get user info successful:', data);

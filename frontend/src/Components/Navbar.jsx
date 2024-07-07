@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import {Link} from "react-scroll";
 import { Link as RouterLink } from "react-router-dom";
 import UserMenu from "./NavbarUserMenu";
+import ProtectedLink from "./InvoiceCreationComponents/ProtectedPage";
 
 function Navbar(){
     const [nav, setnav] = useState(false);
@@ -43,8 +44,8 @@ function Navbar(){
             </label>
             <ul className="menu">
                 <li><RouterLink to = "/">Home</RouterLink></li>
-                <li><RouterLink to = "/create-invoice">Create invoice</RouterLink></li>
-                <li><Link to = "#">My invoice</Link></li>
+                <li><ProtectedLink to="/create-invoice">Create invoice</ProtectedLink></li>
+                <li><RouterLink to = "#">My invoice</RouterLink></li>
                 {username ? (
                     <li><UserMenu username={username} /></li>
                 ) : (
