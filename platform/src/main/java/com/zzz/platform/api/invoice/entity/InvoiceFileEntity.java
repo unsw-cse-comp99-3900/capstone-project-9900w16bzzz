@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.math.BigInteger;
+
 /**
  * @author: zuoming yan
  * @version: v1.0.0
@@ -15,9 +17,9 @@ import lombok.Data;
 public class InvoiceFileEntity {
 
     @TableId(type = IdType.AUTO)
-    private Long id;
+    private BigInteger id;
 
-    private Long invoiceId;
+    private BigInteger invoiceId;
 
     private int fileType;
 

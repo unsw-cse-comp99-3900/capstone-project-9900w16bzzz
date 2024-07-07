@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
+
 /**
  * @author: zuoming yan
  * @version: v1.0.0
@@ -24,7 +26,7 @@ public interface UserDao extends BaseMapper<UserEntity> {
     /**
      * query by user id
      */
-    UserVO getUserById(@Param("userId") Long userId);
+    UserVO getUserById(@Param("userId") BigInteger userId);
 
     /**
      * update pwd

@@ -12,6 +12,7 @@ import com.zzz.platform.utils.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigInteger;
 import java.util.Objects;
 
 /**
@@ -51,7 +52,7 @@ public class UserService {
      *
      */
     public ResponseDTO<String> updatePassword(UserPwdUpdateForm userPwdUpdateForm) {
-        Long userId = userPwdUpdateForm.getUserId();
+        BigInteger userId = userPwdUpdateForm.getUserId();
         UserEntity employeeEntity = userDao.selectById(userId);
         if (employeeEntity == null) {
             return ResponseDTO.error(UserErrorCode.DATA_NOT_EXIST);
@@ -99,11 +100,11 @@ public class UserService {
      * @param userId
      * @return
      */
-    public UserEntity getById(Long userId) {
+    public UserEntity getById(BigInteger userId) {
         return userDao.selectById(userId);
     }
 
-    public ResponseDTO<UserEntity> getById1(Long userId) {
+    public ResponseDTO<UserEntity> getById1(BigInteger userId) {
         UserEntity userEntity = userDao.selectById(userId);
         return ResponseDTO.ok(userEntity);
     }
@@ -113,7 +114,7 @@ public class UserService {
      * @param userId
      * @return
      */
-    public ResponseDTO deleteById(Long userId) {
+    public ResponseDTO deleteById(BigInteger userId) {
         userDao.deleteById(userId);
         return ResponseDTO.ok();
     }

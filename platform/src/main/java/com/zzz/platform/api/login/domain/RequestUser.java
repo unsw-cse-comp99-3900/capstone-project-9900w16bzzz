@@ -5,6 +5,8 @@ import com.zzz.platform.common.swagger.SchemaEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.math.BigInteger;
+
 /**
  * @author: zuoming yan
  * @version: v1.0.0
@@ -14,7 +16,7 @@ import lombok.Data;
 public class RequestUser {
 
     @Schema(description = "user id")
-    private Long userId;
+    private BigInteger userId;
 
     @SchemaEnum(UserTypeEnum.class)
     private UserTypeEnum userType;

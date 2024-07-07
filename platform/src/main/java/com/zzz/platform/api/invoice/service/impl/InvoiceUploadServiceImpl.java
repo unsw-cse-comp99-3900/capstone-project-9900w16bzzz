@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.UUID;
 
 @Slf4j
@@ -38,9 +39,13 @@ public class InvoiceUploadServiceImpl implements InvoiceUploadService {
 
 
     @Override
-    public ResponseDTO<InvoiceJsonVO> upload(Long userId, MultipartFile file) {
+    public ResponseDTO<InvoiceJsonVO> upload(BigInteger userId, MultipartFile file) {
         String fileName = file.getOriginalFilename();
-        Long invoiceId = UUID.randomUUID().getMostSignificantBits();
+        long mostSignificantBits = UUID.randomUUID().getMostSignificantBits();
+        BigInteger invoiceId = BigInteger.valueOf(mostSignificantBits);
+        if (mostSignificantBits < 0) {
+            invoiceId = invoiceId.add(BigInteger.ONE.shiftLeft(64));
+        }
         // init invoice entity
         InvoiceEntity invoiceEntity = new InvoiceEntity();
         // generate uuid
@@ -77,7 +82,7 @@ public class InvoiceUploadServiceImpl implements InvoiceUploadService {
         invoiceDao.insert(invoiceEntity);
         return ResponseDTO.ok(invoiceJsonVO);
     }
-    private void saveInvoiceContentInDB(Long invoiceId, MultipartFile file, FileType fileType) {
+    private void saveInvoiceContentInDB(BigInteger invoiceId, MultipartFile file, FileType fileType) {
         byte[] content = null;
         try {
             content = file.getBytes();
@@ -87,7 +92,7 @@ public class InvoiceUploadServiceImpl implements InvoiceUploadService {
         invoiceFileService.saveInvoiceContentInDB(invoiceId, content, fileType);
     }
 
-    private void saveInvoiceContentInDB(Long invoiceId, InvoiceJsonVO invoiceJsonVO) {
+    private void saveInvoiceContentInDB(BigInteger invoiceId, InvoiceJsonVO invoiceJsonVO) {
         byte[] content = null;
         try {
             ObjectMapper objectMapper = new ObjectMapper();

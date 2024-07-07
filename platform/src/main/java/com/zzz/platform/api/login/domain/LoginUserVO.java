@@ -3,6 +3,8 @@ package com.zzz.platform.api.login.domain;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.math.BigInteger;
+
 /**
  * @author: zuoming yan
  * @version: v1.0.0
@@ -18,5 +20,5 @@ public class LoginUserVO {
     private String loginName;
 
     @Schema(description = "uuid")
-    private Long userId;
+    private BigInteger userId;
 }

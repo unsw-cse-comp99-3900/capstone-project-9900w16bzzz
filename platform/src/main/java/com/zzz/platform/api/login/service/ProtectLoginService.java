@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class ProtectLoginService {
      * @param userType
      * @return
      */
-    public ResponseDTO<LoginFailEntity> checkLogin(Long userId, UserTypeEnum userType) {
+    public ResponseDTO<LoginFailEntity> checkLogin(BigInteger userId, UserTypeEnum userType) {
 
         // no need validate
         if (loginMaxFailTimes < 1) {
@@ -84,7 +85,7 @@ public class ProtectLoginService {
      * @param userType
      * @param loginFailEntity
      */
-    public String recordLoginFail(Long userId, UserTypeEnum userType, String loginName, LoginFailEntity loginFailEntity) {
+    public String recordLoginFail(BigInteger userId, UserTypeEnum userType, String loginName, LoginFailEntity loginFailEntity) {
 
         // no need validate
         if (loginMaxFailTimes < 1) {
@@ -132,7 +133,7 @@ public class ProtectLoginService {
      * @param userId
      * @param userType
      */
-    public void removeLoginFail(Long userId, UserTypeEnum userType) {
+    public void removeLoginFail(BigInteger userId, UserTypeEnum userType) {
         // no need validate
         if (loginMaxFailTimes < 1) {
             return;

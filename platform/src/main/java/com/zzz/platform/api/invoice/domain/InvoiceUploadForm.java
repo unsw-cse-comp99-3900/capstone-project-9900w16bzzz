@@ -5,6 +5,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigInteger;
 
 /**
  * 作者: zhaoyue zhang
@@ -16,7 +17,7 @@ public class InvoiceUploadForm {
 
     @Schema(description = "uuid")
     @NotNull
-    private Long userId;
+    private BigInteger userId;
 
     @Schema(description = "file name", example = "bill invoice")
     @NotNull(message = "not null")

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.math.BigInteger;
 
 /**
  * @author: zuoming yan
@@ -65,7 +66,7 @@ public class UserController {
      * @return
      */
     @GetMapping("/user/getById/{userId}")
-    public ResponseDTO<UserEntity> getById(@PathVariable("userId") Long userId) {
+    public ResponseDTO<UserEntity> getById(@PathVariable("userId") BigInteger userId) {
         return userService.getById1(userId);
     }
 
@@ -75,7 +76,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/user/deleteById/{userId}")
-    public ResponseDTO deleteById(@PathVariable("userId") Long userId) {
+    public ResponseDTO deleteById(@PathVariable("userId") BigInteger userId) {
         return userService.deleteById(userId);
     }
 }

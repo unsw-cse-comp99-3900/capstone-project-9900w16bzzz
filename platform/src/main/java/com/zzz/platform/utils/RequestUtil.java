@@ -4,6 +4,7 @@ import com.zzz.platform.api.login.domain.RequestUser;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.ref.WeakReference;
+import java.math.BigInteger;
 
 /**
  * @author: zuoming yan
@@ -28,7 +29,7 @@ public class RequestUtil {
         }
     }
 
-    public static Long getRequestUserId() {
+    public static BigInteger getRequestUserId() {
         RequestUser requestUser = getRequestUser();
         return null == requestUser ? null : requestUser.getUserId();
     }

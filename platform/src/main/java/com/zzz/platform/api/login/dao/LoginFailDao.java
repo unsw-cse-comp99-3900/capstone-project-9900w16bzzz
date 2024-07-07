@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ public interface LoginFailDao extends BaseMapper<LoginFailEntity> {
      * @param userType
      * @return
      */
-    LoginFailEntity selectByUserIdAndUserType(@Param("userId") Long userId, @Param("userType") Integer userType);
+    LoginFailEntity selectByUserIdAndUserType(@Param("userId") BigInteger userId, @Param("userType") Integer userType);
 
     /**
      * 根据用户id和类型查询 进行删除
@@ -36,7 +37,7 @@ public interface LoginFailDao extends BaseMapper<LoginFailEntity> {
      * @param userType
      * @return
      */
-    void deleteByUserIdAndUserType(@Param("userId") Long userId, @Param("userType") Integer userType);
+    void deleteByUserIdAndUserType(@Param("userId") BigInteger userId, @Param("userType") Integer userType);
 
     /**
      * 分页 查询

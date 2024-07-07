@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.math.BigInteger;
 
 /**
  * 作者: zhaoyue zhang
@@ -46,7 +47,7 @@ public class InvoiceController {
 
     @PostMapping("/invoice/upload")
     @Operation(summary = "Upload a file")
-    public ResponseDTO<InvoiceJsonVO> uploadFile(@RequestParam Long userId, @RequestParam("file") MultipartFile file) {
+    public ResponseDTO<InvoiceJsonVO> uploadFile(@RequestParam BigInteger userId, @RequestParam("file") MultipartFile file) {
         // get user by user_id
         UserEntity userEntity = userService.getById(userId);
         if (userEntity == null) {
@@ -57,7 +58,7 @@ public class InvoiceController {
 
     @GetMapping("/invoice/download")
     @Operation(summary = "download a file")
-    public void download(@RequestParam Long invoiceId, @RequestParam("fileType") String fileType, HttpServletResponse response) throws IOException {
+    public void download(@RequestParam BigInteger invoiceId, @RequestParam("fileType") String fileType, HttpServletResponse response) throws IOException {
         ResponseDTO<byte[]> responseDTO = invoiceFileService.download(invoiceId, fileType.toLowerCase());
         if (!responseDTO.getOk()) {
             ResponseUtil.write(response, responseDTO);
@@ -71,6 +72,12 @@ public class InvoiceController {
         // download file
         response.getOutputStream().write(content);
 
+    }
+
+    @PostMapping("/invoice/validate")
+    @Operation(summary = "validate user files")
+    public ResponseDTO<String> validate(@RequestParam BigInteger invoiceId) throws IOException {
+        return invoiceFileService.validateInvoice(invoiceId);
     }
 
     @PostMapping("/invoice/list")

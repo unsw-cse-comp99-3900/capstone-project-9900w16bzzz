@@ -5,12 +5,13 @@ import com.zzz.platform.api.invoice.domain.InvoiceListVO;
 import com.zzz.platform.api.invoice.entity.InvoiceEntity;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @Mapper
 public interface InvoiceDao extends BaseMapper<InvoiceEntity> {
 
-    InvoiceListVO getFileById(Long userId);
+    InvoiceListVO getFileById(BigInteger userId);
 
     InvoiceEntity getFileByName(String fileName);
 

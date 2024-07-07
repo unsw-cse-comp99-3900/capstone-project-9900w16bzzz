@@ -4,14 +4,18 @@ import com.zzz.platform.api.invoice.entity.InvoiceEntity;
 import com.zzz.platform.common.domain.ResponseDTO;
 import com.zzz.platform.common.enumeration.FileType;
 
+import java.io.IOException;
+import java.math.BigInteger;
 import java.util.List;
 
 public interface InvoiceFileService {
-    List<InvoiceEntity> searchFile(String fileName, Long userId);
+    List<InvoiceEntity> searchFile(String fileName, BigInteger userId);
 
-    ResponseDTO<byte[]> download(Long invoiceId, String fileType);
+    ResponseDTO<byte[]> download(BigInteger invoiceId, String fileType);
 
-    String searchFileNameById(Long invoiceId, String fileType);
+    String searchFileNameById(BigInteger invoiceId, String fileType);
 
-    void saveInvoiceContentInDB(Long invoiceId, byte[] content, FileType filetype);
+    void saveInvoiceContentInDB(BigInteger invoiceId, byte[] content, FileType filetype);
+
+    ResponseDTO<String> validateInvoice(BigInteger invoiceId) throws IOException;
 }

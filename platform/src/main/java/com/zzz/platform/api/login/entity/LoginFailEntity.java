@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 /**
@@ -22,9 +23,9 @@ public class LoginFailEntity {
 
 
     @TableId(type = IdType.AUTO)
-    private Long loginFailId;
+    private BigInteger loginFailId;
 
-    private Long userId;
+    private BigInteger userId;
 
     private Integer userType;
 

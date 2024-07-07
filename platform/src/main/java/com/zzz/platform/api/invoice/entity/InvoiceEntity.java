@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Data
@@ -12,9 +13,9 @@ import java.time.LocalDateTime;
 public class InvoiceEntity {
 
     @TableId(type = IdType.ASSIGN_UUID)
-    private Long invoiceId;
+    private BigInteger invoiceId;
 
-    private Long userId;
+    private BigInteger userId;
 
     private String fileName;
 

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 /**
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 public class UserEntity {
 
     @TableId(type = IdType.AUTO)
-    private Long userId;
+    private BigInteger userId;
 
     private String loginName;
 

@@ -3,6 +3,8 @@ package com.zzz.platform.api.invoice.domain;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.math.BigInteger;
+
 /**
  * @author: zuoming yan
  * @version: v1.0.0
@@ -12,5 +14,5 @@ import lombok.Data;
 public class InvoiceDeleteForm {
 
     @Schema(description = "invoice id")
-    private Long invoiceId;
+    private BigInteger invoiceId;
 }

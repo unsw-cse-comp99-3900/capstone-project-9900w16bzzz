@@ -3,6 +3,7 @@ package com.zzz.platform.api.invoice.domain;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 /**
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 public class InvoiceListVO {
 
     @Schema(description = "file uuid")
-    private Long invoiceId;
+    private BigInteger invoiceId;
 
     @Schema(description = "file name")
     private String fileName;

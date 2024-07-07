@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.math.BigInteger;
 
 /**
  * @author: zuoming yan
@@ -16,7 +17,7 @@ import javax.validation.constraints.Pattern;
 public class UserPwdUpdateForm {
 
     @Schema(hidden = true)
-    private Long userId;
+    private BigInteger userId;
 
     @Schema(description = "old password")
     @NotBlank(message = "not null")

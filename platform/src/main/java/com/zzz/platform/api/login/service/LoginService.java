@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigInteger;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -39,7 +40,7 @@ public class LoginService {
     /**
      * Secondary Cache for Login Information
      */
-    private final ConcurrentMap<Long, RequestUser> loginUserCache = new ConcurrentLinkedHashMap.Builder<Long, RequestUser>().maximumWeightedCapacity(CACHE_MAX_ONLINE_PERSON_COUNT).build();
+    private final ConcurrentMap<BigInteger, RequestUser> loginUserCache = new ConcurrentLinkedHashMap.Builder<BigInteger, RequestUser>().maximumWeightedCapacity(CACHE_MAX_ONLINE_PERSON_COUNT).build();
 
     @Resource
     private CaptchaService captchaService;
@@ -125,7 +126,7 @@ public class LoginService {
             return null;
         }
 
-        Long requestEmployeeId = getUserIdByLoginId(loginId);
+        BigInteger requestEmployeeId = getUserIdByLoginId(loginId);
         if (requestEmployeeId == null) {
             return null;
         }
@@ -152,13 +153,13 @@ public class LoginService {
     /**
      * according loginId get user id
      */
-    Long getUserIdByLoginId(String loginId) {
+    BigInteger getUserIdByLoginId(String loginId) {
         if (loginId == null) {
             return null;
         }
         try {
             String userId = loginId.substring(2);
-            return Long.parseLong(userId);
+            return BigInteger.valueOf(Long.parseLong(userId));
         } catch (Exception e) {
             log.error("loginId parse error , loginId : {}", loginId, e);
             return null;

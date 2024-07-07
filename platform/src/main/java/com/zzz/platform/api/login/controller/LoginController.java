@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.math.BigInteger;
 import java.util.Objects;
 
 
@@ -75,7 +76,8 @@ public class LoginController {
     public ResponseDTO<LoginUserVO> getLoginName(HttpServletRequest request) {
         String tokenValue = StpUtil.getTokenValue();
         String token = (String) StpUtil.getLoginIdByToken(tokenValue);
-        Long userId = Long.parseLong(token.split(",")[1]);
+
+        BigInteger userId = BigInteger.valueOf(Long.parseLong(token.split(",")[1]));
         UserEntity userEntity = userService.getById(userId);
         LoginUserVO loginUserVO = BeanUtils.copy(userEntity, LoginUserVO.class);
         return ResponseDTO.ok(loginUserVO);

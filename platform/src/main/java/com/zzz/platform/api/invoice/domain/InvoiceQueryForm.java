@@ -4,6 +4,8 @@ import com.zzz.platform.common.domain.PageParam;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.math.BigInteger;
+
 /**
  * @author: zuoming yan
  * @version: v1.0.0
@@ -13,5 +15,5 @@ import lombok.Data;
 public class InvoiceQueryForm extends PageParam {
 
     @Schema(description = "user uuid")
-    private Long userId;
+    private BigInteger userId;
 }

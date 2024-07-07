@@ -3,6 +3,7 @@ package com.zzz.platform.api.login.domain;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 /**
@@ -17,7 +18,7 @@ public class LoginFailVO {
 
 
     @Schema(description = "user id")
-    private Long userId;
+    private BigInteger userId;
 
     @Schema(description = "用户类型")
     private Integer userType;

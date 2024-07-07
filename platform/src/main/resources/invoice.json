@@ -1,0 +1,162 @@
+{
+  "status":200,
+  "result":{
+    "file_name":"Receipt # 27477.pdf",
+    "document_type":"Invoice",
+    "pages":[
+      {
+        "page_number":1,
+        "incomplete_processed":false,
+        "text":"             RayWhite\n                                                                                     ®\n\n\n                                                                                                    (m) 0401 445 130\n                                                                                             edwin.wang@raywhite.com\n                                                                                                        52 O'dea Ave\n                                                                             Waterloo New South NEW SOUTH WALES 2017\n                                                                                                 ABN: 51 620 323 088\n                                                                                                   Licence: 10062392\n\n\n Trust Account Receipt\n\n For property:   E505/113 Portman St, Zetland NSW 2017\n Receipt number: 27477\n Date received:   18/06/2024\n Eff. paid to:   04 July 2024\n On behalf of:    Yufeng XIAO & Zuoming YAN & Xu WANG - (TEN01580)\n Owner:          Rongjun Huang - (OWN01060)\n\nDescription                                                                       Included Tax                Amount\n Rent - Paid to 4/07/2024 (from 20/06/2024)                                                $0.00           $3,000.00\nTotal                                                                                      $0.00           $3,000.00\nPayment method: EFT\nPrincipal: Edwin WANG\nCompany: Ray White Waterloo\nRental position: paid up to date\nReceipted by: Joyce POON\nDate processed: 19/06/2024"
+      }
+    ],
+    "documents":[
+      {
+        "fields":{
+          "CustomerName":{
+            "content":"Rongjun Huang",
+            "field_name":"Customer Name",
+            "type":"string",
+            "page_number":"1",
+            "details":null
+          },
+          "DueDate":{
+            "content":"04 July 2024",
+            "field_name":"Due Date",
+            "type":"date",
+            "page_number":"1",
+            "details":{
+              "day":4,
+              "month":7,
+              "year":2024
+            }
+          },
+          "InvoiceDate":{
+            "content":"18/06/2024",
+            "field_name":"Invoice Date",
+            "type":"date",
+            "page_number":"1",
+            "details":{
+              "day":18,
+              "month":6,
+              "year":2024
+            }
+          },
+          "InvoiceId":{
+            "content":"27477",
+            "field_name":"Invoice Id",
+            "type":"string",
+            "page_number":"1",
+            "details":null
+          },
+          "InvoiceTotal":{
+            "content":"$3,000.00",
+            "field_name":"Invoice Total",
+            "type":"currency",
+            "page_number":"1",
+            "details":{
+              "amount":3000.0,
+              "symbol":"$",
+              "code":"AUD"
+            }
+          },
+          "ServiceAddress":{
+            "content":"E505/113 Portman St, Zetland NSW 2017",
+            "field_name":"Service Address",
+            "type":"address",
+            "page_number":"1",
+            "details":{
+              "house_number":"E505/113",
+              "po_box":null,
+              "road":"Portman St",
+              "city":"Zetland",
+              "state":"NSW",
+              "postal_code":"2017",
+              "country_region":null,
+              "street_address":"E505/113 Portman St",
+              "unit":null,
+              "city_district":null,
+              "state_district":null,
+              "suburb":null,
+              "house":null,
+              "level":null
+            }
+          },
+          "TotalTax":{
+            "content":"$0.00",
+            "field_name":"Total Tax",
+            "type":"currency",
+            "page_number":"1",
+            "details":{
+              "amount":0.0,
+              "symbol":"$",
+              "code":"AUD"
+            }
+          },
+          "VendorAddress":{
+            "content":"52 O'dea Ave\nWaterloo New South NEW SOUTH WALES 2017",
+            "field_name":"Vendor Address",
+            "type":"address",
+            "page_number":"1",
+            "details":{
+              "house_number":"52",
+              "po_box":null,
+              "road":"O'dea Ave",
+              "city":null,
+              "state":"NEW SOUTH WALES",
+              "postal_code":"2017",
+              "country_region":null,
+              "street_address":"52 O'dea Ave",
+              "unit":null,
+              "city_district":null,
+              "state_district":null,
+              "suburb":"Waterloo New South",
+              "house":null,
+              "level":null
+            }
+          },
+          "VendorName":{
+            "content":"RayWhite\n®",
+            "field_name":"Vendor Name",
+            "type":"string",
+            "page_number":"1",
+            "details":null
+          }
+        },
+        "items":[
+          {
+            "Amount":{
+              "content":"$3,000.00",
+              "field_name":"Amount",
+              "type":"currency",
+              "details":{
+                "amount":3000.0,
+                "symbol":"$",
+                "code":"AUD"
+              }
+            },
+            "Description":{
+              "content":"Rent - Paid to 4/07/2024 (from 20/06/2024)",
+              "field_name":"Description",
+              "type":"string",
+              "details":null
+            },
+            "Tax":{
+              "content":"$0.00",
+              "field_name":"Tax",
+              "type":"currency",
+              "details":{
+                "amount":0.0,
+                "symbol":"$",
+                "code":"AUD"
+              }
+            },
+            "page_number":"1"
+          }
+        ],
+        "content":"Customer Name: Rongjun Huang\nDue Date: 04 July 2024\nInvoice Date: 18/06/2024\nInvoice Id: 27477\nInvoice Total: $3,000.00\nService Address: E505/113 Portman St, Zetland NSW 2017\nTotal Tax: $0.00\nVendor Address: 52 O'dea AveWaterloo New South NEW SOUTH WALES 2017\nVendor Name: RayWhite®\n\nTotal Items: 1\n\nItem 1:\nAmount: $3,000.00\nDescription: Rent - Paid to 4/07/2024 (from 20/06/2024)\nTax: $0.00\n"
+      }
+    ],
+    "tables":[ ]
+  }
+}
