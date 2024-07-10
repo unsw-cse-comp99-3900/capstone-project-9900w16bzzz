@@ -32,22 +32,24 @@ const ChooseConvertOption = ({ goToStep, file }) => {
       const userId = localStorage.getItem("userId");
       let endpoint = `${process.env.REACT_APP_SERVER_URL}/invoice/upload`;
       let token = localStorage.getItem("token");
-      const response = await fetch(`${endpoint}?userId=${userId}`, {
-        method: 'POST',
-        headers: {
-            'x-access-token': `${token}`
-        },
-        body: formData,
-      });
-      if (!response.ok) {
-          throw new Error('Network response was not ok');
+      if (selectedAction === 'save') {
+        const response = await fetch(`${endpoint}?userId=${userId}`, {
+          method: 'POST',
+          headers: {
+              'x-access-token': `${token}`
+          },
+          body: formData,
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        
+        if (!data.ok) {
+          throw new Error('Server response was not ok');
+        }
+        console.log('File processed successfully', data);
       }
-      const data = await response.json();
-      
-      if (!data.ok) {
-        throw new Error('Server response was not ok');
-      }
-      console.log('File processed successfully', data);
     } catch (error) {
       console.error('Error processing file:', error);
       alert('An error occurred while processing the file. Please try again.');
