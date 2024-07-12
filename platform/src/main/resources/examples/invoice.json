@@ -1,0 +1,97 @@
+{
+  "invoiceId": "INV-12345",
+  "invoiceDate": "2024-07-07",
+  "dueDate": "2024-07-30",
+  "typeCode": "380 commercial invoice",
+  "currencyCode": "USD",
+  "buyer": {
+    "id": "123456789",
+    "schemeId": "GLN",
+    "name": "Customer Company Name",
+    "address": {
+      "address": "123 Main St",
+      "street": "Main St",
+      "postalCode": "12345",
+      "city": "Springfield",
+      "countryCode": "US"
+    },
+    "phone": "+1234567890",
+    "mail": "customer@example.com"
+  },
+  "seller": {
+    "id": "987654321",
+    "schemeId": "0060",
+    "name": "Seller Company Name",
+    "address": {
+      "address": "456 Elm St",
+      "street": "Elm St",
+      "postalCode": "67890",
+      "city": "Shelbyville",
+      "countryCode": "US"
+    },
+    "phone": "+0987654321",
+    "mail": "seller@example.com"
+  },
+  "subTotal": "900.00",
+  "invoiceTotal": "990.00",
+  "taxTotal": "90.00",
+  "allowance": {
+    "type": "SAA",
+    "amount": "10.00",
+    "reason": "Shipping and Handling",
+    "taxPercent": "10",
+    "currencyCode": "USD"
+  },
+  "invoiceLine": [
+    {
+      "id": "1",
+      "amount": "450.00",
+      "currencyCode": "USD",
+      "description": "Product A",
+      "quantity": "5",
+      "unit": "pcs",
+      "unitPrice": "90.00",
+      "tax": "40.50",
+      "taxRate": "10",
+      "allowance": {
+        "type": "AC",
+        "amount": "5.00",
+        "reason": "Discount",
+        "taxPercent": "10",
+        "currencyCode": "USD"
+      }
+    },
+    {
+      "id": "2",
+      "amount": "450.00",
+      "currencyCode": "USD",
+      "description": "Product B",
+      "quantity": "10",
+      "unit": "pcs",
+      "unitPrice": "45.00",
+      "tax": "45.00",
+      "taxRate": "10",
+      "allowance": {
+        "type": "AC",
+        "amount": "5.00",
+        "reason": "Discount",
+        "taxPercent": "10",
+        "currencyCode": "USD"
+      }
+    }
+  ],
+  "payment": {
+    "code": "30",
+    "accountName": "John Doe",
+    "accountNumber": "12345678",
+    "bsbNumber": "123-456",
+    "paymentNote": "Payment for invoice INV-12345"
+  },
+  "deliveryAddress": {
+    "address": "789 Oak St",
+    "street": "Oak St",
+    "postalCode": "54321",
+    "city": "Capitol City",
+    "countryCode": "US"
+  }
+}
