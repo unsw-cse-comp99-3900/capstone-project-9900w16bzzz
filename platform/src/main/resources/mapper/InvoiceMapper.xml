@@ -37,4 +37,12 @@
           AND invoice_id = #{invoiceId}
     </delete>
 
+    <update id="updateFileFlag">
+        UPDATE t_invoice
+        <set>
+            ${fileType} = #{flag}
+        </set>
+        WHERE invoice_id = #{invoiceId}
+    </update>
+
 </mapper>

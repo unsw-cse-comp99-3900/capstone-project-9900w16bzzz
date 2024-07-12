@@ -1,6 +1,6 @@
 package com.zzz.platform.api.invoice.service;
 
-import com.zzz.platform.api.invoice.domain.InvoiceJsonVO;
+import com.zzz.platform.api.invoice.domain.InvoiceApiJsonDTO;
 import com.zzz.platform.api.invoice.domain.ValidateResultVO;
 import com.zzz.platform.api.invoice.domain.api.EssInvoiceValidateForm;
 import com.zzz.platform.api.invoice.domain.api.UpbrainExtractorForm;
@@ -18,7 +18,7 @@ public interface InvoiceApiService {
      * @param upbrainExtractorForm request body
      * @return json file content
      */
-    ResponseDTO<InvoiceJsonVO> convertPdfToJson(UpbrainExtractorForm upbrainExtractorForm);
+    ResponseDTO<InvoiceApiJsonDTO> convertPdfToJson(UpbrainExtractorForm upbrainExtractorForm);
 
     /**
      * validate invoice using ess service

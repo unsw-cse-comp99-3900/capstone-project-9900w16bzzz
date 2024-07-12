@@ -2,7 +2,7 @@ package com.zzz.platform.api.invoice.service.impl;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zzz.platform.api.invoice.domain.InvoiceJsonVO;
+import com.zzz.platform.api.invoice.domain.InvoiceApiJsonDTO;
 import com.zzz.platform.api.invoice.domain.ValidateResultVO;
 import com.zzz.platform.api.invoice.domain.api.EssInvoiceValidateForm;
 import com.zzz.platform.api.invoice.domain.api.UpbrainExtractorForm;
@@ -59,7 +59,7 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
      * @return invoice json object
      */
     @Override
-    public ResponseDTO<InvoiceJsonVO> convertPdfToJson(UpbrainExtractorForm upbrainExtractorForm) {
+    public ResponseDTO<InvoiceApiJsonDTO> convertPdfToJson(UpbrainExtractorForm upbrainExtractorForm) {
         String url = UpbrainSaiUrl.INVOICE_EXTRACTOR_URL.getUrl();
 
         HttpHeaders headers = new HttpHeaders();
@@ -86,8 +86,8 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
             JSONObject jsonObject = JSONObject.parseObject(response.getBody().toString());
             try {
                 ObjectMapper objectMapper = new ObjectMapper();
-                InvoiceJsonVO invoiceJsonVO = objectMapper.readValue(jsonObject.get("result").toString(), InvoiceJsonVO.class);
-                return ResponseDTO.ok(invoiceJsonVO);
+                InvoiceApiJsonDTO invoiceApiJsonDTO = objectMapper.readValue(jsonObject.get("result").toString(), InvoiceApiJsonDTO.class);
+                return ResponseDTO.ok(invoiceApiJsonDTO);
             } catch (Exception e) {
                 log.error(e.getMessage());
             }

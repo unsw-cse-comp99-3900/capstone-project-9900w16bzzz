@@ -13,13 +13,13 @@ import com.zzz.platform.api.invoice.service.InvoiceDbService;
 import com.zzz.platform.common.code.InvoiceErrorCode;
 import com.zzz.platform.common.domain.PageResult;
 import com.zzz.platform.common.domain.ResponseDTO;
+import com.zzz.platform.common.enumeration.FileType;
 import com.zzz.platform.utils.PageUtil;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigInteger;
 
 /**
  * @author: zuoming yan
@@ -57,15 +57,19 @@ public class InvoiceDbServiceImpl implements InvoiceDbService {
         return ResponseDTO.ok();
     }
 
-    @Getter
-    @AllArgsConstructor
-    enum InvoiceDbColumn {
-        USER_ID("user_id"),
-        INVOICE_ID("invoice_id"),
-        FILE_NAME("file_name"),
-        CREATE_TIME("create_time"),
-        UPDATE_TIME("update_time"),
-        ;
-        private final String val;
+    public InvoiceEntity findById(BigInteger invoiceId) {
+        return invoiceDao.selectById(invoiceId);
     }
+
+    public String getFileNameById(BigInteger invoiceId) {
+        return findById(invoiceId).getFileName();
+    }
+
+    @Override
+    public void updateFileFlag(BigInteger invoiceId, FileType fileType, FileStatusFlag flag) {
+        String columnName = fileType.getDesc() + "_" + InvoiceDbColumn.FLAG.getVal();
+        invoiceDao.updateFileFlag(invoiceId, columnName, flag.getVal());
+    }
+
+
 }
