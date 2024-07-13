@@ -98,7 +98,7 @@ function Login (){
                 <ButtonContainer onClick={handleLogin}>
                     <SignupButton content="Log in"/>
                 </ButtonContainer>
-                <StyledLink>Forget Password?</StyledLink>
+                <StyledLink>Reset Password</StyledLink>
             </Maincontainer>
         </div>
     )
