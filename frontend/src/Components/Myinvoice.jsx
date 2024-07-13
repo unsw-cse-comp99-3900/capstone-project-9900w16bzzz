@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import video from "../images/video1.mp4";
 import styled from "styled-components";
 import { FaSearch } from "react-icons/fa";
+import {BiDownload} from "react-icons/bi";
 import deleteInvoice from "./Deleteinvoice";
 
 function Myinvoice() {
@@ -89,6 +90,7 @@ function Myinvoice() {
                                             Validation Fail
                                         </ValidationFail>
                                     )}
+                                    <Download/>
                                     <DeleteButton onClick={() => deleteInvoice(invoice.invoiceId, setInvoiceData, invoiceData)}>Delete</DeleteButton>
                                 </InvoiceItem>
                             ))}
@@ -128,7 +130,7 @@ const Maincontainer = styled.div`
     justify-content: flex-start;
     align-items: flex-start;
     flex-direction: column;
-    height: 450px;
+    height: 480px;
     width: 800px;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
     backdrop-filter: invert(20%);
@@ -168,6 +170,14 @@ const SearchIcon = styled(FaSearch)`
     left: 165px;
     color: rgba(255, 255, 255, 0.7);
     font-size: 1.2rem;
+    &:hover {
+        cursor: pointer;
+    }
+`;
+const Download = styled(BiDownload)`
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+    margin-right: 20px;
     &:hover {
         cursor: pointer;
     }
@@ -226,7 +236,7 @@ const ValidationPass = styled.span`
     align-items: center;
     color: #00ff80;
     font-size: 1rem;
-    margin-right: 200px;
+    margin-right: 180px;
 `;
 
 const StatusCircleGreen = styled.div`
@@ -242,7 +252,7 @@ const ValidationFail = styled.span`
     align-items: center;
     color: #ff3333;
     font-size: 1rem;
-    margin-right: 200px;
+    margin-right: 180px;
 `;
 
 const StatusCircleRed = styled.div`
@@ -264,5 +274,6 @@ const DeleteButton = styled.button`
     outline: none;
     &:hover {
         background: rgba(255, 10, 40, 0.48);
+        transition: all ease 0.5s;
     }
 `;
