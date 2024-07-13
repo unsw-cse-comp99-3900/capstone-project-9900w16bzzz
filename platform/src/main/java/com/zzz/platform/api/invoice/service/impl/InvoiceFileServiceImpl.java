@@ -27,6 +27,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
@@ -47,6 +48,9 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
 
     @Autowired
     private JavaMailSender mailSender;
+
+    @Resource
+    private ObjectMapper objectMapper;
 
 
     @Override
@@ -72,13 +76,12 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
         invoiceFileEntity.setContent(content);
         invoiceFileDao.insert(invoiceFileEntity);
 
-        invoiceDbServiceImpl.updateFileFlag(invoiceId, FileType.XML, InvoiceDbService.FileStatusFlag.EXIST);
+        invoiceDbServiceImpl.updateFileFlag(invoiceId, filetype, InvoiceDbService.FileStatusFlag.EXIST);
     }
 
     @Override
     public ResponseDTO<InvoiceJsonVO> searchInvoiceJsonById(BigInteger invoiceId) {
         byte[] content = getFileContent(invoiceId, FileType.JSON);
-        ObjectMapper objectMapper = new ObjectMapper();
         InvoiceJsonVO invoiceJsonVO = null;
         try {
             invoiceJsonVO = objectMapper.readValue(content, InvoiceJsonVO.class);

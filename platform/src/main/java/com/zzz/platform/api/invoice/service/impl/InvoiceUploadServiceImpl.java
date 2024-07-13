@@ -8,7 +8,6 @@ import com.zzz.platform.api.invoice.domain.InvoiceJsonVO;
 import com.zzz.platform.api.invoice.domain.api.UpbrainExtractorForm;
 import com.zzz.platform.api.invoice.entity.InvoiceEntity;
 import com.zzz.platform.api.invoice.service.InvoiceApiService;
-import com.zzz.platform.api.invoice.service.InvoiceDbService;
 import com.zzz.platform.api.invoice.service.InvoiceFileService;
 import com.zzz.platform.api.invoice.service.InvoiceUploadService;
 import com.zzz.platform.common.code.InvoiceErrorCode;
@@ -38,6 +37,9 @@ public class InvoiceUploadServiceImpl implements InvoiceUploadService {
     @Resource
     private InvoiceFileService invoiceFileService;
 
+    @Resource
+    private ObjectMapper objectMapper;
+
 
     @Override
     public ResponseDTO<InvoiceJsonVO> upload(BigInteger userId, MultipartFile file) {
@@ -55,23 +57,19 @@ public class InvoiceUploadServiceImpl implements InvoiceUploadService {
         invoiceEntity.setFileName(file.getOriginalFilename());
 
         InvoiceJsonVO invoiceJsonVO;
+        FileType fileType = null;
         if (VerificationUtil.match(fileName, VerificationUtil.PDF_PATTERN)) {
-            // save pdf file to db
-            saveInvoiceContentInDB(invoiceId, file, FileType.PDF);
-            invoiceEntity.setPdfFlag(InvoiceDbService.FileStatusFlag.EXIST.getVal());
+            fileType = FileType.PDF;
             // invoke third api service
             InvoiceApiJsonDTO invoiceApiJsonDTO = convertPdfToJson(file);
             if (ObjectUtils.isEmpty(invoiceApiJsonDTO)) {
                 return ResponseDTO.error(InvoiceErrorCode.UPBRAINSAI_API_REQUEST_FAILED);
+            } else if(!invoiceApiJsonDTO.getDocumentType().equals("invoice")) {
+                return ResponseDTO.error(InvoiceErrorCode.INVOICE_FILE_FORMAT_ERROR);
             }
             invoiceJsonVO = InvoiceJsonDtoToVoConverter.convert(invoiceApiJsonDTO);
-            saveInvoiceContentInDB(invoiceId, invoiceJsonVO);
-            invoiceEntity.setJsonFlag(InvoiceDbService.FileStatusFlag.EXIST.getVal());
         } else if (VerificationUtil.match(fileName, VerificationUtil.JSON_PATTERN)) {
-            // save invoice content
-            saveInvoiceContentInDB(invoiceId, file, FileType.JSON);
-            invoiceEntity.setJsonFlag(InvoiceDbService.FileStatusFlag.EXIST.getVal());
-            ObjectMapper objectMapper = new ObjectMapper();
+            fileType = FileType.JSON;
             try {
                 invoiceJsonVO = objectMapper.readValue(file.getInputStream(), InvoiceJsonVO.class);
             } catch (IOException e) {
@@ -82,6 +80,9 @@ public class InvoiceUploadServiceImpl implements InvoiceUploadService {
             return ResponseDTO.error(InvoiceErrorCode.INVOICE_FILE_FORMAT_ERROR);
         }
         invoiceDao.insert(invoiceEntity);
+        // after insert new invoice entity
+        saveInvoiceContentInDB(invoiceId, invoiceJsonVO);
+        saveInvoiceContentInDB(invoiceId, file, fileType);
         return ResponseDTO.ok(invoiceJsonVO);
     }
 
@@ -98,7 +99,6 @@ public class InvoiceUploadServiceImpl implements InvoiceUploadService {
     private void saveInvoiceContentInDB(BigInteger invoiceId, InvoiceJsonVO invoiceJsonVO) {
         byte[] content = null;
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
             String jsonString = objectMapper.writeValueAsString(invoiceJsonVO);
             content = jsonString.getBytes();
         } catch (Exception e) {

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zzz.platform.api.invoice.domain.InvoiceListVO;
 import com.zzz.platform.api.invoice.entity.InvoiceEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -21,5 +22,5 @@ public interface InvoiceDao extends BaseMapper<InvoiceEntity> {
 
     void deleteFile(InvoiceEntity invoiceEntity);
 
-    void updateFileFlag(BigInteger invoiceId, String fileType, Integer flag);
+    void updateFileFlag(@Param("invoiceId") BigInteger invoiceId, @Param("fileType") String fileType, @Param("flag") Integer flag);
 }

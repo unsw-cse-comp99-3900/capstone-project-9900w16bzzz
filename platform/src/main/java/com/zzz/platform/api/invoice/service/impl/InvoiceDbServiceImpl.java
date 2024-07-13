@@ -66,9 +66,9 @@ public class InvoiceDbServiceImpl implements InvoiceDbService {
     }
 
     @Override
-    public void updateFileFlag(BigInteger invoiceId, FileType fileType, FileStatusFlag flag) {
-        String columnName = fileType.getDesc() + "_" + InvoiceDbColumn.FLAG.getVal();
-        invoiceDao.updateFileFlag(invoiceId, columnName, flag.getVal());
+    public void updateFileFlag(BigInteger invoiceId, FileType type, FileStatusFlag flag) {
+        String fileType = type.getDesc() + "_" + InvoiceDbColumn.FLAG.getVal();
+        invoiceDao.updateFileFlag(invoiceId, fileType, flag.getVal());
     }
 
 

@@ -53,6 +53,9 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
     @Value("${upbrainsai.token}")
     private String upbrainsaiToken;
 
+    @Resource
+    private ObjectMapper objectMapper;
+
     /**
      * Using Upbrainsai extractors extract invoice info from pdf and convert to json
      * @param upbrainExtractorForm request body
@@ -85,7 +88,6 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
         if(response.getStatusCode() == HttpStatus.OK && !ObjectUtils.isEmpty(response.getBody())){
             JSONObject jsonObject = JSONObject.parseObject(response.getBody().toString());
             try {
-                ObjectMapper objectMapper = new ObjectMapper();
                 InvoiceApiJsonDTO invoiceApiJsonDTO = objectMapper.readValue(jsonObject.get("result").toString(), InvoiceApiJsonDTO.class);
                 return ResponseDTO.ok(invoiceApiJsonDTO);
             } catch (Exception e) {
@@ -136,7 +138,6 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
             if (statusCode.is2xxSuccessful()) {
                 JSONObject jsonObject = response.getBody();
                 try {
-                    ObjectMapper objectMapper = new ObjectMapper();
                     ValidateResultVO validateResultVO = objectMapper.readValue(jsonObject.toString(), ValidateResultVO.class);
                     return ResponseDTO.ok(validateResultVO);
                 } catch (Exception e) {

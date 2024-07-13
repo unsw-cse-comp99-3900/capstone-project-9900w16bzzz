@@ -7,6 +7,7 @@ import com.zzz.platform.api.invoice.domain.InvoiceJsonVO;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author: zuoming yan
@@ -14,8 +15,6 @@ import java.util.List;
  * @date: 2024/7/11
  */
 public class InvoiceJsonDtoToVoConverter {
-
-    private static final String EMPTY_STRING = "null";
 
     public static InvoiceJsonVO convert(InvoiceApiJsonDTO invoiceApiJsonDTO) {
         InvoiceApiJsonDTO.Document document = invoiceApiJsonDTO.getDocuments().get(0);
@@ -54,23 +53,23 @@ public class InvoiceJsonDtoToVoConverter {
 
         // set invoice total
         InvoiceApiJsonDTO.Document.Field invoiceTotal = fields.getInvoiceTotal();
-        invoiceJsonVO.setInvoiceTotal(getContent(invoiceTotal));
+        invoiceJsonVO.setInvoiceTotal(getDetails(invoiceTotal, InvoiceApiJsonDTO.Details.AMOUNT));
 
         // set sub-total
         InvoiceApiJsonDTO.Document.Field subTotal = fields.getSubTotal();
         if (ObjectUtils.isNotEmpty(subTotal)) {
-            invoiceJsonVO.setSubTotal(getContent(subTotal));
+            invoiceJsonVO.setSubTotal(getDetails(subTotal, InvoiceApiJsonDTO.Details.AMOUNT));
         } else if (ObjectUtils.isNotEmpty(invoiceTotal)) {
-            invoiceJsonVO.setSubTotal(getContent(invoiceTotal));
+            invoiceJsonVO.setSubTotal(getDetails(invoiceTotal, InvoiceApiJsonDTO.Details.AMOUNT));
         }
         // set total tax
         InvoiceApiJsonDTO.Document.Field totalTax = fields.getTotalTax();
-        invoiceJsonVO.setTaxTotal(getContent(totalTax));
+        invoiceJsonVO.setTaxTotal(getDetails(totalTax, InvoiceApiJsonDTO.Details.AMOUNT));
 
         // set allowance
         InvoiceApiJsonDTO.Document.Field totalDiscount = fields.getTotalDiscount();
         InvoiceJsonVO.Allowance allowance = new InvoiceJsonVO.Allowance();
-        allowance.setAmount(getContent(totalDiscount));
+        allowance.setAmount(getDetails(totalDiscount, InvoiceApiJsonDTO.Details.AMOUNT));
         allowance.setCurrencyCode(getDetails(totalDiscount, InvoiceApiJsonDTO.Details.CODE));
         // reason and taxPercent
         invoiceJsonVO.setAllowance(allowance);
@@ -98,9 +97,9 @@ public class InvoiceJsonDtoToVoConverter {
 
     private static LocalDate extractDate(InvoiceApiJsonDTO.Document.Field dateDetail) {
         return LocalDate.of(
-                Integer.parseInt(getDetails(dateDetail, InvoiceApiJsonDTO.Details.YEAR)),
-                Integer.parseInt(getDetails(dateDetail, InvoiceApiJsonDTO.Details.MONTH)),
-                Integer.parseInt(getDetails(dateDetail, InvoiceApiJsonDTO.Details.DAY))
+                Integer.parseInt(Objects.requireNonNull(getDetails(dateDetail, InvoiceApiJsonDTO.Details.YEAR))),
+                Integer.parseInt(Objects.requireNonNull(getDetails(dateDetail, InvoiceApiJsonDTO.Details.MONTH))),
+                Integer.parseInt(Objects.requireNonNull(getDetails(dateDetail, InvoiceApiJsonDTO.Details.DAY)))
         );
     }
 
@@ -147,13 +146,13 @@ public class InvoiceJsonDtoToVoConverter {
         if (ObjectUtils.isNotEmpty(field)) {
             return field.getContent();
         } else {
-            return EMPTY_STRING;
+            return null;
         }
     }
 
     private static String getDetails(InvoiceApiJsonDTO.Document.Field field, InvoiceApiJsonDTO.Details details) {
-        if (ObjectUtils.isNotEmpty(field)) {
-            return EMPTY_STRING;
+        if (ObjectUtils.isEmpty(field)) {
+            return null;
         }
         Object object = field.getDetails().get(details.getVal());
         return String.valueOf(object);
