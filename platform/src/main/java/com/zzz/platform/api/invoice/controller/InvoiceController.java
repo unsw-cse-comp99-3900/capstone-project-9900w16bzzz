@@ -65,14 +65,14 @@ public class InvoiceController {
 
     @GetMapping("/invoice/download")
     @Operation(summary = "download a file")
-    public void download(@NotNull @RequestParam BigInteger invoiceId, @NotNull @RequestParam("fileType") String fileType, HttpServletResponse response) throws IOException {
+    public void download(@NotNull @RequestParam BigInteger invoiceId, @NotNull @RequestParam("fileType") Integer fileType, HttpServletResponse response) throws IOException {
 
-        ResponseDTO<byte[]> responseDTO = invoiceFileService.download(invoiceId, EnumUtil.getEnumByValue(fileType.toLowerCase(), FileType.class));
+        ResponseDTO<byte[]> responseDTO = invoiceFileService.download(invoiceId, EnumUtil.getEnumByValue(fileType, FileType.class));
         if (!responseDTO.getOk()) {
             ResponseUtil.write(response, responseDTO);
             return;
         }
-        String fileName = invoiceFileService.searchFileNameById(invoiceId, EnumUtil.getEnumByValue(fileType.toLowerCase(), FileType.class));
+        String fileName = invoiceFileService.searchFileNameById(invoiceId, EnumUtil.getEnumByValue(fileType, FileType.class));
         // download file content
         byte[] content = responseDTO.getData();
         // set download response header
@@ -107,7 +107,7 @@ public class InvoiceController {
 
     @PostMapping("/invoice/send")
     @Operation(summary = "send invoice to target email")
-    public ResponseDTO<String> sendEmail(@NotNull @RequestParam BigInteger invoiceId, @NotNull @RequestParam("fileType") String fileType, @Valid @RequestBody InvoiceSendForm sendForm) throws MessagingException {
+    public ResponseDTO<String> sendEmail(@NotNull @RequestParam BigInteger invoiceId, @NotNull @RequestParam("fileType") Integer fileType, @Valid @RequestBody InvoiceSendForm sendForm) throws MessagingException {
         FileType type = EnumUtil.getEnumByValue(fileType, FileType.class);
         return invoiceFileService.sendInvoice(invoiceId, type, sendForm);
     }
