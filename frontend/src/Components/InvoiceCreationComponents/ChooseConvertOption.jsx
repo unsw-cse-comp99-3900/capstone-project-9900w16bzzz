@@ -61,11 +61,13 @@ const ChooseConvertOption = ({ goToStep, setFile, file, setInvoice, invoice}) =>
           throw new Error('Server response was not ok');
         }
         console.log('File processed successfully', data);
+        return true;
       }
     } catch (error) {
       console.error('Error processing file:', error);
       alert('An error occurred while processing the file. Please try again.');
       setIsUploading(false);
+      return false;
     }
 };
 

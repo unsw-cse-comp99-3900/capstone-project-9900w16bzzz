@@ -62,7 +62,7 @@ const InvoiceCreation = () => {
             exit={{ opacity: 0 }}
             transition={transition}
           >
-            <InvoiceForm  goToStep={goToStep}/>
+            <InvoiceForm  goToStep={goToStep} invoice={invoice} />
           </motion.div>
         )}
         {step === 4 && (
