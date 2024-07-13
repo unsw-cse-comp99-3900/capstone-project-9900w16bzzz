@@ -28,8 +28,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -157,10 +158,13 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
         if (!ObjectUtils.isEmpty(apiToken)) {
             return apiToken;
         }
-        Map<String, Object> body = Stream.of(AuthTokenHeader.values())
-                .collect(Collectors.toMap(AuthTokenHeader::getKey, AuthTokenHeader::getValue));
+        String params = Stream.of(AuthTokenHeader.values())
+                .map(header -> URLEncoder.encode(header.getKey(), StandardCharsets.UTF_8) + "=" +
+                        URLEncoder.encode(header.getValue(), StandardCharsets.UTF_8))
+                .collect(Collectors.joining("&"));
 
-        ResponseEntity<JSONObject> response = apiService.doPostJson(EssApiUrl.AUTH_TOKEN_URL.getUrl(), new HttpHeaders(), body);
+
+        ResponseEntity<JSONObject> response = apiService.doPostParams(EssApiUrl.AUTH_TOKEN_URL.getUrl(), new HttpHeaders(), params);
         HttpStatus statusCode = response.getStatusCode();
         if (statusCode.is2xxSuccessful()) {
             JSONObject jsonObject = response.getBody();
@@ -172,6 +176,15 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
             log.error("Getting auth token failed");
             return null;
         }
+    }
+
+    private String buildRequestParameters() {
+        return Stream.of(AuthTokenHeader.values())
+                .map(header -> {
+                    return URLEncoder.encode(header.getKey(), StandardCharsets.UTF_8) + "=" +
+                            URLEncoder.encode(header.getValue(), StandardCharsets.UTF_8);
+                })
+                .collect(Collectors.joining("&"));
     }
 
     @AllArgsConstructor

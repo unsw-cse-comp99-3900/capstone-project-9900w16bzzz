@@ -20,6 +20,17 @@ public class ApiService {
     @Autowired
     private RestTemplate restTemplate;
 
+    public ResponseEntity<JSONObject> doPost(String url, HttpHeaders headers, String params) {
+        HttpEntity<Object> entity = new HttpEntity<>(headers);
+        url += "?" + params;
+        return restTemplate.exchange(
+                url,
+                HttpMethod.POST,
+                entity,
+                JSONObject.class
+        );
+    }
+
     public ResponseEntity<JSONObject> doPost(String url, HttpHeaders headers, Object body) {
         HttpEntity<Object> entity = new HttpEntity<>(body, headers);
 
@@ -33,6 +44,10 @@ public class ApiService {
 
     public ResponseEntity<JSONObject> doPostJson(String url, HttpHeaders headers, Map<String, Object> body) {
         return doPost(url,headers, body);
+    }
+
+    public ResponseEntity<JSONObject> doPostParams(String url, HttpHeaders headers, String params) {
+        return doPost(url,headers,params);
     }
 
     public ResponseEntity<JSONObject> doPostList(String url, HttpHeaders headers, MultiValueMap<String,Object> body) {
