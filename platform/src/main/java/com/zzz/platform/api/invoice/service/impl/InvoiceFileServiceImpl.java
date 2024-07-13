@@ -1,6 +1,5 @@
 package com.zzz.platform.api.invoice.service.impl;
 
-import cn.hutool.core.codec.Base64;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,9 +17,9 @@ import com.zzz.platform.api.invoice.service.InvoiceFileService;
 import com.zzz.platform.common.code.InvoiceErrorCode;
 import com.zzz.platform.common.domain.ResponseDTO;
 import com.zzz.platform.common.enumeration.FileType;
+import com.zzz.platform.utils.EncodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import oasis.names.specification.ubl.schema.xsd.invoice_21.InvoiceType;
-import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -168,8 +167,8 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
     private ResponseDTO<ValidateResultVO> validate(byte[] ublXml, String fileName, String rules) {
         EssInvoiceValidateForm essInvoiceValidateForm = new EssInvoiceValidateForm();
         essInvoiceValidateForm.setFileName(fileName);
-        essInvoiceValidateForm.setContent(Base64.encode(ublXml));
-        String md5sum = MD5Encoder.encode(ublXml);
+        essInvoiceValidateForm.setContent(EncodeUtil.base64Encode(ublXml));
+        String md5sum = EncodeUtil.md5Encode(ublXml);
         essInvoiceValidateForm.setChecksum(md5sum);
         essInvoiceValidateForm.setRules(rules);
         return invoiceApiServiceImpl.essValidateInvoice(essInvoiceValidateForm);

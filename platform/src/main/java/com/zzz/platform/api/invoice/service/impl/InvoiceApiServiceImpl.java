@@ -14,7 +14,6 @@ import com.zzz.platform.service.CacheService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -116,17 +115,11 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
                 .append("?rules=").append(essInvoiceValidateForm.getRules())
                 .append("&customer=").append(essInvoiceValidateForm.getCustomer())
                 .toString();
-        /* check content md5 */
-        String content = essInvoiceValidateForm.getContent();
-        String md5sum = essInvoiceValidateForm.getChecksum();
-        if (!md5sum.equals(DigestUtils.md5Hex(content))) {
-            return ResponseDTO.error(InvoiceErrorCode.CONTENT_MD5_NOT_EQUAL);
-        }
         /* build http body */
         HashMap<String, Object> body = new HashMap<>();
         body.put("filename",essInvoiceValidateForm.getFileName());
-        body.put("content",content);
-        body.put("checksum",md5sum);
+        body.put("content",essInvoiceValidateForm.getContent());
+        body.put("checksum",essInvoiceValidateForm.getChecksum());
         /* build http header */
         HttpHeaders headers = new HttpHeaders();
         ResponseEntity<JSONObject> response = null;
