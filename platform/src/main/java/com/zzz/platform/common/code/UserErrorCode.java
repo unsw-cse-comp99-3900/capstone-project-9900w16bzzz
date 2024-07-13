@@ -15,9 +15,9 @@ public enum UserErrorCode implements ErrorCode{
 
     PARAM_ERROR(30001, "parametric error"),
 
-    DATA_NOT_EXIST(30002, "data not exist"),
+    DATA_NOT_EXIST(30002, "user not exist"),
 
-    ALREADY_EXIST(30003, "data already exist"),
+    ALREADY_EXIST(30003, "user already exist"),
 
     REPEAT_SUBMIT(30004, "operate too fast, please wait a second"),
 

@@ -47,7 +47,7 @@ CREATE TABLE `t_invoice`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `t_login_fail`;
 CREATE TABLE `t_login_fail`  (
-                                 `login_fail_id` bigint(0) NOT NULL,
+                                 `login_fail_id` bigint(0) NOT NULL AUTO_INCREMENT,
                                  `user_id` bigint(0) NULL DEFAULT NULL,
                                  `user_type` int(0) NULL DEFAULT NULL,
                                  `login_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,

@@ -96,6 +96,9 @@ public class InvoiceJsonDtoToVoConverter {
     }
 
     private static LocalDate extractDate(InvoiceApiJsonDTO.Document.Field dateDetail) {
+        if (ObjectUtils.isEmpty(dateDetail)) {
+            return null;
+        }
         return LocalDate.of(
                 Integer.parseInt(Objects.requireNonNull(getDetails(dateDetail, InvoiceApiJsonDTO.Details.YEAR))),
                 Integer.parseInt(Objects.requireNonNull(getDetails(dateDetail, InvoiceApiJsonDTO.Details.MONTH))),
