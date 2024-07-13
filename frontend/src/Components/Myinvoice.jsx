@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import video from "../images/video1.mp4";
 import styled from "styled-components";
 import { FaSearch } from "react-icons/fa";
+import deleteInvoice from "./Deleteinvoice";
 
 function Myinvoice(){
     const [invoiceData, setInvoiceData] = useState([]);
@@ -35,7 +36,7 @@ function Myinvoice(){
                 })
             });
             const data = await response.json();
-            console.log('API Response:', data); // Log the response for debugging
+            console.log('API Response:', data);
 
             if (data && data.data && data.data.list) {
                 setInvoiceData(data.data.list);
@@ -87,7 +88,7 @@ function Myinvoice(){
                                             Validation Fail
                                         </ValidationFail>
                                     )}
-                                    <DeleteButton>Delete</DeleteButton>
+                                    <DeleteButton onClick={() => deleteInvoice(invoice.invoiceId, setInvoiceData, invoiceData)}>Delete</DeleteButton>
                                 </InvoiceItem>
                             ))}
                         </InvoiceList>
