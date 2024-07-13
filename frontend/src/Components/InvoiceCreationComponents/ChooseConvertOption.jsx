@@ -2,7 +2,7 @@ import React,{ useState} from "react";
 import styled from "styled-components";
 import { ReactComponent as ArrowIcon } from "../../images/arrow.svg";
 
-const ChooseConvertOption = ({ goToStep, file }) => {
+const ChooseConvertOption = ({ goToStep, setFile, file }) => {
     
   const [selectedAction, setSelectedAction] = useState(null);
 
@@ -25,6 +25,7 @@ const ChooseConvertOption = ({ goToStep, file }) => {
         alert('No file to upload!');
         return;
     }
+    setFile(null);
 
     try {
       const formData = new FormData();
@@ -32,7 +33,7 @@ const ChooseConvertOption = ({ goToStep, file }) => {
       const userId = localStorage.getItem("userId");
       let endpoint = `${process.env.REACT_APP_SERVER_URL}/invoice/upload`;
       let token = localStorage.getItem("token");
-      if (selectedAction === 'save') {
+      if (selectedAction === 'save' || selectedAction === 'convert') {
         const response = await fetch(`${endpoint}?userId=${userId}`, {
           method: 'POST',
           headers: {

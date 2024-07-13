@@ -52,7 +52,7 @@ const InvoiceCreation = () => {
             exit={{ opacity: 0 }}
             transition={transition}
           >
-            <ChooseConvertOption goToStep={goToStep} file={file} />
+            <ChooseConvertOption goToStep={goToStep} setFile={setFile} file={file} />
           </motion.div>
         )}
         {step === 3 && (

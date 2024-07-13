@@ -29,7 +29,7 @@ function Login (){
       };
 
       try {
-        const response = await fetch(`http://localhost:9900/login`, {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ function Login (){
     const getUserInformation = async () => {
         const token = localStorage.getItem("token");
         try {
-            const response = await fetch(`http://localhost:9900/getLoginName`, {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/getLoginName`, {
               method: 'GET',
               headers: {
                 'Content-Type': 'application/json',
