@@ -8,6 +8,7 @@ import com.helger.ubl21.UBL21Writer;
 import com.zzz.platform.api.invoice.converter.JsonToUblConverter;
 import com.zzz.platform.api.invoice.dao.InvoiceFileDao;
 import com.zzz.platform.api.invoice.domain.InvoiceJsonVO;
+import com.zzz.platform.api.invoice.domain.InvoiceSendForm;
 import com.zzz.platform.api.invoice.domain.ValidateResultVO;
 import com.zzz.platform.api.invoice.domain.api.EssInvoiceValidateForm;
 import com.zzz.platform.api.invoice.entity.InvoiceFileEntity;
@@ -21,8 +22,13 @@ import lombok.extern.slf4j.Slf4j;
 import oasis.names.specification.ubl.schema.xsd.invoice_21.InvoiceType;
 import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.math.BigInteger;
 
@@ -39,20 +45,17 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
     @Autowired
     private InvoiceApiService invoiceApiServiceImpl;
 
+    @Autowired
+    private JavaMailSender mailSender;
+
 
     @Override
     public ResponseDTO<byte[]> download(BigInteger invoiceId, FileType type) {
-        if (ObjectUtils.isEmpty(type)) {
+        byte[] content = getFileContent(invoiceId, type);
+        if (content == null) {
             return ResponseDTO.error(InvoiceErrorCode.INVOICE_FILE_DOES_NOT_EXIST);
         }
-        InvoiceFileEntity invoiceFileEntity = invoiceFileDao.selectOne(
-                new QueryWrapper<InvoiceFileEntity>()
-                        .eq("invoice_id", invoiceId)
-                        .eq("file_type", type.getValue()));
-        if (ObjectUtils.isEmpty(invoiceFileEntity)) {
-            return ResponseDTO.error(InvoiceErrorCode.INVOICE_FILE_DOES_NOT_EXIST);
-        }
-        return ResponseDTO.ok(invoiceFileEntity.getContent());
+        return ResponseDTO.ok(content);
     }
 
     @Override
@@ -74,18 +77,11 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
 
     @Override
     public ResponseDTO<InvoiceJsonVO> searchInvoiceJsonById(BigInteger invoiceId) {
-        InvoiceFileEntity entity = invoiceFileDao.selectOne(
-                new QueryWrapper<InvoiceFileEntity>()
-                        .eq("invoice_id", invoiceId)
-                        .eq("file_type", FileType.JSON.getValue())
-        );
-        if (ObjectUtils.isEmpty(entity)) {
-            return ResponseDTO.error(InvoiceErrorCode.INVOICE_FILE_DOES_NOT_EXIST);
-        }
+        byte[] content = getFileContent(invoiceId, FileType.JSON);
         ObjectMapper objectMapper = new ObjectMapper();
         InvoiceJsonVO invoiceJsonVO = null;
         try {
-            invoiceJsonVO = objectMapper.readValue(entity.getContent(), InvoiceJsonVO.class);
+            invoiceJsonVO = objectMapper.readValue(content, InvoiceJsonVO.class);
         } catch (IOException e) {
             log.error("objectMapper read value error", e);
             return ResponseDTO.error(InvoiceErrorCode.INVOICE_FILE_FORMAT_ERROR);
@@ -94,19 +90,33 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
     }
 
     public ResponseDTO<ValidateResultVO> validateInvoice(BigInteger invoiceId, String rules) {
-        InvoiceFileEntity entity = invoiceFileDao.selectOne(
-                new QueryWrapper<InvoiceFileEntity>()
-                        .eq("invoice_id", invoiceId)
-                        .eq("file_type", FileType.XML.getValue())
-        );
-        if (ObjectUtils.isEmpty(entity)) {
-            return ResponseDTO.error(InvoiceErrorCode.INVOICE_FILE_DOES_NOT_EXIST);
-        }
         // search json file from db
-        byte[] bytes = entity.getContent();
+        byte[] bytes = getFileContent(invoiceId, FileType.JSON);
         String fileName = invoiceDbServiceImpl.getFileNameById(invoiceId);
 
         return validate(bytes, fileName, rules);
+    }
+
+    @Override
+    public ResponseDTO<String> sendInvoice(BigInteger invoiceId, FileType fileType, InvoiceSendForm sendForm) throws MessagingException {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+        mimeMessageHelper.setTo(sendForm.getTargetEmail());
+        mimeMessageHelper.setSubject(sendForm.getSubject());
+        mimeMessageHelper.setText(sendForm.getText());
+
+        byte[] content = getFileContent(invoiceId, fileType);
+        if (content == null) {
+            return ResponseDTO.error(InvoiceErrorCode.INVOICE_FILE_DOES_NOT_EXIST);
+        }
+        String originalFilename = invoiceDbServiceImpl.getFileNameById(invoiceId);
+        String fileName = jointFileName(originalFilename, fileType);
+
+        ByteArrayResource resource = new ByteArrayResource(content);
+        mimeMessageHelper.addAttachment(fileName, resource);
+
+        return null;
     }
 
     @Override
@@ -117,6 +127,16 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
         saveInvoiceContentInDB(invoiceId, ublXml, FileType.XML);
 
         return validate(ublXml, fileName, rules);
+    }
+
+    private byte[] getFileContent(BigInteger invoiceId, FileType fileType) {
+        InvoiceFileEntity entity = invoiceFileDao.selectOne(new QueryWrapper<InvoiceFileEntity>()
+                .eq(InvoiceFileDbColumn.INVOICE_ID.getVal(), invoiceId)
+                .eq(InvoiceFileDbColumn.FILE_TYPE.getVal(), fileType.getValue()));
+        if (ObjectUtils.isNotEmpty(entity)) {
+            return entity.getContent();
+        }
+        return null;
     }
 
     private byte[] convertJsonToUbl(InvoiceJsonVO invoiceJsonVO) {

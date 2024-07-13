@@ -18,15 +18,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.math.BigInteger;
 
 /**
- * 作者: zhaoyue zhang
- * 版本: v1.0.0
- * 日期: 2024/6/24
+ * @author: zuoming yan
+ * @version: v1.0.0
+ * @date: 2024/7/13
  */
 @RestController
 @Tag(name = "invoice")
@@ -56,14 +58,14 @@ public class InvoiceController {
     }
 
     @GetMapping("/invoice/json")
-    @Operation(summary = "Upload a file")
+    @Operation(summary = "search json result by invoiceId")
     public ResponseDTO<InvoiceJsonVO> searchJson(@RequestParam BigInteger invoiceId) {
         return invoiceFileService.searchInvoiceJsonById(invoiceId);
     }
 
     @GetMapping("/invoice/download")
     @Operation(summary = "download a file")
-    public void download(@RequestParam BigInteger invoiceId, @RequestParam("fileType") String fileType, HttpServletResponse response) throws IOException {
+    public void download(@NotNull @RequestParam BigInteger invoiceId, @NotNull @RequestParam("fileType") String fileType, HttpServletResponse response) throws IOException {
 
         ResponseDTO<byte[]> responseDTO = invoiceFileService.download(invoiceId, EnumUtil.getEnumByValue(fileType.toLowerCase(), FileType.class));
         if (!responseDTO.getOk()) {
@@ -102,6 +104,13 @@ public class InvoiceController {
     @Operation(summary = "delete a user file")
     public ResponseDTO<String> deleteFile(@RequestBody InvoiceDeleteForm deleteForm) {
         return invoiceDbService.delete(deleteForm);
+    }
+
+    @PostMapping("/invoice/send")
+    @Operation(summary = "send invoice to target email")
+    public ResponseDTO<String> sendEmail(@NotNull @RequestParam BigInteger invoiceId, @NotNull @RequestParam("fileType") String fileType, @Valid @RequestBody InvoiceSendForm sendForm) throws MessagingException {
+        FileType type = EnumUtil.getEnumByValue(fileType, FileType.class);
+        return invoiceFileService.sendInvoice(invoiceId, type, sendForm);
     }
 
 

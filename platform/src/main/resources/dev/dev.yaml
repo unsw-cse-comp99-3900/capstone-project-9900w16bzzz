@@ -38,6 +38,20 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
 
+  # spring mail config
+  mail:
+    host: smtp.google.com
+    port: 587
+    username: eazyinvoice9900zzz@gmail.com
+    password: pnfbtpvspjuptqfb
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
 # tomcat config，Primarily used to configure access logs (for future error troubleshooting)
 server:
   tomcat:
