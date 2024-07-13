@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { FaSearch } from "react-icons/fa";
 import deleteInvoice from "./Deleteinvoice";
 
-function Myinvoice(){
+function Myinvoice() {
     const [invoiceData, setInvoiceData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -51,8 +51,9 @@ function Myinvoice(){
     const filteredInvoices = invoiceData.filter((invoice) =>
         invoice.fileName.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
     return (
-        <div id= "main">
+        <div id="main">
             <video autoPlay muted loop id="background-video-signup">
                 <source src={video} type="video/mp4" />
                 Your browser does not support the video tag.
@@ -73,7 +74,7 @@ function Myinvoice(){
                     </Search>
                     <Invoicecontainer>
                         <InvoiceList>
-                            {invoiceData.map((invoice) => (
+                            {filteredInvoices.map((invoice) => (
                                 <InvoiceItem key={invoice.invoiceId}>
                                     <InvoiceName>{invoice.fileName}</InvoiceName>
                                     {invoice.validationFlag === 1 && (
@@ -121,7 +122,6 @@ const Title = styled.h1`
     font-size: 2.5rem;
 `;
 
-
 const Maincontainer = styled.div`
     display: flex;
     position: relative;
@@ -168,7 +168,7 @@ const SearchIcon = styled(FaSearch)`
     left: 165px;
     color: rgba(255, 255, 255, 0.7);
     font-size: 1.2rem;
-    &:hover{
+    &:hover {
         cursor: pointer;
     }
 `;
@@ -210,7 +210,7 @@ const InvoiceItem = styled.li`
     align-items: center;
     padding: 10px 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    &:hover{
+    &:hover {
         background: rgba(0, 0, 0, 0.3);
     }
 `;
@@ -220,7 +220,6 @@ const InvoiceName = styled.span`
     font-size: 1.1rem;
     flex: 1;
 `;
-
 
 const ValidationPass = styled.span`
     display: flex;
@@ -259,14 +258,11 @@ const DeleteButton = styled.button`
     border-radius: 20px;
     border: 1px solid #ff1a1a;
     color: rgba(255, 255, 255, 0.7);
-    background-color: transparent;
     padding: 4px 15px;
     font-size: 1rem;
     cursor: pointer;
     outline: none;
-    &:hover{
+    &:hover {
         background: rgba(255, 10, 40, 0.48);
     }
 `;
-
-
