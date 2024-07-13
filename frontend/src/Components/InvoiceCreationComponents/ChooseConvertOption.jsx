@@ -2,7 +2,7 @@ import React,{ useState} from "react";
 import styled from "styled-components";
 import { ReactComponent as ArrowIcon } from "../../images/arrow.svg";
 
-const ChooseConvertOption = ({ goToStep, setFile, file }) => {
+const ChooseConvertOption = ({ goToStep, setFile, file, setInvoice, invoice}) => {
     
   const [selectedAction, setSelectedAction] = useState(null);
 
@@ -46,6 +46,11 @@ const ChooseConvertOption = ({ goToStep, setFile, file }) => {
         }
         const data = await response.json();
         
+        if (data.ok) {
+          setInvoice(data.data);
+          console.log(invoice);
+        }
+
         if (!data.ok) {
           throw new Error('Server response was not ok');
         }
