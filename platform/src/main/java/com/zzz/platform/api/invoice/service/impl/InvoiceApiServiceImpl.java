@@ -128,7 +128,7 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
         /* send POST request */
         for (int i = 0; i < 2; i++) {
             headers.add(HttpHeaders.AUTHORIZATION, apiToken);
-            headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+            headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
             response = apiService.doPostJson(urlWithParams, headers, body);
             HttpStatus statusCode = response.getStatusCode();
             if (statusCode.is2xxSuccessful()) {
@@ -162,9 +162,9 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
                 .map(header -> URLEncoder.encode(header.getKey(), StandardCharsets.UTF_8) + "=" +
                         URLEncoder.encode(header.getValue(), StandardCharsets.UTF_8))
                 .collect(Collectors.joining("&"));
-
-
-        ResponseEntity<JSONObject> response = apiService.doPostParams(EssApiUrl.AUTH_TOKEN_URL.getUrl(), new HttpHeaders(), params);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+        ResponseEntity<JSONObject> response = apiService.doPostParams(EssApiUrl.AUTH_TOKEN_URL.getUrl(), headers, params);
         HttpStatus statusCode = response.getStatusCode();
         if (statusCode.is2xxSuccessful()) {
             JSONObject jsonObject = response.getBody();
