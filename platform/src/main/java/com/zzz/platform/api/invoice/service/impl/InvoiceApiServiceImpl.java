@@ -14,6 +14,7 @@ import com.zzz.platform.service.CacheService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -162,9 +163,12 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
                 .map(header -> URLEncoder.encode(header.getKey(), StandardCharsets.UTF_8) + "=" +
                         URLEncoder.encode(header.getValue(), StandardCharsets.UTF_8))
                 .collect(Collectors.joining("&"));
+
+        StringEntity entity = new StringEntity(params, StandardCharsets.UTF_8);
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
-        ResponseEntity<JSONObject> response = apiService.doPostParams(EssApiUrl.AUTH_TOKEN_URL.getUrl(), headers, params);
+
+        ResponseEntity<JSONObject> response = apiService.doPostJson(EssApiUrl.AUTH_TOKEN_URL.getUrl(), headers, entity);
         HttpStatus statusCode = response.getStatusCode();
         if (statusCode.is2xxSuccessful()) {
             JSONObject jsonObject = response.getBody();
@@ -178,14 +182,6 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
         }
     }
 
-    private String buildRequestParameters() {
-        return Stream.of(AuthTokenHeader.values())
-                .map(header -> {
-                    return URLEncoder.encode(header.getKey(), StandardCharsets.UTF_8) + "=" +
-                            URLEncoder.encode(header.getValue(), StandardCharsets.UTF_8);
-                })
-                .collect(Collectors.joining("&"));
-    }
 
     @AllArgsConstructor
     @Getter

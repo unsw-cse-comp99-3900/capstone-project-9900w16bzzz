@@ -46,8 +46,9 @@ public class ApiService {
         return doPost(url,headers, body);
     }
 
-    public ResponseEntity<JSONObject> doPostParams(String url, HttpHeaders headers, String params) {
-        return doPost(url,headers,params);
+
+    public ResponseEntity<JSONObject> doPostJson(String url, HttpHeaders headers, Object entity) {
+        return doPost(url,headers,entity);
     }
 
     public ResponseEntity<JSONObject> doPostList(String url, HttpHeaders headers, MultiValueMap<String,Object> body) {
