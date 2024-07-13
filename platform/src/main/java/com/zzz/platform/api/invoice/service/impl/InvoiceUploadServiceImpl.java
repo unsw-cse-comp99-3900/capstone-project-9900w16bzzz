@@ -14,6 +14,7 @@ import com.zzz.platform.api.invoice.service.InvoiceUploadService;
 import com.zzz.platform.common.code.InvoiceErrorCode;
 import com.zzz.platform.common.domain.ResponseDTO;
 import com.zzz.platform.common.enumeration.FileType;
+import com.zzz.platform.utils.EncodeUtil;
 import com.zzz.platform.utils.VerificationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -50,6 +51,7 @@ public class InvoiceUploadServiceImpl implements InvoiceUploadService {
         if (mostSignificantBits < 0) {
             invoiceId = invoiceId.add(BigInteger.ONE.shiftLeft(64));
         }
+        invoiceId = EncodeUtil.truncateBigInteger(invoiceId);
         // init invoice entity
         InvoiceEntity invoiceEntity = new InvoiceEntity();
         // generate uuid

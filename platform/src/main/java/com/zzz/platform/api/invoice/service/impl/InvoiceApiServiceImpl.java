@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -126,6 +127,7 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
         /* send POST request */
         for (int i = 0; i < 2; i++) {
             headers.add(HttpHeaders.AUTHORIZATION, apiToken);
+            headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
             response = apiService.doPostJson(urlWithParams, headers, body);
             HttpStatus statusCode = response.getStatusCode();
             if (statusCode.is2xxSuccessful()) {

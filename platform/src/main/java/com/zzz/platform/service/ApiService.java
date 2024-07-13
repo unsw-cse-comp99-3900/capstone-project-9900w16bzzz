@@ -32,7 +32,6 @@ public class ApiService {
     }
 
     public ResponseEntity<JSONObject> doPostJson(String url, HttpHeaders headers, Map<String, Object> body) {
-        headers.setContentType(MediaType.APPLICATION_JSON);
         return doPost(url,headers, body);
     }
 

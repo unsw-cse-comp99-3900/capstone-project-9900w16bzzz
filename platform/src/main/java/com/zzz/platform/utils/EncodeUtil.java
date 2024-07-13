@@ -2,6 +2,7 @@ package com.zzz.platform.utils;
 
 import cn.hutool.core.codec.Base64;
 
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -34,5 +35,16 @@ public class EncodeUtil {
 
     public static String base64Encode(byte[] bytes) {
         return Base64.encode(bytes);
+    }
+
+    public static BigInteger truncateBigInteger(BigInteger bigInt) {
+        String bigIntStr = bigInt.toString();
+
+        if (bigIntStr.length() <= 5) {
+            return BigInteger.ZERO;
+        }
+        // sub 5
+        String truncatedStr = bigIntStr.substring(5);
+        return new BigInteger(truncatedStr);
     }
 }
