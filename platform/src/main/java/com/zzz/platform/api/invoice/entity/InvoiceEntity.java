@@ -25,6 +25,8 @@ public class InvoiceEntity {
 
     private Integer xmlFlag;
 
+    private Integer validationFlag;
+
     private LocalDateTime updateTime;
 
     private LocalDateTime createTime;
