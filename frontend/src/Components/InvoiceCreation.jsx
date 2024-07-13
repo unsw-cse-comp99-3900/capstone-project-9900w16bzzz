@@ -12,7 +12,6 @@ const InvoiceCreation = () => {
   const [step, setStep] = useState(0);
   const [file, setFile] = useState(null);
   const [invoice, setInvoice] = useState(null);
-  console.log('setFile type:', typeof setFile);
 
   const goToStep = (stepNumber) => setStep(stepNumber);
   const transition = {

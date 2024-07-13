@@ -1,14 +1,19 @@
-import React,{ useState} from "react";
+import React,{ useState, useEffect} from "react";
 import styled from "styled-components";
 import { ReactComponent as ArrowIcon } from "../../images/arrow.svg";
 
 const ChooseConvertOption = ({ goToStep, setFile, file, setInvoice, invoice}) => {
     
   const [selectedAction, setSelectedAction] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleActionChange = (action) => {
     setSelectedAction(action);
   };
+
+  useEffect(() => {
+    console.log("Updated invoice:", invoice);
+  }, [invoice]);
 
   const handleNext = () => {
     if (selectedAction === 'save') {
@@ -25,7 +30,7 @@ const ChooseConvertOption = ({ goToStep, setFile, file, setInvoice, invoice}) =>
         alert('No file to upload!');
         return;
     }
-    setFile(null);
+    setIsUploading(true);
 
     try {
       const formData = new FormData();
@@ -41,6 +46,8 @@ const ChooseConvertOption = ({ goToStep, setFile, file, setInvoice, invoice}) =>
           },
           body: formData,
         });
+        
+        setFile(null);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -48,9 +55,8 @@ const ChooseConvertOption = ({ goToStep, setFile, file, setInvoice, invoice}) =>
         
         if (data.ok) {
           setInvoice(data.data);
-          console.log(invoice);
         }
-
+        setIsUploading(false);
         if (!data.ok) {
           throw new Error('Server response was not ok');
         }
@@ -59,10 +65,13 @@ const ChooseConvertOption = ({ goToStep, setFile, file, setInvoice, invoice}) =>
     } catch (error) {
       console.error('Error processing file:', error);
       alert('An error occurred while processing the file. Please try again.');
+      setIsUploading(false);
     }
 };
 
   return (
+  <>
+    {isUploading && <Loading />}
     <ActionContainer className="name">
       <ArrowButton onClick={() => goToStep(1)}>
           <ArrowIcon style={{ transform: 'scaleX(-1)' }} />
@@ -79,15 +88,60 @@ const ChooseConvertOption = ({ goToStep, setFile, file, setInvoice, invoice}) =>
           </ActionOption>
         </ActionOptions>
       </div>
-      <ArrowButton onClick={() => {
-        handleUpload(selectedAction);
-        handleNext();
-      }} disabled={!selectedAction}>
+      <ArrowButton onClick={async () => {
+          const uploadSuccess = await handleUpload(selectedAction);
+          if (uploadSuccess) {
+            handleNext();
+          }
+        }} 
+        disabled={!selectedAction || isUploading}>
         <ArrowIcon />
       </ArrowButton>
-  </ActionContainer>
-  )
+      </ActionContainer>
+    </>
+    )
 }
+
+const BlurredBackground = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+`;
+
+const LoadingScreen = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+`;
+
+const LoadingMessage = styled.div`
+  color: white;
+  font-size: 24px;
+  background-color: rgba(100, 20, 255, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
+
+const Loading = () => (
+  <>
+    <BlurredBackground />
+    <LoadingScreen>
+      <LoadingMessage>Uploading... Please wait.</LoadingMessage>
+    </LoadingScreen>
+  </>
+);
 
 const ActionContainer = styled.div`
   width: 80%;

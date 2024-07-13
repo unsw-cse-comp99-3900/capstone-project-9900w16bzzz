@@ -89,7 +89,7 @@ function InvoiceForm({ goToStep }) {
                     <SubmitButton className="header-btn">Submit</SubmitButton>
                 </ScrollableContent>
             </Content>
-            <ArrowButton disabled style={{ opacity: 0, cursor: "not-allowed", "pointer-events": "none" }}>
+            <ArrowButton disabled style={{ opacity: 0, cursor: "not-allowed", "pointerEvents": "none" }}>
                 <ArrowIcon style={{ transform: 'scaleX(-1)' }} />
             </ArrowButton>
         </MainContainer>
