@@ -100,10 +100,11 @@ public class JsonToUblConverter {
             // set line extension amount
             LineExtensionAmountType lineExtensionAmountType = new LineExtensionAmountType();
             lineExtensionAmountType.setCurrencyID(currencyCode);
-            lineExtensionAmountType.setValue(BigDecimal.valueOf(Long.parseLong(item.getAmount())));
+
+            lineExtensionAmountType.setValue(BigDecimal.valueOf(Double.parseDouble((item.getAmount()))));
             invoiceLine.setLineExtensionAmount(lineExtensionAmountType);
 
-            invoiceLine.setInvoicedQuantity(BigDecimal.valueOf(Long.parseLong(item.getQuantity())));
+            invoiceLine.setInvoicedQuantity(BigDecimal.valueOf(Double.parseDouble(item.getQuantity())));
             // set item
             ItemType itemType = new ItemType();
             DescriptionType description = new DescriptionType();
@@ -117,7 +118,7 @@ public class JsonToUblConverter {
             // set price
             PriceType price = new PriceType();
             PriceAmountType priceAmount = new PriceAmountType();
-            priceAmount.setValue(BigDecimal.valueOf(Long.parseLong(item.getAmount())));
+            priceAmount.setValue(BigDecimal.valueOf(Double.parseDouble(item.getAmount())));
             priceAmount.setCurrencyID(currencyCode);
             price.setPriceAmount(priceAmount);
             // set allowance charge
@@ -288,17 +289,17 @@ public class JsonToUblConverter {
 
         MonetaryTotalType legalMonetaryTotal = new MonetaryTotalType();
         // line extension amount type
-        LineExtensionAmountType lineExtensionAmountType = new LineExtensionAmountType(BigDecimal.valueOf(Long.parseLong(invoiceJsonVO.getSubTotal())));
+        LineExtensionAmountType lineExtensionAmountType = new LineExtensionAmountType(BigDecimal.valueOf(Double.parseDouble(invoiceJsonVO.getSubTotal())));
         lineExtensionAmountType.setCurrencyID(currencyCode);
         legalMonetaryTotal.setLineExtensionAmount(lineExtensionAmountType);
         // tax inclusive amount type
         TaxInclusiveAmountType taxInclusiveAmountType = new TaxInclusiveAmountType();
-        BigDecimal taxInclusiveAmount = BigDecimal.valueOf(Long.parseLong(invoiceJsonVO.getInvoiceTotal()));
+        BigDecimal taxInclusiveAmount = BigDecimal.valueOf(Double.parseDouble(invoiceJsonVO.getInvoiceTotal()));
         taxInclusiveAmountType.setValue(taxInclusiveAmount);
         taxInclusiveAmountType.setCurrencyID(currencyCode);
         legalMonetaryTotal.setTaxInclusiveAmount(taxInclusiveAmountType);
 
-        long taxTotal = Long.parseLong(invoiceJsonVO.getTaxTotal());
+        Double taxTotal = Double.parseDouble(invoiceJsonVO.getTaxTotal());
         // tax exclusive amount type
         TaxExclusiveAmountType taxExclusiveAmountType = new TaxExclusiveAmountType(taxInclusiveAmount.subtract(BigDecimal.valueOf(taxTotal)));
         taxExclusiveAmountType.setCurrencyID(currencyCode);
@@ -327,13 +328,13 @@ public class JsonToUblConverter {
         String currencyCode = invoiceJsonVO.getCurrencyCode();
         TaxTotalType taxTotalType = new TaxTotalType();
         TaxAmountType taxAmount = new TaxAmountType();
-        BigDecimal taxTotal = BigDecimal.valueOf(Long.parseLong(invoiceJsonVO.getTaxTotal()));
+        BigDecimal taxTotal = BigDecimal.valueOf(Double.parseDouble(invoiceJsonVO.getTaxTotal()));
         taxAmount.setValue(taxTotal);
         taxAmount.setCurrencyID(currencyCode);
         taxTotalType.setTaxAmount(taxAmount);
 
         TaxSubtotalType taxSubtotalType = new TaxSubtotalType();
-        TaxableAmountType taxableAmountType = new TaxableAmountType(BigDecimal.valueOf(Long.parseLong(invoiceJsonVO.getSubTotal())));
+        TaxableAmountType taxableAmountType = new TaxableAmountType(BigDecimal.valueOf(Double.parseDouble(invoiceJsonVO.getSubTotal())));
         taxableAmountType.setCurrencyID(currencyCode);
         taxSubtotalType.setTaxableAmount(taxableAmountType);
         taxSubtotalType.setTaxAmount(taxAmount);
@@ -437,11 +438,11 @@ public class JsonToUblConverter {
         AllowanceChargeReasonCode allowanceChargeReasonCode = EnumUtil.getEnumByValue(allowance.getType(), AllowanceChargeReasonCode.class);
         allowanceChargeType.setChargeIndicator(allowanceChargeReasonCode.isCharge());
         BaseAmountType baseAmountType = new BaseAmountType();
-        baseAmountType.setValue(BigDecimal.valueOf(Long.parseLong(baseAmount)));
+        baseAmountType.setValue(BigDecimal.valueOf(Double.parseDouble(baseAmount)));
         baseAmountType.setCurrencyID(allowance.getAmount());
         allowanceChargeType.setBaseAmount(baseAmountType);
         AmountType amountType = new AmountType();
-        amountType.setValue(BigDecimal.valueOf(Long.parseLong(allowance.getAmount())));
+        amountType.setValue(BigDecimal.valueOf(Double.parseDouble(allowance.getAmount())));
         amountType.setCurrencyID(allowance.getCurrencyCode());
         allowanceChargeType.setAmount(amountType);
         // set tax category
@@ -462,7 +463,7 @@ public class JsonToUblConverter {
     private static TaxCategoryType getTaxCategoryType(TaxType taxType) {
         TaxCategoryType taxCategoryType = new TaxCategoryType();
         taxCategoryType.setID(taxType.getDesc());
-        taxCategoryType.setPercent(BigDecimal.valueOf(Long.parseLong(taxType.getValue())));
+        taxCategoryType.setPercent(BigDecimal.valueOf(Double.parseDouble(taxType.getValue())));
         TaxSchemeType taxSchemeType = new TaxSchemeType();
         taxSchemeType.setID("GST");
         taxCategoryType.setTaxScheme(taxSchemeType);
