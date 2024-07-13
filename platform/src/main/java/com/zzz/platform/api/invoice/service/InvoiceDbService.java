@@ -29,6 +29,8 @@ public interface InvoiceDbService {
 
     void updateFileFlag(BigInteger invoiceId, FileType fileType, FileStatusFlag flag);
 
+    void updateValidationFlag(BigInteger invoiceId, ValidationFlag flag);
+
     @Getter
     @AllArgsConstructor
     enum InvoiceDbColumn {
@@ -37,7 +39,8 @@ public interface InvoiceDbService {
         FILE_NAME("file_name"),
         CREATE_TIME("create_time"),
         UPDATE_TIME("update_time"),
-        FLAG("flag");
+        FLAG("flag"),
+        VALIDATION_FLAG("validation_flag");
         ;
         private final String val;
     }
@@ -49,5 +52,16 @@ public interface InvoiceDbService {
         NOT_EXIST(0);
         ;
         private final int val;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    enum ValidationFlag {
+        SUCCESS(1, "Validation successful"),
+        FAILED(2, "Validation failed"),
+        NO_OPERATION(0,"No operation");
+        ;
+        private final int value;
+        private final String desc;
     }
 }

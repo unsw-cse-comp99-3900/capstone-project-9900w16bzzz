@@ -29,6 +29,9 @@ public class InvoiceListVO {
     @Schema(description = "xml flag")
     private Integer xmlFlag;
 
+    @Schema(description = "validation flag")
+    private Integer validationFlag;
+
     @Schema(description = "update time")
     private LocalDateTime updateTime;
 

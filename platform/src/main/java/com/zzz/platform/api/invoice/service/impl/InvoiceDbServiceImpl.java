@@ -71,5 +71,10 @@ public class InvoiceDbServiceImpl implements InvoiceDbService {
         invoiceDao.updateFileFlag(invoiceId, fileType, flag.getVal());
     }
 
+    @Override
+    public void updateValidationFlag(BigInteger invoiceId, ValidationFlag flag) {
+        invoiceDao.updateValidationFlag(invoiceId, flag.getValue());
+    }
+
 
 }

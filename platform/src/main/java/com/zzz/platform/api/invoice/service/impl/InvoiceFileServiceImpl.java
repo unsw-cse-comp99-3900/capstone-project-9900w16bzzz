@@ -97,7 +97,20 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
         byte[] bytes = getFileContent(invoiceId, FileType.JSON);
         String fileName = invoiceDbServiceImpl.getFileNameById(invoiceId);
 
-        return validate(bytes, fileName, rules);
+        ResponseDTO<ValidateResultVO> responseDTO = validate(bytes, fileName, rules);
+        if (responseDTO.getOk()) {
+            updateValidateResult(invoiceId, responseDTO.getData());
+        }
+        return responseDTO;
+    }
+    private void updateValidateResult(BigInteger invoiceId, ValidateResultVO validateResultVO) {
+        InvoiceDbService.ValidationFlag flag;
+        if (validateResultVO.isSuccessful()) {
+            flag = InvoiceDbService.ValidationFlag.SUCCESS;
+        } else {
+            flag = InvoiceDbService.ValidationFlag.FAILED;
+        }
+        invoiceDbServiceImpl.updateValidationFlag(invoiceId, flag);
     }
 
     @Override
@@ -119,7 +132,8 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
         ByteArrayResource resource = new ByteArrayResource(content);
         mimeMessageHelper.addAttachment(fileName, resource);
 
-        return null;
+        mailSender.send(mimeMessage);
+        return ResponseDTO.ok();
     }
 
     @Override
@@ -129,7 +143,11 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
         // save invoice ubl in db
         saveInvoiceContentInDB(invoiceId, ublXml, FileType.XML);
 
-        return validate(ublXml, fileName, rules);
+        ResponseDTO<ValidateResultVO> responseDTO = validate(ublXml, fileName, rules);
+        if (responseDTO.getOk()) {
+            updateValidateResult(invoiceId, responseDTO.getData());
+        }
+        return responseDTO;
     }
 
     private byte[] getFileContent(BigInteger invoiceId, FileType fileType) {

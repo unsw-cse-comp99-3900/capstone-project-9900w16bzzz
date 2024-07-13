@@ -45,4 +45,12 @@
         WHERE invoice_id = #{invoiceId}
     </update>
 
+    <update id="updateValidationFlag">
+        UPDATE t_invoice
+        <set>
+            validation_flag = #{flag}
+        </set>
+        WHERE invoice_id = #{invoiceId}
+    </update>
+
 </mapper>

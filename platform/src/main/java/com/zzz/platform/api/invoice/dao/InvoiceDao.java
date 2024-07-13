@@ -23,4 +23,6 @@ public interface InvoiceDao extends BaseMapper<InvoiceEntity> {
     void deleteFile(InvoiceEntity invoiceEntity);
 
     void updateFileFlag(@Param("invoiceId") BigInteger invoiceId, @Param("fileType") String fileType, @Param("flag") Integer flag);
+
+    void updateValidationFlag(@Param("invoiceId") BigInteger invoiceId, @Param("validationFlag") Integer flag);
 }

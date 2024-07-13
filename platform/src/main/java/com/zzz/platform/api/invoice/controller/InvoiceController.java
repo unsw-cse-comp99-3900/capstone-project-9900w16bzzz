@@ -48,7 +48,7 @@ public class InvoiceController {
 
     @PostMapping("/invoice/upload")
     @Operation(summary = "Upload a file")
-    public ResponseDTO<InvoiceJsonVO> uploadFile(@RequestParam BigInteger userId, @RequestParam("file") MultipartFile file) {
+    public ResponseDTO<InvoiceUploadResultVO> uploadFile(@RequestParam BigInteger userId, @RequestParam("file") MultipartFile file) {
         // get user by user_id
         UserEntity userEntity = userService.getById(userId);
         if (userEntity == null) {
@@ -79,7 +79,6 @@ public class InvoiceController {
         ResponseUtil.setDownloadFileHeader(response, fileName, String.valueOf(content.length));
         // download file
         response.getOutputStream().write(content);
-
     }
 
     @PostMapping("/invoice/validate")

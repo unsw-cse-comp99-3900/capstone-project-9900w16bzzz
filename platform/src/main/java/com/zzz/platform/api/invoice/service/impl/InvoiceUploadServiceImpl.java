@@ -5,6 +5,7 @@ import com.zzz.platform.api.invoice.converter.InvoiceJsonDtoToVoConverter;
 import com.zzz.platform.api.invoice.dao.InvoiceDao;
 import com.zzz.platform.api.invoice.domain.InvoiceApiJsonDTO;
 import com.zzz.platform.api.invoice.domain.InvoiceJsonVO;
+import com.zzz.platform.api.invoice.domain.InvoiceUploadResultVO;
 import com.zzz.platform.api.invoice.domain.api.UpbrainExtractorForm;
 import com.zzz.platform.api.invoice.entity.InvoiceEntity;
 import com.zzz.platform.api.invoice.service.InvoiceApiService;
@@ -42,7 +43,7 @@ public class InvoiceUploadServiceImpl implements InvoiceUploadService {
 
 
     @Override
-    public ResponseDTO<InvoiceJsonVO> upload(BigInteger userId, MultipartFile file) {
+    public ResponseDTO<InvoiceUploadResultVO> upload(BigInteger userId, MultipartFile file) {
         String fileName = file.getOriginalFilename();
         long mostSignificantBits = UUID.randomUUID().getMostSignificantBits();
         BigInteger invoiceId = BigInteger.valueOf(mostSignificantBits);
@@ -83,7 +84,9 @@ public class InvoiceUploadServiceImpl implements InvoiceUploadService {
         // after insert new invoice entity
         saveInvoiceContentInDB(invoiceId, invoiceJsonVO);
         saveInvoiceContentInDB(invoiceId, file, fileType);
-        return ResponseDTO.ok(invoiceJsonVO);
+
+        InvoiceUploadResultVO invoiceUploadResultVO = new InvoiceUploadResultVO(invoiceId, invoiceJsonVO);
+        return ResponseDTO.ok(invoiceUploadResultVO);
     }
 
     private void saveInvoiceContentInDB(BigInteger invoiceId, MultipartFile file, FileType fileType) {

@@ -32,6 +32,7 @@ CREATE TABLE `t_invoice`  (
                               `pdf_flag` tinyint(1) UNSIGNED NULL DEFAULT 0,
                               `json_flag` tinyint(1) UNSIGNED NULL DEFAULT 0,
                               `xml_flag` tinyint(1) UNSIGNED NULL DEFAULT 0,
+                              `validation_flag` tinyint(1) UNSIGNED NULL DEFAULT 0,
                               `update_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                               `create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                               PRIMARY KEY (`invoice_id` DESC, `user_id`),
