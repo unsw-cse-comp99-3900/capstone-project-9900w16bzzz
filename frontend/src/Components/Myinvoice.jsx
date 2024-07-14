@@ -9,6 +9,7 @@ import deleteInvoice from "./Deleteinvoice";
 function Myinvoice() {
     const [invoiceData, setInvoiceData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [openDropdown, setOpenDropdown] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -63,6 +64,9 @@ function Myinvoice() {
     const filteredInvoices = invoiceData.filter((invoice) =>
         invoice.fileName.toLowerCase().includes(searchTerm.toLowerCase())
     );
+    const handleDropdownToggle = (invoiceId) => {
+        setOpenDropdown(openDropdown === invoiceId ? null : invoiceId);
+    };
 
     return (
         <div id="main">
@@ -101,7 +105,19 @@ function Myinvoice() {
                                             Validation Fail
                                         </ValidationFail>
                                     )}
-                                    <Download />
+                                     <DownloadContainer>
+                                        <Download onClick={(event) => {
+                                            event.stopPropagation();
+                                            handleDropdownToggle(invoice.invoiceId);
+                                        }} />
+                                        {openDropdown === invoice.invoiceId && (
+                                            <DownloadOptions>
+                                                <DownloadOption>PDF</DownloadOption>
+                                                <DownloadOption>JSON</DownloadOption>
+                                                <DownloadOption>XML</DownloadOption>
+                                            </DownloadOptions>
+                                        )}
+                                    </DownloadContainer>
                                     <DeleteButton onClick={(event) => handleDeleteClick(event, invoice.invoiceId)}>Delete</DeleteButton>
                                 </InvoiceItem>
                             ))}
@@ -192,12 +208,50 @@ const SearchIcon = styled(FaSearch)`
         cursor: pointer;
     }
 `;
-const Download = styled(BiDownload)`
+const DownloadContainer = styled.div`
+    position: relative;
+    display: inline-block;
     color: rgba(255, 255, 255, 0.7);
     font-size: 1.2rem;
     margin-right: 20px;
     &:hover {
         cursor: pointer;
+    }
+    &:hover > div {
+        display: block;
+    }
+`;
+
+const Download = styled(BiDownload)`
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+    &:hover {
+        cursor: pointer;
+    }
+`;
+
+const DownloadOptions = styled.div`
+    display: block;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7);
+    min-width: 100px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 5px;
+    padding: 5px 0;
+`;
+
+const DownloadOption = styled.div`
+    color: rgba(255, 255, 255, 0.7);
+    padding: 5px 10px;
+    text-decoration: none;
+    display: block;
+    font-size: 1rem;
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
     }
 `;
 
