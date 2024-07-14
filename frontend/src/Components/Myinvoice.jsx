@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import video from "../images/video1.mp4";
 import styled from "styled-components";
 import { FaSearch } from "react-icons/fa";
-import {BiDownload} from "react-icons/bi";
+import { BiDownload } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 import deleteInvoice from "./Deleteinvoice";
 
 function Myinvoice() {
     const [invoiceData, setInvoiceData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchInvoices();
@@ -49,6 +51,15 @@ function Myinvoice() {
         }
     };
 
+    const handleInvoiceClick = (invoiceId) => {
+        navigate(`/invoice/${invoiceId}`);
+    };
+
+    const handleDeleteClick = (event, invoiceId) => {
+        event.stopPropagation();
+        deleteInvoice(invoiceId, setInvoiceData, invoiceData);
+    };
+
     const filteredInvoices = invoiceData.filter((invoice) =>
         invoice.fileName.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -76,7 +87,7 @@ function Myinvoice() {
                     <Invoicecontainer>
                         <InvoiceList>
                             {filteredInvoices.map((invoice) => (
-                                <InvoiceItem key={invoice.invoiceId}>
+                                <InvoiceItem key={invoice.invoiceId} onClick={() => handleInvoiceClick(invoice.invoiceId)}>
                                     <InvoiceName>{invoice.fileName}</InvoiceName>
                                     {invoice.validationFlag === 1 && (
                                         <ValidationPass>
@@ -90,8 +101,8 @@ function Myinvoice() {
                                             Validation Fail
                                         </ValidationFail>
                                     )}
-                                    <Download/>
-                                    <DeleteButton onClick={() => deleteInvoice(invoice.invoiceId, setInvoiceData, invoiceData)}>Delete</DeleteButton>
+                                    <Download />
+                                    <DeleteButton onClick={(event) => handleDeleteClick(event, invoice.invoiceId)}>Delete</DeleteButton>
                                 </InvoiceItem>
                             ))}
                         </InvoiceList>
@@ -229,6 +240,7 @@ const InvoiceItem = styled.li`
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     &:hover {
         background: rgba(0, 0, 0, 0.3);
+        cursor: pointer; /* Added to show pointer on hover */
     }
 `;
 

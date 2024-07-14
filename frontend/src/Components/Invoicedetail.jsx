@@ -1,12 +1,55 @@
-import React from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import video from "../images/video1.mp4";
 import styled from "styled-components";
 import { BsBoxArrowInLeft } from "react-icons/bs";
-import { useNavigate } from "react-router-dom";
 import { FaEye } from "react-icons/fa6";
 
 function Invoicedetail() {
+    const { invoiceId } = useParams();
+    const [invoice, setInvoice] = useState(null);
     const navigate = useNavigate();
+
+    const fetchInvoiceDetail = useCallback(async () => {
+        const userId = localStorage.getItem('userId');
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/invoice/list`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    'x-access-token': `${token}`
+                },
+                body: JSON.stringify({
+                    pageNum: 1,
+                    pageSize: 10,
+                    searchCount: true,
+                    sortItemList: [
+                        {
+                            isAsc: true,
+                            column: "string"
+                        }
+                    ],
+                    userId: userId
+                })
+            });
+            const data = await response.json();
+            console.log("Fetched invoice details:", data);
+
+            if (data && data.data && data.data.list) {
+                const foundInvoice = data.data.list.find(inv => inv.invoiceId.toString() === invoiceId);
+                setInvoice(foundInvoice);
+            } else {
+                console.error("Invalid API response structure:", data);
+            }
+        } catch (error) {
+            console.error("Error fetching invoice details:", error);
+        }
+    }, [invoiceId]);
+
+    useEffect(() => {
+        fetchInvoiceDetail();
+    }, [fetchInvoiceDetail]);
 
     const handleArrowClick = () => {
         navigate("/my-invoice");
@@ -20,29 +63,32 @@ function Invoicedetail() {
             </video>
             <Maincontainer>
                 <ArrowIcon onClick={handleArrowClick} />
-                <InvoiceName>
-                    <Title>Invoice 1</Title>
-                    <FileTypeDropdown>
-                        <select>
-                            <option value="pdf">PDF</option>
-                            <option value="json">JSON</option>
-                            <option value="xml">XML</option>
-                        </select>
-                    </FileTypeDropdown>
-                    <Validate>Validate</Validate>
-                </InvoiceName>
-                <PreviewBox>
-                    <Preview/>
-                </PreviewBox>
-                <EmailBox>
-                    <EmailInput>
-                    <input
-                                type="text"
-                                placeholder="Email address"
-                            />
-                    </EmailInput>
-                    <EmailButton>Send</EmailButton>
-                </EmailBox>
+                {invoice ? (
+                    <>
+                        <InvoiceName>
+                            <Title>{invoice.fileName}</Title>
+                            <FileTypeDropdown>
+                                <select>
+                                    <option value="pdf">PDF</option>
+                                    <option value="json">JSON</option>
+                                    <option value="xml">XML</option>
+                                </select>
+                            </FileTypeDropdown>
+                            <Validate>Validate</Validate>
+                        </InvoiceName>
+                        <PreviewBox>
+                            <Preview />
+                        </PreviewBox>
+                        <EmailBox>
+                            <EmailInput>
+                                <input type="text" placeholder="Email address" />
+                            </EmailInput>
+                            <EmailButton>Send</EmailButton>
+                        </EmailBox>
+                    </>
+                ) : (
+                    <LoadingMessage>Loading invoice details...</LoadingMessage>
+                )}
             </Maincontainer>
         </div>
     );
@@ -65,7 +111,6 @@ const Maincontainer = styled.div`
     z-index: 1;
 `;
 
-
 const ArrowIcon = styled(BsBoxArrowInLeft)`
     position: relative;
     top: 20px;
@@ -81,6 +126,7 @@ const InvoiceName = styled.div`
     margin-top: 20px;
     flex-direction: row;
     align-items: center;
+    justify-content: flex-start;
     height:60px;
     width:100%;
     border-bottom: 3px solid rgba(255, 255, 255, 0.2);
@@ -89,10 +135,10 @@ const InvoiceName = styled.div`
 
 const Title = styled.h1`
     color: #ffffff;
-    text-transform: uppercase;
     letter-spacing: 0.1rem;
     font-size: 1.5rem;
     padding-left: 80px;
+    margin-right: 20px;
 `;
 
 const FileTypeDropdown = styled.div`
@@ -123,8 +169,8 @@ const Validate = styled.button`
     cursor: pointer;
     letter-spacing: 0.1rem;
     font-size:1rem;
-    margin-left: 150px;
     text-transform: uppercase;
+    margin-left: auto;
     &:hover {
         background-color: transparent;
         transition: all ease 0.5s;
@@ -207,4 +253,11 @@ const EmailButton = styled.button`
         background-color: transparent;
         transition: all ease 0.5s;
     }
+`;
+
+const LoadingMessage = styled.div`
+    color: #ffffff;
+    font-size: 1.5rem;
+    text-align: center;
+    margin-top: 50px;
 `;

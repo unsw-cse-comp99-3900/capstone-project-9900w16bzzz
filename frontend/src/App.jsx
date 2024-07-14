@@ -20,7 +20,7 @@ function App() {
             <Route path="/log-in" element={<Login />} />
             <Route path="/create-invoice" element={<InvoiceCreation />} />
             <Route path="/my-invoice" element={<Myinvoice />} />
-            <Route path="/invoice-detail" element={<Invoicedetail />} />
+            <Route path="/invoice/:invoiceId" element={<Invoicedetail />} />
           </Routes>
       </div>
     </Router>
