@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import javax.mail.MessagingException;
+import java.io.IOException;
 import java.math.BigInteger;
 
 public interface InvoiceFileService {
@@ -27,6 +28,8 @@ public interface InvoiceFileService {
     ResponseDTO<ValidateResultVO> validateInvoice(BigInteger invoiceId, String rules);
 
     ResponseDTO<String> sendInvoice(BigInteger invoiceId, FileType fileType, InvoiceSendForm sendForm) throws MessagingException;
+
+    ResponseDTO<String> convertInvoice(BigInteger invoiceId) throws IOException;
 
     @Getter
     @AllArgsConstructor

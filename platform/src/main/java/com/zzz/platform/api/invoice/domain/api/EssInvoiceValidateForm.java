@@ -1,7 +1,10 @@
 package com.zzz.platform.api.invoice.domain.api;
 
+import com.zzz.platform.utils.RulesUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author: zuoming yan
@@ -15,7 +18,7 @@ public class EssInvoiceValidateForm {
     private String customer;
 
     @Schema(description = "validate rules, using ',' to split")
-    private String rules;
+    private List<RulesUtil.RulesEnum> rules;
 
     @Schema(description = "file name")
     private String fileName;

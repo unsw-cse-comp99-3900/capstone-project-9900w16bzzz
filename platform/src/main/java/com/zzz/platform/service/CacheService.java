@@ -1,14 +1,16 @@
 package com.zzz.platform.service;
 
-import com.google.common.collect.Lists;
+import org.springframework.cache.Cache;
 import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 
 /**
  * @author: zuoming yan
@@ -18,26 +20,26 @@ import java.util.stream.Collectors;
 @Service
 public class CacheService {
 
+
     @Resource
     private CaffeineCacheManager caffeineCacheManager;
-
 
     /**
      * Get all cache names
      *
      */
     public List<String> cacheNames() {
-        return Lists.newArrayList(caffeineCacheManager.getCacheNames());
+        return new ArrayList<>(caffeineCacheManager.getCacheNames());
     }
 
     /**
      * All keys under a particular cache
      *
      */
-    public List<String> cacheKey(String cacheName) {
+    public List<String> cacheKeys(String cacheName) {
         CaffeineCache cache = (CaffeineCache) caffeineCacheManager.getCache(cacheName);
         if (cache == null) {
-            return Lists.newArrayList();
+            return List.of();  // 使用Java 9及以上版本中的List.of()创建一个空列表
         }
         Set<Object> cacheKey = cache.getNativeCache().asMap().keySet();
         return cacheKey.stream().map(Object::toString).collect(Collectors.toList());
@@ -47,7 +49,6 @@ public class CacheService {
      * remove cache
      *
      */
-
     public void removeCache(String cacheName) {
         CaffeineCache cache = (CaffeineCache) caffeineCacheManager.getCache(cacheName);
         if (cache != null) {
@@ -57,25 +58,34 @@ public class CacheService {
 
     /**
      * save key to cache
-     * @param cacheName cache key
+     * @param cacheName cache name
+     * @param key cache key
      * @param value value
      */
-    public void saveKey(String cacheName, Object value) {
+    public void saveKey(String cacheName, Object key, Object value) {
         CaffeineCache cache = (CaffeineCache) caffeineCacheManager.getCache(cacheName);
         if (cache != null) {
-            cache.put(cacheName, value);
+            cache.put(key, value);
         }
     }
 
-    public String getValue(String cacheName) {
+    /**
+     * Get value from cache by key
+     * @param cacheName cache name
+     * @param key cache key
+     * @return value as string
+     */
+    public String getValue(String cacheName, Object key) {
         CaffeineCache cache = (CaffeineCache) caffeineCacheManager.getCache(cacheName);
         if (cache != null) {
-            Object object = cache.get(cacheName);
-            if (object != null) {
-                return object.toString();
+            Cache.ValueWrapper valueWrapper = cache.get(key);
+            if (valueWrapper != null) {
+                Object value = valueWrapper.get();
+                if (value != null) {
+                    return value.toString();
+                }
             }
         }
         return "";
     }
-
 }

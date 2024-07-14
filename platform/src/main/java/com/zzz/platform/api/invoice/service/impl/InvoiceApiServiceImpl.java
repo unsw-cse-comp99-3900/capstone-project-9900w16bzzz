@@ -11,10 +11,10 @@ import com.zzz.platform.common.code.InvoiceErrorCode;
 import com.zzz.platform.common.domain.ResponseDTO;
 import com.zzz.platform.service.ApiService;
 import com.zzz.platform.service.CacheService;
+import com.zzz.platform.utils.RulesUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -44,7 +44,7 @@ import java.util.stream.Stream;
 @Service
 public class InvoiceApiServiceImpl implements InvoiceApiService {
 
-    private final static String API_TOKEN_CACHE_KEY = "api_token";
+    private final static String API_TOKEN_CACHE_KEY_NAME = "api_token";
 
     @Resource
     private ApiService apiService;
@@ -113,10 +113,11 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
         if (ObjectUtils.isEmpty(apiToken)) {
             return ResponseDTO.error(InvoiceErrorCode.GET_API_TOKEN_FAILED);
         }
+        String rules = RulesUtil.concatUrl(essInvoiceValidateForm.getRules());
         /* concat params with url */
         String urlWithParams = new StringBuilder(EssApiUrl.VALIDATION_URL.getUrl())
-                .append("?rules=").append(essInvoiceValidateForm.getRules())
-                .append("&customer=").append(essInvoiceValidateForm.getCustomer())
+                .append("?").append(rules)
+                .append("customer=").append(essInvoiceValidateForm.getCustomer())
                 .toString();
         /* build http body */
         HashMap<String, Object> body = new HashMap<>();
@@ -128,7 +129,7 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
         ResponseEntity<JSONObject> response = null;
         /* send POST request */
         for (int i = 0; i < 2; i++) {
-            headers.add(HttpHeaders.AUTHORIZATION, apiToken);
+            headers.setBearerAuth(apiToken);
             headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
             response = apiService.doPostJson(urlWithParams, headers, body);
             HttpStatus statusCode = response.getStatusCode();
@@ -144,7 +145,7 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
             } else if (statusCode.is4xxClientError()) {
                 /* API token authenticate failed, try to get a new token, then doPost once */
                 log.info("API token invalid, try again...");
-                cacheService.removeCache(API_TOKEN_CACHE_KEY);
+                cacheService.removeCache(API_TOKEN_CACHE_KEY_NAME);
                 apiToken = getApiToken();
             }
         }
@@ -155,7 +156,7 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
 
     private String getApiToken() {
         // get from cache, otherwise send POST request to api
-        String apiToken = cacheService.getValue(API_TOKEN_CACHE_KEY);
+        String apiToken = cacheService.getValue(API_TOKEN_CACHE_KEY_NAME, API_TOKEN_CACHE_KEY_NAME);
         if (!ObjectUtils.isEmpty(apiToken)) {
             return apiToken;
         }
@@ -164,17 +165,15 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
                         URLEncoder.encode(header.getValue(), StandardCharsets.UTF_8))
                 .collect(Collectors.joining("&"));
 
-        StringEntity entity = new StringEntity(params, StandardCharsets.UTF_8);
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE);
 
-        ResponseEntity<JSONObject> response = apiService.doPostJson(EssApiUrl.AUTH_TOKEN_URL.getUrl(), headers, entity);
+        ResponseEntity<JSONObject> response = apiService.doPost(EssApiUrl.AUTH_TOKEN_URL.getUrl(), headers, params);
         HttpStatus statusCode = response.getStatusCode();
         if (statusCode.is2xxSuccessful()) {
             JSONObject jsonObject = response.getBody();
             apiToken = jsonObject.get("access_token").toString();
-            apiToken = "Bearer\n" + apiToken;
-            cacheService.saveKey("api_token", apiToken);
+            cacheService.saveKey(API_TOKEN_CACHE_KEY_NAME, API_TOKEN_CACHE_KEY_NAME, apiToken);
             return apiToken;
         } else {
             log.error("Getting auth token failed");
@@ -205,8 +204,8 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
     enum AuthTokenHeader {
         GRANT_TYPE("grant_type", "client_credentials"),
         CLIENT_ID("client_id", "7d30bi87iptegbrf2bp37p42gg"),
-        CLIENT_SECRET("client_secret", "880tema3rvh3h63j4nquvgoh0lgts11n09bq8597fgrkvvd62su"),
-        SCOPE("scope", "eat/read");
+        CLIENT_SECRET("client_secret", "880tema3rvh3h63j4nquvgoh0lgts11n09bq8597fgrkvvd62su");
+        //SCOPE("scope", "eat/read");
         ;
         private final String key;
         private final String value;

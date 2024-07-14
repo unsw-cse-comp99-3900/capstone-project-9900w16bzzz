@@ -27,6 +27,8 @@ public enum InvoiceErrorCode implements ErrorCode{
     INVOICE_FILE_DOES_NOT_EXIST(40007, "Selected invoice file not exist, please check it"),
 
     INVOICE_LIST_QUERY_FAILED(40008, "Query invoice list failed, please check it"),
+
+    VALIDATION_RULES_ERROR(40009, "Validation rules error, please check it"),
     ;
 
     private final int code;

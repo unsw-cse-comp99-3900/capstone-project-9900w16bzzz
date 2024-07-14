@@ -41,6 +41,8 @@ public class CaptchaService {
     @Resource
     private CacheService cacheService;
 
+    private final static String CAPTCHA_CACHE_KEY_NAME = "captcha_cache";
+
     /**
      * Generate graphical CAPTCHA
      *
@@ -71,7 +73,7 @@ public class CaptchaService {
         if (!systemEnvironment.isProd()) {
             captchaVO.setCaptchaText(captchaText);
         }
-        cacheService.saveKey(uuid, captchaText);
+        cacheService.saveKey(CAPTCHA_CACHE_KEY_NAME, uuid, captchaText);
         return captchaVO;
     }
 
@@ -87,7 +89,7 @@ public class CaptchaService {
          * 1、check captcha in cahce
          */
         String uuid = captchaForm.getCaptchaUuid();
-        String redisCaptchaCode = cacheService.getValue(uuid);
+        String redisCaptchaCode = cacheService.getValue(CAPTCHA_CACHE_KEY_NAME, uuid);
         if (StringUtils.isBlank(redisCaptchaCode)) {
             return ResponseDTO.userErrorParam("Captcha has expired, please refresh and try again.");
         }

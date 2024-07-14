@@ -18,6 +18,7 @@ import com.zzz.platform.common.code.InvoiceErrorCode;
 import com.zzz.platform.common.domain.ResponseDTO;
 import com.zzz.platform.common.enumeration.FileType;
 import com.zzz.platform.utils.EncodeUtil;
+import com.zzz.platform.utils.RulesUtil;
 import lombok.extern.slf4j.Slf4j;
 import oasis.names.specification.ubl.schema.xsd.invoice_21.InvoiceType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -69,6 +71,14 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
 
     public void saveInvoiceContentInDB(BigInteger invoiceId, byte[] content, FileType filetype) {
         // save file to DB
+        InvoiceFileEntity entity = invoiceFileDao.selectOne(
+                new QueryWrapper<InvoiceFileEntity>()
+                        .eq(InvoiceFileDbColumn.INVOICE_ID.getVal(), invoiceId)
+                        .eq(InvoiceFileDbColumn.FILE_TYPE.getVal(), filetype.getValue())
+        );
+        if (ObjectUtils.isNotEmpty(entity)) {
+            invoiceFileDao.deleteById(entity);
+        }
         InvoiceFileEntity invoiceFileEntity = new InvoiceFileEntity();
         invoiceFileEntity.setFileType(filetype.getValue());
         invoiceFileEntity.setInvoiceId(invoiceId);
@@ -93,10 +103,9 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
 
     public ResponseDTO<ValidateResultVO> validateInvoice(BigInteger invoiceId, String rules) {
         // search json file from db
-        byte[] bytes = getFileContent(invoiceId, FileType.JSON);
+        byte[] bytes = getFileContent(invoiceId, FileType.XML);
         String fileName = invoiceDbServiceImpl.getFileNameById(invoiceId);
-
-        ResponseDTO<ValidateResultVO> responseDTO = validate(bytes, fileName, rules);
+        ResponseDTO<ValidateResultVO> responseDTO = validate(bytes, fileName, rules, String.valueOf(invoiceId));
         if (responseDTO.getOk()) {
             updateValidateResult(invoiceId, responseDTO.getData());
         }
@@ -136,13 +145,30 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
     }
 
     @Override
-    public ResponseDTO<ValidateResultVO> validateInvoice(BigInteger invoiceId, String rules, InvoiceJsonVO invoiceJsonVO) {
-        String fileName = invoiceDbServiceImpl.getFileNameById(invoiceId);
+    public ResponseDTO<String> convertInvoice(BigInteger invoiceId) throws IOException {
+        InvoiceFileEntity entity = invoiceFileDao.selectOne(
+                new QueryWrapper<InvoiceFileEntity>()
+                        .eq(InvoiceFileDbColumn.INVOICE_ID.getVal(), invoiceId)
+                        .eq(InvoiceFileDbColumn.FILE_TYPE.getVal(), FileType.JSON.getValue())
+        );
+        if (entity == null) {
+            return ResponseDTO.error(InvoiceErrorCode.INVOICE_FILE_DOES_NOT_EXIST);
+        }
+        InvoiceJsonVO invoiceJsonVO = objectMapper.readValue(entity.getContent(), InvoiceJsonVO.class);
         byte[] ublXml = convertJsonToUbl(invoiceJsonVO);
         // save invoice ubl in db
         saveInvoiceContentInDB(invoiceId, ublXml, FileType.XML);
+        return ResponseDTO.ok();
+    }
 
-        ResponseDTO<ValidateResultVO> responseDTO = validate(ublXml, fileName, rules);
+    @Override
+    public ResponseDTO<ValidateResultVO> validateInvoice(BigInteger invoiceId, String rules, InvoiceJsonVO invoiceJsonVO) {
+        byte[] ublXml = convertJsonToUbl(invoiceJsonVO);
+        // save invoice ubl in db
+        saveInvoiceContentInDB(invoiceId, ublXml, FileType.XML);
+        String fileName = invoiceDbServiceImpl.getFileNameById(invoiceId);
+
+        ResponseDTO<ValidateResultVO> responseDTO = validate(ublXml, fileName, rules, String.valueOf(invoiceId));
         if (responseDTO.getOk()) {
             updateValidateResult(invoiceId, responseDTO.getData());
         }
@@ -164,13 +190,22 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
         return UBL21Writer.invoice().getAsBytes(invoiceType);
     }
 
-    private ResponseDTO<ValidateResultVO> validate(byte[] ublXml, String fileName, String rules) {
+    private ResponseDTO<ValidateResultVO> validate(byte[] ublXml, String fileName, String rules, String customer) {
+        fileName = jointFileName(fileName, FileType.XML);
+
         EssInvoiceValidateForm essInvoiceValidateForm = new EssInvoiceValidateForm();
         essInvoiceValidateForm.setFileName(fileName);
-        essInvoiceValidateForm.setContent(EncodeUtil.base64Encode(ublXml));
-        String md5sum = EncodeUtil.md5Encode(ublXml);
+        String encode = EncodeUtil.base64Encode(ublXml);
+        essInvoiceValidateForm.setContent(encode);
+        String md5sum = EncodeUtil.md5Encode(encode.getBytes());
         essInvoiceValidateForm.setChecksum(md5sum);
-        essInvoiceValidateForm.setRules(rules);
+
+        List<RulesUtil.RulesEnum> rulesEnumList = RulesUtil.splitRules(rules);
+        if (ObjectUtils.isEmpty(rulesEnumList)) {
+            return ResponseDTO.error(InvoiceErrorCode.VALIDATION_RULES_ERROR);
+        }
+        essInvoiceValidateForm.setRules(rulesEnumList);
+        essInvoiceValidateForm.setCustomer(customer);
         return invoiceApiServiceImpl.essValidateInvoice(essInvoiceValidateForm);
     }
 
@@ -178,7 +213,7 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
         int lastDotIndex = fileName.lastIndexOf('.');
         if (lastDotIndex == -1) {
             // add file suffix
-            fileName += "." + fileType;
+            fileName += "." + fileType.getDesc();
         } else {
             // replace file suffix
             fileName = fileName.substring(0, lastDotIndex) + "." + fileType;

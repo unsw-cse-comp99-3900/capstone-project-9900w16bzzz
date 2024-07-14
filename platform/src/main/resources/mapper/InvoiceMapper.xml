@@ -48,7 +48,7 @@
     <update id="updateValidationFlag">
         UPDATE t_invoice
         <set>
-            validation_flag = #{flag}
+            validation_flag = #{validationFlag}
         </set>
         WHERE invoice_id = #{invoiceId}
     </update>

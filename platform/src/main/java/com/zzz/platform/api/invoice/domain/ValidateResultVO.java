@@ -2,6 +2,7 @@ package com.zzz.platform.api.invoice.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import java.util.Map;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class ValidateResultVO {
 
     private String customer;
@@ -22,11 +24,12 @@ public class ValidateResultVO {
 
     @Data
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Report {
         private boolean successful;
         private String summary;
         private String filename;
-        private Map<String, RuleReport> reports;
+        private Map<String, ReportDetail> reports;
         private int firedAssertionErrorsCount;
         private List<String> allAssertionErrorCodes;
         private int firedSuccessfulReportsCount;
@@ -34,15 +37,27 @@ public class ValidateResultVO {
 
     @Data
     @AllArgsConstructor
-    public static class RuleReport {
+    @NoArgsConstructor
+    public static class ReportDetail {
         private String rules;
         private boolean successful;
         private String summary;
-        private List<String> firedAssertionErrors;
+        private List<AssertionError> firedAssertionErrors;
         private List<String> firedSuccessfulReports;
-        private int firedAssertionErrorsCount;
         private int firedSuccessfulReportsCount;
+        private int firedAssertionErrorsCount;
         private List<String> firedAssertionErrorCodes;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class AssertionError {
+        private String id;
+        private String text;
+        private String location;
+        private String test;
+        private String flag;
     }
 
 }
