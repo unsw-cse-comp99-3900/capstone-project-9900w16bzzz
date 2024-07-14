@@ -3,6 +3,7 @@ import video from "../images/video1.mp4";
 import styled from "styled-components";
 import { BsBoxArrowInLeft } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
+import { FaEye } from "react-icons/fa6";
 
 function Invoicedetail() {
     const navigate = useNavigate();
@@ -31,7 +32,7 @@ function Invoicedetail() {
                     <Validate>Validate</Validate>
                 </InvoiceName>
                 <PreviewBox>
-
+                    <Preview/>
                 </PreviewBox>
                 <EmailBox>
                     <EmailInput>
@@ -120,7 +121,6 @@ const Validate = styled.button`
     border: 2px solid #6414FF;
     border-radius: 20px;
     cursor: pointer;
-    font-weight: bold;
     letter-spacing: 0.1rem;
     font-size:1rem;
     margin-left: 150px;
@@ -140,6 +140,17 @@ const PreviewBox = styled.div`
     width:90%;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 20px;
+`;
+
+const Preview = styled(FaEye)`
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    font-size: 2rem;
+    &:hover {
+        cursor: pointer;
+    }
 `;
 
 const EmailBox = styled.div`
@@ -165,9 +176,16 @@ const EmailInput = styled.div`
         color: #ffffff;
         font-size: 1rem;
         outline: none;
+        box-shadow: 0 0 0 0.1rem #9a86d2;
 
         &::placeholder {
             color: rgba(255, 255, 255, 0.7);
+        }
+        &:focus {
+        display: inline-block;
+        box-shadow: 0 0 0 0.2rem #b9abe0;
+        backdrop-filter: blur(12rem);
+        border-radius: 2rem;
         }
     }
 `;
@@ -181,7 +199,6 @@ const EmailButton = styled.button`
     border-radius: 20px;
     border: 2px solid #6414FF;
     cursor: pointer;
-    font-weight: bold;
     letter-spacing: 0.1rem;
     font-size:1rem;
     margin-left: 20px;
