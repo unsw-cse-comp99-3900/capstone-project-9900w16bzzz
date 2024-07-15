@@ -106,6 +106,7 @@ const UserMenu = ({ username }) => {
       <DropdownContent show={showDropdown}>
         <UsernameDisplay>{username}</UsernameDisplay>
         <DropdownItem to="/settings">Settings</DropdownItem>
+        <DropdownItem to="/reset-password">Reset Password</DropdownItem>
         <DropdownItem to="/" onClick={()=>{
             localStorage.removeItem('username');
             localStorage.removeItem('token');

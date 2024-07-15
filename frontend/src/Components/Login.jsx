@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import video from "../images/video1.mp4";
 import styled from "styled-components";
 import SignupButton from "./SignupButton";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -98,7 +98,6 @@ function Login (){
                 <ButtonContainer onClick={handleLogin}>
                     <SignupButton content="Log in"/>
                 </ButtonContainer>
-                <StyledLink>Reset Password</StyledLink>
             </Maincontainer>
         </div>
     )
@@ -176,14 +175,4 @@ const ErrorText = styled.div`
   font-weight: bold;
 `;
 
-const StyledLink = styled(Link)`
-    margin-top: 2rem;
-    color: #ffffff;
-    font-size: 0.7rem;
-    letter-spacing: 0rem;
-    text-decoration: none;
-    &:hover {
-        text-decoration: underline;
-    }
-`;
 export default Login;
