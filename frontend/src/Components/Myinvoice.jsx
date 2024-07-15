@@ -105,16 +105,16 @@ function Myinvoice() {
                                             Validation Fail
                                         </ValidationFail>
                                     )}
-                                     <DownloadContainer>
+                                    <DownloadContainer>
                                         <Download onClick={(event) => {
                                             event.stopPropagation();
                                             handleDropdownToggle(invoice.invoiceId);
                                         }} />
                                         {openDropdown === invoice.invoiceId && (
                                             <DownloadOptions>
-                                                <DownloadOption>PDF</DownloadOption>
-                                                <DownloadOption>JSON</DownloadOption>
-                                                <DownloadOption>XML</DownloadOption>
+                                                {invoice.pdfFlag === 1 && <DownloadOption>PDF</DownloadOption>}
+                                                {invoice.jsonFlag === 1 && <DownloadOption>JSON</DownloadOption>}
+                                                {invoice.xmlFlag === 1 && <DownloadOption>XML</DownloadOption>}
                                             </DownloadOptions>
                                         )}
                                     </DownloadContainer>
