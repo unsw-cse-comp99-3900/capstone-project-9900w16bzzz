@@ -5,6 +5,7 @@ import { FaSearch } from "react-icons/fa";
 import { BiDownload } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import deleteInvoice from "./Deleteinvoice";
+import DownloadInvoice from "./Downloadinvoice";
 
 function Myinvoice() {
     const [invoiceData, setInvoiceData] = useState([]);
@@ -61,12 +62,20 @@ function Myinvoice() {
         deleteInvoice(invoiceId, setInvoiceData, invoiceData);
     };
 
+    const handleDropdownToggle = (event, invoiceId) => {
+        event.stopPropagation();
+        setOpenDropdown(openDropdown === invoiceId ? null : invoiceId);
+    };
+
+    const handleDownloadClick = (event, invoiceId, fileType) => {
+        event.stopPropagation();
+        event.preventDefault();
+        DownloadInvoice(invoiceId, fileType);
+    };
+
     const filteredInvoices = invoiceData.filter((invoice) =>
         invoice.fileName.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    const handleDropdownToggle = (invoiceId) => {
-        setOpenDropdown(openDropdown === invoiceId ? null : invoiceId);
-    };
 
     return (
         <div id="main">
@@ -106,15 +115,12 @@ function Myinvoice() {
                                         </ValidationFail>
                                     )}
                                     <DownloadContainer>
-                                        <Download onClick={(event) => {
-                                            event.stopPropagation();
-                                            handleDropdownToggle(invoice.invoiceId);
-                                        }} />
+                                        <Download onClick={(event) => handleDropdownToggle(event, invoice.invoiceId)} />
                                         {openDropdown === invoice.invoiceId && (
                                             <DownloadOptions>
-                                                {invoice.pdfFlag === 1 && <DownloadOption>PDF</DownloadOption>}
-                                                {invoice.jsonFlag === 1 && <DownloadOption>JSON</DownloadOption>}
-                                                {invoice.xmlFlag === 1 && <DownloadOption>XML</DownloadOption>}
+                                                {invoice.pdfFlag === 1 && <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 3)}>PDF</DownloadOption>}
+                                                {invoice.jsonFlag === 1 && <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 1)}>JSON</DownloadOption>}
+                                                {invoice.xmlFlag === 1 && <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 2)}>XML</DownloadOption>}
                                             </DownloadOptions>
                                         )}
                                     </DownloadContainer>
@@ -208,6 +214,7 @@ const SearchIcon = styled(FaSearch)`
         cursor: pointer;
     }
 `;
+
 const DownloadContainer = styled.div`
     position: relative;
     display: inline-block;
