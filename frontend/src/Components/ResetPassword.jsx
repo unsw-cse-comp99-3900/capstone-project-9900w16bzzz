@@ -13,12 +13,25 @@ function ResetPassword() {
 
   const navigate = useNavigate();
 
+  const validatePassword = (password) => {
+    if (password.length < 6) {
+      return 'Password must be at least 6 characters long.';
+    }
+    return '';
+  };
+
   const handleResetPassword = async () => {
     setError('');
     setSuccessMessage('');
 
+    const passwordError = validatePassword(newPassword);
+    if (passwordError) {
+      setError(passwordError);
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
-      setError('New passwords do not match.');
+      setError('The passwords entered twice do not match.');
       return;
     }
 
@@ -38,7 +51,7 @@ function ResetPassword() {
         body: JSON.stringify({
           oldPassword,
           newPassword,
-          userId:localStorage.getItem("userId")
+          userId: localStorage.getItem("userId")
         }),
       });
 
@@ -178,7 +191,7 @@ const InputContainer = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-  margin-top: 1rem;
+  margin-top: 1.8rem; 
   width: 100%;
   height: 10%;
   display: flex;
