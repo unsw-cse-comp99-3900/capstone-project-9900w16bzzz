@@ -1,12 +1,12 @@
 import InvoiceForm from "./InvoiceCreationComponents/InvoiceForm";
 import React, { useState } from 'react';
-import { color, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import styled from "styled-components";
 import video from "../images/video1.mp4";
-import { Link } from "react-router-dom";
 import GetStarted from "./InvoiceCreationComponents/GetStarted";
 import UploadPage from "./InvoiceCreationComponents/UploadPage";
 import ChooseConvertOption from "./InvoiceCreationComponents/ChooseConvertOption";
+import SucceedPage from "./InvoiceCreationComponents/SuccessedPage";
 
 const InvoiceCreation = () => {
   const [step, setStep] = useState(0);
@@ -72,13 +72,7 @@ const InvoiceCreation = () => {
             exit={{ opacity: 0 }}
             transition={transition}
           >
-              <h1 style={{ color: "white" }}>Invoice created! You can check your invoice in the{" "}
-                <Link to="/my-invoice" style={{ color: 'white', textDecoration: 'underline' }}>
-                  MY INVOICE
-                </Link>{" "}
-                page.
-              </h1>
-            <StyledButton onClick={()=> goToStep(0)}>Create new one!</StyledButton>
+            <SucceedPage goToStep={goToStep} />
           </motion.div>
         )}
       </MainContainer>
@@ -96,27 +90,6 @@ const MainContainer = styled.div`
     justify-content: center;
     align-items: flex-start;
     z-index: 1;
-`;
-
-const StyledButton = styled.button`
-    background-color: #6414FF;
-    text-transform: uppercase;
-    letter-spacing: 0.1rem;
-    margin-left: 6rem;
-    width: 50%;
-    height: 2.3rem;
-    border: none;
-    background-color: #6414FF;
-    border-radius: 70px;
-	color:#ffffff;
-    font-weight: bold;
-    cursor: pointer;
-    &:hover{
-        background-color: transparent;
-        transition: all ease 0.5s;
-        color: #ffffff;
-        border: 2px solid #6414FF;
-    }
 `;
 
 const BackgroundVideo = styled.video`

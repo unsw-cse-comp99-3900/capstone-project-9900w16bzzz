@@ -31,8 +31,9 @@ const UserNameDisplay = styled.div`
 
 const DropdownContent = styled.div`
   position: absolute;
-  left: 0;
+  left: 50%;
   top: 100%;
+  transform: translateX(-50%);
   margin-top: 5px;
   min-width: 200px;
   background-color: rgba(0, 0, 0, 0.5);
