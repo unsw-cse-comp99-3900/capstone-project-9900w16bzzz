@@ -2,13 +2,17 @@
 
 ## How to deploy the project docker environment with one click
 
+> @author Zuoming Yan @date 16/07/2024
+
 First of all, ensure your project code is up-to-date, you can run code like below:
 
 ```
 (base) yanzuoming@Johns-MacBook-Pro EazyinvoiceServer % git pull
 ```
 
-and then, modify the access path port in the `.env ` file as follows:
+And ensure that ports `80`, `3306`, `3000`, and `9900` are not occupied in your environment.
+
+After that, modify the access path port in the `.env ` file as follows:
 
 ```
 REACT_APP_SERVER_URL=http://localhost:80
