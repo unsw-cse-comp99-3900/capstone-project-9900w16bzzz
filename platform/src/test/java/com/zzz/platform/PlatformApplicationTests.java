@@ -11,11 +11,4 @@ class PlatformApplicationTests {
     @Resource
     private CacheService cacheService;
 
-    @Test
-    void contextLoads() {
-        cacheService.saveKey("test","test","value");
-
-        System.out.println(cacheService.getValue("test","test"));
-    }
-
 }
