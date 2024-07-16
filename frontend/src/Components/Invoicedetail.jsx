@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import video from "../images/video1.mp4";
 import styled from "styled-components";
 import { BsBoxArrowInLeft } from "react-icons/bs";
-import { FaEye, FaEyeSlash } from "react-icons/fa6";
+import Preview from "./Preview";
 
 function Invoicedetail() {
     const { invoiceId } = useParams();
@@ -107,13 +107,10 @@ function Invoicedetail() {
                             </FileTypeDropdown>
                             <Validate>Validate</Validate>
                         </InvoiceName>
-                        <PreviewBox>
-                            {selectedFileType === "pdf" ? (
-                                <Preview onClick={handlePreviewClick} />
-                            ) : (
-                                <NoPreview />
-                            )}
-                        </PreviewBox>
+                        <Preview
+                            selectedFileType={selectedFileType}
+                            handlePreviewClick={handlePreviewClick}
+                        />
                         <EmailBox>
                             <EmailInput>
                                 <input type="text" placeholder="Email address" />
@@ -209,39 +206,6 @@ const Validate = styled.button`
     &:hover {
         background-color: transparent;
         transition: all ease 0.5s;
-    }
-`;
-
-const PreviewBox = styled.div`
-    position: relative;
-    margin-top: 20px;
-    margin-left: 30px;
-    margin-right: 30px;
-    height: 240px;
-    width: 90%;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 20px;
-`;
-
-const Preview = styled(FaEye)`
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2rem;
-    &:hover {
-        cursor: pointer;
-    }
-`;
-
-const NoPreview = styled(FaEyeSlash)`
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2rem;
-    &:hover {
-        cursor: pointer;
     }
 `;
 
