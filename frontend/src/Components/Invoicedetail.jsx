@@ -9,6 +9,9 @@ function Invoicedetail() {
     const { invoiceId } = useParams();
     const [invoice, setInvoice] = useState(null);
     const navigate = useNavigate();
+    const getFileNameWithoutExtension = (fileName) => {
+        return fileName.replace(/\.[^/.]+$/, "");
+    };
 
     const fetchInvoiceDetail = useCallback(async () => {
         const userId = localStorage.getItem('userId');
@@ -66,7 +69,7 @@ function Invoicedetail() {
                 {invoice ? (
                     <>
                         <InvoiceName>
-                            <Title>{invoice.fileName}</Title>
+                            <Title>{getFileNameWithoutExtension(invoice.fileName)}</Title>
                             <FileTypeDropdown>
                                 <select>
                                     {invoice.pdfFlag === 1 && <option value="pdf">PDF</option>}

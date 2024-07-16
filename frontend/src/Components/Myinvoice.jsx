@@ -73,6 +73,10 @@ function Myinvoice() {
         DownloadInvoice(invoiceId, fileType);
     };
 
+    const getFileNameWithoutExtension = (fileName) => {
+        return fileName.replace(/\.[^/.]+$/, "");
+    };
+
     const filteredInvoices = invoiceData.filter((invoice) =>
         invoice.fileName.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -101,7 +105,7 @@ function Myinvoice() {
                         <InvoiceList>
                             {filteredInvoices.map((invoice) => (
                                 <InvoiceItem key={invoice.invoiceId} onClick={() => handleInvoiceClick(invoice.invoiceId)}>
-                                    <InvoiceName>{invoice.fileName}</InvoiceName>
+                                    <InvoiceName>{getFileNameWithoutExtension(invoice.fileName)}</InvoiceName>
                                     {invoice.validationFlag === 1 && (
                                         <ValidationPass>
                                             <StatusCircleGreen />
