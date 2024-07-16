@@ -3,12 +3,14 @@ import { useParams, useNavigate } from "react-router-dom";
 import video from "../images/video1.mp4";
 import styled from "styled-components";
 import { BsBoxArrowInLeft } from "react-icons/bs";
-import { FaEye } from "react-icons/fa6";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
 function Invoicedetail() {
     const { invoiceId } = useParams();
     const [invoice, setInvoice] = useState(null);
+    const [selectedFileType, setSelectedFileType] = useState(null);
     const navigate = useNavigate();
+
     const getFileNameWithoutExtension = (fileName) => {
         return fileName.replace(/\.[^/.]+$/, "");
     };
@@ -42,6 +44,13 @@ function Invoicedetail() {
             if (data && data.data && data.data.list) {
                 const foundInvoice = data.data.list.find(inv => inv.invoiceId.toString() === invoiceId);
                 setInvoice(foundInvoice);
+                if (foundInvoice.pdfFlag === 1) {
+                    setSelectedFileType("pdf");
+                } else if (foundInvoice.jsonFlag === 1) {
+                    setSelectedFileType("json");
+                } else if (foundInvoice.xmlFlag === 1) {
+                    setSelectedFileType("xml");
+                }
             } else {
                 console.error("Invalid API response structure:", data);
             }
@@ -58,6 +67,25 @@ function Invoicedetail() {
         navigate("/my-invoice");
     };
 
+    const handlePreviewClick = async () => {
+        if (invoice && selectedFileType === "pdf") {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/invoice/download?invoiceId=${invoiceId}&fileType=3`, {
+                method: 'GET',
+                headers: {
+                    'x-access-token': `${token}`
+                }
+            });
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            window.open(url, '_blank');
+        }
+    };
+
+    const handleFileTypeChange = (event) => {
+        setSelectedFileType(event.target.value);
+    };
+
     return (
         <div id="main">
             <video autoPlay muted loop id="background-video-signup">
@@ -71,7 +99,7 @@ function Invoicedetail() {
                         <InvoiceName>
                             <Title>{getFileNameWithoutExtension(invoice.fileName)}</Title>
                             <FileTypeDropdown>
-                                <select>
+                                <select onChange={handleFileTypeChange} value={selectedFileType}>
                                     {invoice.pdfFlag === 1 && <option value="pdf">PDF</option>}
                                     {invoice.jsonFlag === 1 && <option value="json">JSON</option>}
                                     {invoice.xmlFlag === 1 && <option value="xml">XML</option>}
@@ -80,7 +108,11 @@ function Invoicedetail() {
                             <Validate>Validate</Validate>
                         </InvoiceName>
                         <PreviewBox>
-                            <Preview />
+                            {selectedFileType === "pdf" ? (
+                                <Preview onClick={handlePreviewClick} />
+                            ) : (
+                                <NoPreview />
+                            )}
                         </PreviewBox>
                         <EmailBox>
                             <EmailInput>
@@ -130,8 +162,8 @@ const InvoiceName = styled.div`
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    height:60px;
-    width:100%;
+    height: 60px;
+    width: 100%;
     border-bottom: 3px solid rgba(255, 255, 255, 0.2);
     padding-right: 20px;
 `;
@@ -171,7 +203,7 @@ const Validate = styled.button`
     border-radius: 20px;
     cursor: pointer;
     letter-spacing: 0.1rem;
-    font-size:1rem;
+    font-size: 1rem;
     text-transform: uppercase;
     margin-left: auto;
     &:hover {
@@ -185,8 +217,8 @@ const PreviewBox = styled.div`
     margin-top: 20px;
     margin-left: 30px;
     margin-right: 30px;
-    height:240px;
-    width:90%;
+    height: 240px;
+    width: 90%;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 20px;
 `;
@@ -195,7 +227,18 @@ const Preview = styled(FaEye)`
     position: relative;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); 
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    &:hover {
+        cursor: pointer;
+    }
+`;
+
+const NoPreview = styled(FaEyeSlash)`
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     font-size: 2rem;
     &:hover {
         cursor: pointer;
@@ -231,10 +274,10 @@ const EmailInput = styled.div`
             color: rgba(255, 255, 255, 0.7);
         }
         &:focus {
-        display: inline-block;
-        box-shadow: 0 0 0 0.2rem #b9abe0;
-        backdrop-filter: blur(12rem);
-        border-radius: 2rem;
+            display: inline-block;
+            box-shadow: 0 0 0 0.2rem #b9abe0;
+            backdrop-filter: blur(12rem);
+            border-radius: 2rem;
         }
     }
 `;
@@ -249,7 +292,7 @@ const EmailButton = styled.button`
     border: 2px solid #6414FF;
     cursor: pointer;
     letter-spacing: 0.1rem;
-    font-size:1rem;
+    font-size: 1rem;
     margin-left: 20px;
     text-transform: uppercase;
     &:hover {
