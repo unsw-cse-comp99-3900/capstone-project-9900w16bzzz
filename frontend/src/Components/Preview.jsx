@@ -2,7 +2,22 @@ import React from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa6';
 import styled from 'styled-components';
 
-const Preview = ({ selectedFileType, handlePreviewClick }) => {
+const Preview = ({ selectedFileType, invoiceId }) => {
+    const handlePreviewClick = async () => {
+        if (selectedFileType === "pdf") {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/invoice/download?invoiceId=${invoiceId}&fileType=3`, {
+                method: 'GET',
+                headers: {
+                    'x-access-token': `${token}`
+                }
+            });
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            window.open(url, '_blank');
+        }
+    };
+
     return (
         <PreviewBox>
             {selectedFileType === "pdf" ? (

@@ -67,21 +67,6 @@ function Invoicedetail() {
         navigate("/my-invoice");
     };
 
-    const handlePreviewClick = async () => {
-        if (invoice && selectedFileType === "pdf") {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/invoice/download?invoiceId=${invoiceId}&fileType=3`, {
-                method: 'GET',
-                headers: {
-                    'x-access-token': `${token}`
-                }
-            });
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            window.open(url, '_blank');
-        }
-    };
-
     const handleFileTypeChange = (event) => {
         setSelectedFileType(event.target.value);
     };
@@ -109,7 +94,7 @@ function Invoicedetail() {
                         </InvoiceName>
                         <Preview
                             selectedFileType={selectedFileType}
-                            handlePreviewClick={handlePreviewClick}
+                            invoiceId={invoiceId}
                         />
                         <EmailBox>
                             <EmailInput>
