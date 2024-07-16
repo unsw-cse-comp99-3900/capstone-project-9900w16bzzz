@@ -5,7 +5,14 @@ import { Link } from 'react-router-dom';
 const UserMenuContainer = styled.div`
   position: relative;
   display: inline-block;
+  @media (max-width: 1100px) {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
 `;
+
 
 const UserNameDisplay = styled.div`
   font-family: 'Lato';
@@ -27,6 +34,11 @@ const UserNameDisplay = styled.div`
     color: #ffffff;
     box-shadow: 5px 10px 30px rgba(64, 64, 198, 0.411);
   }
+
+  @media (max-width: 1100px) {
+    width: 100%;
+    text-align: center;
+  }
 `;
 
 const DropdownContent = styled.div`
@@ -35,7 +47,7 @@ const DropdownContent = styled.div`
   top: 100%;
   transform: translateX(-50%);
   margin-top: 5px;
-  min-width: 200px;
+  min-width: 100px;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 10px;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);

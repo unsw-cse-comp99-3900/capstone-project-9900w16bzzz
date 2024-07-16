@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { ReactComponent as ArrowIcon } from "../../images/arrow.svg";
 import FormInput from "./FormInput";
-import SelectInput from "./FromSelector";
+import SelectInput from "./FormSelector";
 
 function InvoiceForm({ goToStep, invoice }) {
     const [formData, setFormData] = useState({});
     const [expandedSection, setExpandedSection] = useState(null);
     const [isFormValid, setIsFormValid] = useState(false);
+    const [selectedRule, setSelectedRule] = useState(null);
 
     useEffect(() => {
         setIsFormValid(validateForm(formData));
@@ -214,6 +215,44 @@ const handleInputChange = (field, value) => {
         ]
     };
 
+    const uploadEditedInvoice = async () => {
+        if (!selectedRule) {
+            alert('You have to select validation rule!');
+            return;
+        }
+
+        try {
+            const invoiceId = invoice.invoiceId;
+            const rules = "rules=AUNZ_PEPPOL_1_0_10&rules=AUNZ_PEPPOL_SB_1_0_10&rules=AUNZ_UBL_1_0_10";
+            let endpoint = `${process.env.REACT_APP_SERVER_URL}/invoice/validate?invoiceId=${invoiceId}&${rules}`;
+            let token = localStorage.getItem("token");
+            const response = await fetch(`${endpoint}`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'x-access-token': `${token}`
+              },
+              body: JSON.stringify(formData),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            if (data.ok) {
+                console.log(data);
+            }
+            if (!data.ok) {
+              throw new Error('Server response was not ok');
+            }
+            
+          } catch (error) {
+            console.error('Error processing file:', error);
+            alert('An error occurred while processing the file. Please try again.');
+          }
+
+    }
+
     return (
         <MainContainer className="name">
             <ArrowButton onClick={() => goToStep(2)}>
@@ -234,15 +273,38 @@ const handleInputChange = (field, value) => {
                             )
                         )
                     )}
-                    <SubmitButton className="header-btn" onClick={() => {
-                        if (isFormValid) {
-                            console.log(formData);
-                            // 这里添加提交逻辑
-                          } else {
-                            const emptyFields = findEmptyFields(formData);
-                            alert(`Please fill in the following fields: ${emptyFields.join(', ')}`);
-                          }
-                    }} isValid={isFormValid} >Validation</SubmitButton>
+                    <ValidationWrapper>
+                      <ButtonWrapper>
+                        <SubmitButton 
+                          className="header-btn" 
+                          onClick={() => {
+                            if (isFormValid) {
+                              console.log(formData);
+                              console.log('Selected Rule:', selectedRule);
+                                uploadEditedInvoice();
+                            } else {
+                              const emptyFields = findEmptyFields(formData);
+                              alert(`Please fill in the following fields: ${emptyFields.join(', ')}`);
+                            }
+                          }} 
+                          isValid={isFormValid}
+                        >
+                          Validate
+                        </SubmitButton>
+                      </ButtonWrapper>
+                      <SelectWrapper>
+                        <SelectInput
+                          placeholder={'Validation Rule'}
+                          value={selectedRule || ''}
+                          onChange={(value) => setSelectedRule(value)}
+                          options={[
+                            { value: 'default', label: 'Default Rule    ' },
+                            { value: 'strict', label: 'Strict Rule    ' },
+                            { value: 'loose', label: 'Loose Rule    ' }
+                          ]}
+                        />
+                      </SelectWrapper>
+                    </ValidationWrapper>
                 </ScrollableContent>
             </Content>
             <ArrowButton disabled style={{ opacity: 0, cursor: "not-allowed", "pointerEvents": "none" }}>
@@ -251,6 +313,25 @@ const handleInputChange = (field, value) => {
         </MainContainer>
     );
 }
+
+const ValidationWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 15px 0;
+  position: relative;
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const SelectWrapper = styled.div`
+  position: absolute;
+  right: 0;
+`;
 
 const FieldGrid = styled.div`
     display: grid;
