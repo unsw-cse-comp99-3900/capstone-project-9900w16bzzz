@@ -435,7 +435,7 @@ public class JsonToUblConverter {
     */
     private static AllowanceChargeType getAllowanceCharge(InvoiceJsonVO.Allowance allowance, String baseAmount) {
         AllowanceChargeType allowanceChargeType = new AllowanceChargeType();
-        AllowanceChargeReasonCode allowanceChargeReasonCode = EnumUtil.getEnumByValue(allowance.getReason(), AllowanceChargeReasonCode.class);
+        AllowanceChargeReasonCode allowanceChargeReasonCode = EnumUtil.getEnumByValue(allowance.getType(), AllowanceChargeReasonCode.class);
         allowanceChargeType.setChargeIndicator(allowanceChargeReasonCode.isCharge());
         BaseAmountType baseAmountType = new BaseAmountType();
         baseAmountType.setValue(BigDecimal.valueOf(Double.parseDouble(baseAmount)));
