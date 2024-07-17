@@ -142,16 +142,27 @@ function InvoiceForm({ goToStep, invoice, setValidationResult }) {
       );
     }
     if (key === 'invoiceLine' && Array.isArray(value)) {
-        return value.map((item, index) => (
-            <InvoiceLineWrapper key={`invoiceLine-${index}`}>
-              <InvoiceLineHeader>Invoice Line ID: {item.id}</InvoiceLineHeader>
-              <InvoiceLineFieldGrid>
-                {Object.entries(item).map(([subKey, subValue]) => 
-                  renderField(subKey, subValue, `${key}[${index}]`)
-                )}
-              </InvoiceLineFieldGrid>
-            </InvoiceLineWrapper>
-          ));
+      return value.map((item, index) => (
+        <InvoiceLineWrapper key={`invoiceLine-${index}`}>
+          <InvoiceLineHeader>Invoice Line ID: {item.id}</InvoiceLineHeader>
+          <InvoiceLineFieldGrid>
+            {Object.entries(item).map(([subKey, subValue]) => {
+              if (subKey !== 'allowance') {
+                return renderField(subKey, subValue, `${key}[${index}]`);
+              }
+              return null;
+            })}
+          </InvoiceLineFieldGrid>
+          <AllowanceSection>
+            <AllowanceHeader>Allowance</AllowanceHeader>
+            <InvoiceLineFieldGrid>
+              {Object.entries(item.allowance).map(([subKey, subValue]) =>
+                renderField(subKey, subValue, `${key}[${index}].allowance`)
+              )}
+            </InvoiceLineFieldGrid>
+          </AllowanceSection>
+        </InvoiceLineWrapper>
+      ));
     } else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
       return Object.entries(value).map(([subKey, subValue]) => 
         renderField(subKey, subValue, prefix ? `${prefix}.${key}` : key)
@@ -466,6 +477,21 @@ const ValidationWrapper = styled.div`
   width: 100%;
   margin: 15px 0;
   position: relative;
+`;
+
+const AllowanceSection = styled.div`
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.1);
+`;
+
+const AllowanceHeader = styled.h5`
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
 `;
 
 const ButtonWrapper = styled.div`

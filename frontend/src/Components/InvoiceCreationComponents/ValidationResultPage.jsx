@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 
@@ -18,7 +18,7 @@ const ValidationResultPage = ({ validationResult }) => {
             <Section>
               <SectionHeader>Summary</SectionHeader>
               <SectionContent>
-                <p>Schematron validation {successful ? 'succeeded' : 'failed'}. See individual validation reports for details.</p>
+                <p>{report.summary}</p>
                 <p>File: {report.filename}</p>
                 <p>Total Errors: {report.firedAssertionErrorsCount}</p>
               </SectionContent>
@@ -129,12 +129,6 @@ const Status = styled.span`
     }
   `;
   
-  const MessageBox = styled.div`
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-  `;
   
   const Section = styled.div`
     margin-bottom: 10px;
