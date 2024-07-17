@@ -5,7 +5,14 @@ import { Link } from 'react-router-dom';
 const UserMenuContainer = styled.div`
   position: relative;
   display: inline-block;
+  @media (max-width: 1100px) {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
 `;
+
 
 const UserNameDisplay = styled.div`
   font-family: 'Lato';
@@ -26,6 +33,11 @@ const UserNameDisplay = styled.div`
     background-color: #6414FF;
     color: #ffffff;
     box-shadow: 5px 10px 30px rgba(64, 64, 198, 0.411);
+  }
+
+  @media (max-width: 1100px) {
+    width: 100%;
+    text-align: center;
   }
 `;
 

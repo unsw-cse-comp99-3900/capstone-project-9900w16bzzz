@@ -25,6 +25,9 @@ const InputWrapper = styled.div`
 `;
 
 const StyledInput = styled.input`
+    &[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+    }
     background: rgba(255, 255, 255, 0.15);
     border-radius: 2rem;
     width: 100%;

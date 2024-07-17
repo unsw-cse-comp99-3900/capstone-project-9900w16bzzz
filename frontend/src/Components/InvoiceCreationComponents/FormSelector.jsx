@@ -38,6 +38,7 @@ const StyledSelect = styled.select`
     width: 100%;
     height: 3rem;
     padding: 0 1rem;
+    padding-right: 3rem;
     border: 2px solid transparent;
     color: white;
     font-size: 1rem;

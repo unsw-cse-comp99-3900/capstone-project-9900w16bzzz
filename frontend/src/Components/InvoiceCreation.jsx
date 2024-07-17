@@ -7,11 +7,14 @@ import GetStarted from "./InvoiceCreationComponents/GetStarted";
 import UploadPage from "./InvoiceCreationComponents/UploadPage";
 import ChooseConvertOption from "./InvoiceCreationComponents/ChooseConvertOption";
 import SucceedPage from "./InvoiceCreationComponents/SuccessedPage";
+import ValidationResultPage from "./InvoiceCreationComponents/ValidationResultPage";
+import ValidationSucceedPage from "./InvoiceCreationComponents/ValidationSucceedPage";
 
 const InvoiceCreation = () => {
   const [step, setStep] = useState(0);
   const [file, setFile] = useState(null);
   const [invoice, setInvoice] = useState(null);
+  const [validationResult, setValidationResult] = useState(null);
 
   const goToStep = (stepNumber) => setStep(stepNumber);
   const transition = {
@@ -62,7 +65,7 @@ const InvoiceCreation = () => {
             exit={{ opacity: 0 }}
             transition={transition}
           >
-            <InvoiceForm  goToStep={goToStep} invoice={invoice} />
+            <InvoiceForm  goToStep={goToStep} invoice={invoice} setValidationResult={setValidationResult} />
           </motion.div>
         )}
         {step === 4 && (
@@ -73,6 +76,26 @@ const InvoiceCreation = () => {
             transition={transition}
           >
             <SucceedPage goToStep={goToStep} />
+          </motion.div>
+        )}
+        {step === 5 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={transition}
+          >
+            <ValidationSucceedPage goToStep={goToStep} />
+          </motion.div>
+        )}
+        {step === 6 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={transition}
+          >
+            <ValidationResultPage validationResult={validationResult} />
           </motion.div>
         )}
       </MainContainer>
