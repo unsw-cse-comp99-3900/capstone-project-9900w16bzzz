@@ -139,6 +139,7 @@ public class InvoiceJsonDtoToVoConverter {
             itemUblVO.setTax(getContent(item.getTax()));
             itemUblVO.setTaxRate(getContent(item.getTaxRate()));
             // set allowance
+            itemUblVO.setAllowance(new InvoiceJsonVO.Allowance());
             ublItems.add(itemUblVO);
         }
         invoiceJsonVO.setInvoiceLine(ublItems);

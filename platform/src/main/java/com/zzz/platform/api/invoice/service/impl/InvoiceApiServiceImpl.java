@@ -131,6 +131,7 @@ public class InvoiceApiServiceImpl implements InvoiceApiService {
         for (int i = 0; i < 2; i++) {
             headers.setBearerAuth(apiToken);
             headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+            headers.add(HttpHeaders.ACCEPT_LANGUAGE, "en-US");
             response = apiService.doPostJson(urlWithParams, headers, body);
             HttpStatus statusCode = response.getStatusCode();
             if (statusCode.is2xxSuccessful()) {
