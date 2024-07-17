@@ -47,7 +47,7 @@ const DropdownContent = styled.div`
   top: 100%;
   transform: translateX(-50%);
   margin-top: 5px;
-  min-width: 100px;
+  min-width: 200px;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 10px;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);

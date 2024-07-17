@@ -3,12 +3,15 @@ import styled from "styled-components";
 import { ReactComponent as ArrowIcon } from "../../images/arrow.svg";
 import FormInput from "./FormInput";
 import SelectInput from "./FormSelector";
+import CheckboxInput from "./CheckboxInput";
 
-function InvoiceForm({ goToStep, invoice }) {
+function InvoiceForm({ goToStep, invoice, setValidationResult }) {
     const [formData, setFormData] = useState({});
     const [expandedSection, setExpandedSection] = useState(null);
     const [isFormValid, setIsFormValid] = useState(false);
-    const [selectedRule, setSelectedRule] = useState(null);
+    const [selectedRules, setSelectedRules] = useState([]);
+    
+    const [isUploading, setIsUploading] = useState(false);
 
     useEffect(() => {
         setIsFormValid(validateForm(formData));
@@ -38,8 +41,20 @@ function InvoiceForm({ goToStep, invoice }) {
     fetchData();
 }, []);
 */
-    
-const validateForm = (data) => {
+
+  const handleRuleChange = (rule) => {
+    setSelectedRules(prevRules => 
+        prevRules.includes(rule)
+            ? prevRules.filter(r => r !== rule)
+            : [...prevRules, rule]
+    );
+  };
+
+  const generateRulesString = () => {
+    return selectedRules.map(rule => `rules=${rule}`).join('&');
+  };
+
+  const validateForm = (data) => {
     const isValid = (obj) => {
       for (let key in obj) {
         if (obj.hasOwnProperty(key)) {
@@ -76,30 +91,50 @@ const validateForm = (data) => {
       
       
 
-const handleInputChange = (field, value) => {
-    setFormData(prevData => {
-      const newData = {...prevData};
-      const keys = field.split('.');
-      let current = newData;
-      for (let i = 0; i < keys.length - 1; i++) {
-        const key = keys[i];
-        if (key.includes('[')) {
-          const [arrayName, index] = key.split('[');
-          if (!current[arrayName]) current[arrayName] = [];
-          const arrayIndex = parseInt(index);
-          if (!current[arrayName][arrayIndex]) current[arrayName][arrayIndex] = {};
-          current = current[arrayName][arrayIndex];
-        } else {
-          if (!(key in current)) current[key] = {};
-          current = current[key];
+  const handleInputChange = (field, value) => {
+    if (field === 'dueDate' || field === 'invoiceDate') {
+      setFormData(prevData => ({
+        ...prevData,
+        [field]: value
+      }));
+    } else {
+      setFormData(prevData => {
+        const newData = { ...prevData };
+        const keys = field.split('.');
+        let current = newData;
+        for (let i = 0; i < keys.length - 1; i++) {
+          const key = keys[i];
+          if (key.includes('[')) {
+            const [arrayName, index] = key.split('[');
+            if (!current[arrayName]) current[arrayName] = [];
+            const arrayIndex = parseInt(index);
+            if (!current[arrayName][arrayIndex]) current[arrayName][arrayIndex] = {};
+            current = current[arrayName][arrayIndex];
+          } else {
+            if (!(key in current)) current[key] = {};
+            current = current[key];
+          }
         }
-      }
-      current[keys[keys.length - 1]] = value;
-      return newData;
-    });
+        current[keys[keys.length - 1]] = value;
+        return newData;
+      });
+    }
   };
     
   const renderField = (key, value, prefix = '') => {
+    const fullKey = prefix ? `${prefix}.${key}` : key;
+    if (key === 'dueDate' || key === 'invoiceDate') {
+      return (
+        <FieldWrapper key={fullKey}>
+          <FormInput 
+            type="date" 
+            placeholder={key}
+            value={value || ''}
+            onChange={(newValue) => handleInputChange(fullKey, newValue)}
+          />
+        </FieldWrapper>
+      );
+    }
     if (key === 'invoiceLine' && Array.isArray(value)) {
         return value.map((item, index) => (
             <InvoiceLineWrapper key={`invoiceLine-${index}`}>
@@ -116,7 +151,6 @@ const handleInputChange = (field, value) => {
         renderField(subKey, subValue, prefix ? `${prefix}.${key}` : key)
       );
     } else {
-        const fullKey = prefix ? `${prefix}.${key}` : key;
         if (optionMappings[key]) {
             return (
                 <FieldWrapper key={fullKey}>
@@ -170,7 +204,13 @@ const handleInputChange = (field, value) => {
         { title: "Payment", fields: ["payment"] },
         { title: "Delivery Address", fields: ["deliveryAddress"] }
     ];
-    const optionMappings = {
+  const optionMappings = {
+        allowance: [
+            { value: '10', label: 'Standard rate' },
+            { value: '0', label: 'Zero rate' },
+            { value: '0', label: 'Exempt rate' },
+            { value: '0', label: 'Reduce rate' }
+        ],
         schemeId: [
             { value: 'GLN', label: 'Global Location Number' },
             { value: '0060', label: 'Data Universal Numbering System' },
@@ -216,51 +256,73 @@ const handleInputChange = (field, value) => {
     };
 
     const uploadEditedInvoice = async () => {
-        if (!selectedRule) {
-            alert('You have to select validation rule!');
-            return;
-        }
+      if (!selectedRules) {
+          alert('You have to select validation rule!');
+          return;
+      }
 
-        try {
-            const invoiceId = invoice.invoiceId;
-            const rules = "rules=AUNZ_PEPPOL_1_0_10&rules=AUNZ_PEPPOL_SB_1_0_10&rules=AUNZ_UBL_1_0_10";
-            let endpoint = `${process.env.REACT_APP_SERVER_URL}/invoice/validate?invoiceId=${invoiceId}&${rules}`;
-            let token = localStorage.getItem("token");
-            const response = await fetch(`${endpoint}`, {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-                  'x-access-token': `${token}`
-              },
-              body: JSON.stringify(formData),
-            });
+      const formattedData = {...formData};
+      if (formattedData.dueDate) {
+        formattedData.dueDate = new Date(formattedData.dueDate).toISOString().split('T')[0];
+      }
+      if (formattedData.invoiceDate) {
+        formattedData.invoiceDate = new Date(formattedData.invoiceDate).toISOString().split('T')[0];
+      }
+      if (formattedData.invoiceDate) {
+        formattedData.invoiceDate = new Date(formattedData.invoiceDate).toISOString().split('T')[0];
+      }
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            if (data.ok) {
-                console.log(data);
-            }
-            if (!data.ok) {
-              throw new Error('Server response was not ok');
-            }
-            
-          } catch (error) {
-            console.error('Error processing file:', error);
-            alert('An error occurred while processing the file. Please try again.');
+
+      console.log('formData before sending:', JSON.stringify(formattedData, null, 2));
+      setIsUploading(true);
+      try {
+        const invoiceId = invoice.invoiceId;
+        const rules = generateRulesString();
+        //const rules = "rules=AUNZ_PEPPOL_1_0_10&rules=AUNZ_PEPPOL_SB_1_0_10&rules=AUNZ_UBL_1_0_10";
+        let endpoint = `${process.env.REACT_APP_SERVER_URL}/invoice/validate?invoiceId=${invoiceId}&${rules}`;
+        let token = localStorage.getItem("token");
+        
+          const response = await fetch(`${endpoint}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-access-token': `${token}`
+            },
+            body: JSON.stringify(formattedData),
+          });
+        if (!response.ok) {
+          setIsUploading(false);
+              throw new Error('Network response was not ok');
           }
-
+          const data = await response.json();
+        if (data.ok) {
+          setIsUploading(false);
+            console.log(data);
+            setValidationResult(data.data);
+            goToStep(5);
+          }
+        if (!data.ok) {
+          setIsUploading(false);
+            throw new Error('Server response was not ok');
+          }
+          
+      } catch (error) {
+        setIsUploading(false);
+          console.error('Error processing file:', error);
+          alert('An error occurred while processing the file. Please try again.');
+        }
     }
 
-    return (
+  return (
+      <>
+      {isUploading && <Loading />}
         <MainContainer className="name">
             <ArrowButton onClick={() => goToStep(2)}>
                 <ArrowIcon style={{ transform: 'scaleX(-1)' }} />
             </ArrowButton>
             <Content>
                 <HeaderContent>
-                    <h1><span>Last Step </span>Convert to UBL</h1>
+                    <h1 style={{ fontSize: '64px' }}><span>Last Step </span>Convert to UBL</h1>
                     <p className="details" style={{margin:"10px"}}>To generate a UBL e-invoice, you may need to provide additional information that may not be present on your original invoice.</p>
                     <p className="details" style={{margin:"0"}}>Check the form below, fill out all necessary fields.</p>
                 </HeaderContent>
@@ -280,7 +342,6 @@ const handleInputChange = (field, value) => {
                           onClick={() => {
                             if (isFormValid) {
                               console.log(formData);
-                              console.log('Selected Rule:', selectedRule);
                                 uploadEditedInvoice();
                             } else {
                               const emptyFields = findEmptyFields(formData);
@@ -292,27 +353,66 @@ const handleInputChange = (field, value) => {
                           Validate
                         </SubmitButton>
                       </ButtonWrapper>
-                      <SelectWrapper>
-                        <SelectInput
-                          placeholder={'Validation Rule'}
-                          value={selectedRule || ''}
-                          onChange={(value) => setSelectedRule(value)}
-                          options={[
-                            { value: 'default', label: 'Default Rule    ' },
-                            { value: 'strict', label: 'Strict Rule    ' },
-                            { value: 'loose', label: 'Loose Rule    ' }
-                          ]}
+                      <CheckboxWrapper>
+                        <CheckboxInput
+                            options={[
+                                { value: 'AUNZ_PEPPOL_1_0_10', label: 'Peppol Standard Rule 1.0.10' },
+                                { value: 'AUNZ_PEPPOL_SB_1_0_10', label: 'Peppol Small Business Rule 1.0.10' },
+                                { value: 'AUNZ_UBL_1_0_10', label: 'UBL Standard Rule 1.0.10' }
+                            ]}
+                            selectedRules={selectedRules}
+                            onChange={handleRuleChange}
                         />
-                      </SelectWrapper>
+                      </CheckboxWrapper>
                     </ValidationWrapper>
                 </ScrollableContent>
             </Content>
             <ArrowButton disabled style={{ opacity: 0, cursor: "not-allowed", "pointerEvents": "none" }}>
                 <ArrowIcon style={{ transform: 'scaleX(-1)' }} />
             </ArrowButton>
-        </MainContainer>
+      </MainContainer>
+      </>
     );
 }
+const BlurredBackground = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+`;
+
+const LoadingScreen = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+`;
+
+const LoadingMessage = styled.div`
+  color: white;
+  font-size: 24px;
+  background-color: rgba(100, 20, 255, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+`;
+const Loading = () => (
+  <>
+    <BlurredBackground />
+    <LoadingScreen>
+      <LoadingMessage>Validating... Please wait.</LoadingMessage>
+    </LoadingScreen>
+  </>
+);
 
 const ValidationWrapper = styled.div`
   display: flex;
@@ -328,7 +428,7 @@ const ButtonWrapper = styled.div`
   justify-content: center;
 `;
 
-const SelectWrapper = styled.div`
+const CheckboxWrapper = styled.div`
   position: absolute;
   right: 0;
 `;
@@ -402,7 +502,6 @@ const ScrollableContent = styled.div`
     margin: 17px 0;
     box-sizing: content-box;
 
-    /* 自定义滚动条样式 */
     &::-webkit-scrollbar {
         width: 10px;
     }
