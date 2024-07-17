@@ -1,5 +1,5 @@
 # Stage 1: Build the React app
-FROM node:14-alpine AS build
+FROM node:14 AS build
 
 # Set the working directory
 WORKDIR /app
@@ -25,8 +25,8 @@ COPY --from=build /app/build /usr/share/nginx/html
 # Copy the Nginx configuration file
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Expose port 3000
-EXPOSE 3000
+# Expose port 8080
+EXPOSE 8080
 
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"]

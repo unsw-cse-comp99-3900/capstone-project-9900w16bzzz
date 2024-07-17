@@ -2,13 +2,16 @@ version: '3.8'
 
 services:
   frontend:
+    image: nginx:alpine
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
     depends_on:
       - platform
-    ports:
-      - "3000:3000"
+    networks:
+      - app-networks
 
   platform:
     build:
@@ -23,33 +26,20 @@ services:
     ports:
       - "9900:9900"
     networks:
-      - sqlnetwork
+      - app-networks
   
   db:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: admin123
       MYSQL_DATABASE: e-invoice
-      MYSQL_USER: mysql
-      MYSQL_PASSWORD: admin123
     volumes:
       - ./platform/V1__init_database.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "3306:3306"
     networks:
-      - sqlnetwork
-
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "80:80"
-    volumes:
-      - ./frontend/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./frontend/build:/usr/share/nginx/html:ro
-    depends_on:
-      - frontend
-      - platform
+      - app-networks
 
 networks:
-  sqlnetwork:
+  app-networks:
     driver: bridge

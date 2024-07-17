@@ -15,10 +15,16 @@ And ensure that ports `80`, `3306`, `3000`, and `9900` are not occupied in your 
 After that, modify the access path port in the `.env ` file as follows:
 
 ```
-REACT_APP_SERVER_URL=http://localhost:80
+REACT_APP_SERVER_URL=http://localhost:8080
 ```
 
 #### For macOS, follow these steps:
+
+First of all, ensure your shell file has sufficient permissions, 
+
+```
+(base) yanzuoming@Johns-MacBook-Pro EazyinvoiceServer % chmod 755 ./deploy.sh 
+```
 
 After making the above changes, you just need to execute the `./deploy.sh` script in the current project directory!
 
