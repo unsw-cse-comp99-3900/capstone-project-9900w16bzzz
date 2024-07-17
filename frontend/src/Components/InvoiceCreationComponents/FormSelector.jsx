@@ -92,7 +92,7 @@ const StyledLabel = styled.label`
     &.filled {
         transform: translateY(-2.5rem) translateX(-1.2rem)  scale(0.8);
         color: #ffffff;
-        background-color: rgba(0, 0, 0, 0.8);
+        background-color: rgba(0, 0, 0, 0);
         padding: 0 0.5rem;
     }
 `;
