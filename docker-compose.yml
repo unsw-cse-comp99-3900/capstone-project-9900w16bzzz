@@ -30,7 +30,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: admin123
       MYSQL_DATABASE: e-invoice
-      MYSQL_USER: root
+      MYSQL_USER: mysql
       MYSQL_PASSWORD: admin123
     volumes:
       - ./platform/V1__init_database.sql:/docker-entrypoint-initdb.d/init.sql
