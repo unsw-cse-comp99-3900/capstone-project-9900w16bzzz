@@ -1,13 +1,26 @@
 import React from "react";
 import styled from "styled-components";
 
-const SelectInput = ({ placeholder, value, onChange, options }) => {
+const SelectInput = ({ placeholder, value, onChange, options, onRelatedChange, relatedField, typeReasonMapping }) => {
+    const handleChange = (e) => {
+        const newValue = e.target.value;
+        onChange(newValue);
+        if (onRelatedChange && relatedField && typeReasonMapping) {
+            if (relatedField === 'reason') {
+                onRelatedChange(relatedField, typeReasonMapping[newValue]);
+            } else if (relatedField === 'type') {
+                const relatedValue = Object.keys(typeReasonMapping).find(key => typeReasonMapping[key] === newValue) || '';
+                onRelatedChange(relatedField, relatedValue);
+            }
+        }
+    };
+
     return (
         <InputWrapper>
             <div>
                 <StyledSelect
                     value={value}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={handleChange}
                     id={placeholder}
                 >
                     <option value="" disabled hidden></option>

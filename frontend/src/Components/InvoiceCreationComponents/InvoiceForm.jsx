@@ -51,7 +51,7 @@ function InvoiceForm({ goToStep, invoice, setValidationResult }) {
   };
 
   const generateRulesString = () => {
-    return selectedRules.map(rule => `rules=${rule}`).join('&');
+    return selectedRules.map(rule => `${rule}`).join(',');
   };
 
   const validateForm = (data) => {
@@ -116,6 +116,12 @@ function InvoiceForm({ goToStep, invoice, setValidationResult }) {
           }
         }
         current[keys[keys.length - 1]] = value;
+
+        if (keys[keys.length - 1] === 'type' && keys.includes('allowance')) {
+          current['reason'] = typeReasonMapping[value];
+        } else if (keys[keys.length - 1] === 'reason' && keys.includes('allowance')) {
+          current['type'] = Object.keys(typeReasonMapping).find(key => typeReasonMapping[key] === value) || '';
+        }
         return newData;
       });
     }
@@ -151,6 +157,23 @@ function InvoiceForm({ goToStep, invoice, setValidationResult }) {
         renderField(subKey, subValue, prefix ? `${prefix}.${key}` : key)
       );
     } else {
+      if (fullKey === 'allowance.type' || fullKey === 'allowance.reason') {
+        return (
+          <FieldWrapper key={fullKey}>
+            <SelectInput 
+              placeholder={key}
+              value={value || ''}
+              onChange={(newValue) => handleInputChange(fullKey, newValue)}
+              options={optionMappings[key]}
+              onRelatedChange={(relatedKey, relatedValue) => {
+                handleInputChange(`allowance.${relatedKey}`, relatedValue);
+              }}
+              relatedField={fullKey === 'allowance.type' ? 'reason' : 'type'}
+              typeReasonMapping={typeReasonMapping}
+            />
+          </FieldWrapper>
+        );
+      }
         if (optionMappings[key]) {
             return (
                 <FieldWrapper key={fullKey}>
@@ -203,14 +226,25 @@ function InvoiceForm({ goToStep, invoice, setValidationResult }) {
         { title: "Invoice Lines", fields: ["invoiceLine"] },
         { title: "Payment", fields: ["payment"] },
         { title: "Delivery Address", fields: ["deliveryAddress"] }
-    ];
+  ];
+  const typeReasonMapping = {
+    'SAA': 'Shipping and Handling',
+    'AA': 'Advertising Allowance',
+    'AB': 'Special Allowance',
+    'AC': 'Discount',
+    'AD': 'Bouns',
+    'AE': 'Coupon',
+    'AF': 'Freight',
+    'AG': 'Insurance',
+    'AH': 'Other',
+    'AI': 'Packaging',
+    'AJ': 'Quantity Discount',
+    'AK': 'Rebate',
+    'AL': 'Returns',
+    'AM': 'Trade Discount',
+    'AN': 'Volume Discount'
+  };
   const optionMappings = {
-        allowance: [
-            { value: '10', label: 'Standard rate' },
-            { value: '0', label: 'Zero rate' },
-            { value: '0', label: 'Exempt rate' },
-            { value: '0', label: 'Reduce rate' }
-        ],
         schemeId: [
             { value: 'GLN', label: 'Global Location Number' },
             { value: '0060', label: 'Data Universal Numbering System' },
@@ -224,10 +258,21 @@ function InvoiceForm({ goToStep, invoice, setValidationResult }) {
             { value: 'NIF', label: 'Spanish Tax Identification Number' }
         ],
         type: [
-            { value: '10', label: 'Standard rate' },
-            { value: '0', label: 'Zero rate' },
-            { value: '0', label: 'Exempt rate' },
-            { value: '0', label: 'Reduce rate' }
+          { value: 'SAA', label: 'SAA' },
+          { value: 'AA', label: 'AA' },
+          { value: 'AB', label: 'AB' },
+          { value: 'AC', label: 'AC' },
+          { value: 'AD', label: 'AD' },
+          { value: 'AE', label: 'AE' },
+          { value: 'AF', label: 'AF' },
+          { value: 'AG', label: 'AG' },
+          { value: 'AH', label: 'AH' },
+          { value: 'AI', label: 'AI' },
+          { value: 'AJ', label: 'AJ' },
+          { value: 'AK', label: 'AK' },
+          { value: 'AL', label: 'AL' },
+          { value: 'AM', label: 'AM' },
+          { value: 'AN', label: 'AN' }
         ],
         code: [
             { value: '10', label: 'Cash' },
@@ -237,21 +282,21 @@ function InvoiceForm({ goToStep, invoice, setValidationResult }) {
             { value: '48', label: 'Debit Card' }
         ],
         reason: [
-            { value: 'SAA', label: 'Shipping and Handling' },
-            { value: 'AA', label: 'Advertising Allowance' },
-            { value: 'AB', label: 'Special Allowance' },
-            { value: 'AC', label: 'Discount' },
-            { value: 'AD', label: 'Bouns' },
-            { value: 'AE', label: 'Coupon' },
-            { value: 'AF', label: 'Freight' },
-            { value: 'AG', label: 'Insurance' },
-            { value: 'AH', label: 'Other' },
-            { value: 'AI', label: 'Packaging' },
-            { value: 'AJ', label: 'Quantity Discount' },
-            { value: 'AK', label: 'Rebate' },
-            { value: 'AL', label: 'Returns' },
-            { value: 'AM', label: 'Trade Discount' },
-            { value: 'AN', label: 'Volume Discount' }
+            { value: 'Shipping and Handling', label: 'Shipping and Handling' },
+            { value: 'Advertising Allowance', label: 'Advertising Allowance' },
+            { value: 'Special Allowance', label: 'Special Allowance' },
+            { value: 'Discount', label: 'Discount' },
+            { value: 'Bouns', label: 'Bouns' },
+            { value: 'Coupon', label: 'Coupon' },
+            { value: 'Freight', label: 'Freight' },
+            { value: 'Insurance', label: 'Insurance' },
+            { value: 'Other', label: 'Other' },
+            { value: 'Packaging', label: 'Packaging' },
+            { value: 'Quantity Discount', label: 'Quantity Discount' },
+            { value: 'Rebate', label: 'Rebate' },
+            { value: 'Returns', label: 'Returns' },
+            { value: 'Trade Discount', label: 'Trade Discount' },
+            { value: 'Volume Discount', label: 'Volume Discount' }
         ]
     };
 
@@ -278,8 +323,8 @@ function InvoiceForm({ goToStep, invoice, setValidationResult }) {
       try {
         const invoiceId = invoice.invoiceId;
         const rules = generateRulesString();
-        //const rules = "rules=AUNZ_PEPPOL_1_0_10&rules=AUNZ_PEPPOL_SB_1_0_10&rules=AUNZ_UBL_1_0_10";
-        let endpoint = `${process.env.REACT_APP_SERVER_URL}/invoice/validate?invoiceId=${invoiceId}&${rules}`;
+        //const rules = "rules=AUNZ_PEPPOL_1_0_10,AUNZ_PEPPOL_SB_1_0_10AUNZ_UBL_1_0_10";
+        let endpoint = `${process.env.REACT_APP_SERVER_URL}/invoice/validate?invoiceId=${invoiceId}&rules=${rules}`;
         let token = localStorage.getItem("token");
         
           const response = await fetch(`${endpoint}`, {
