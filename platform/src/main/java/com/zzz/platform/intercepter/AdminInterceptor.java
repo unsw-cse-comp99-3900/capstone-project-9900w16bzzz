@@ -81,6 +81,7 @@ public class AdminInterceptor implements HandlerInterceptor {
             // Detecting token activity frequency
             checkActiveTimeout(requestUser);
 
+
             /* Third step: validate authentication */
             RequestUtil.setRequestUser(requestUser);
             if (SaStrategy.instance.isAnnotationPresent.apply(method, SaIgnore.class)) {

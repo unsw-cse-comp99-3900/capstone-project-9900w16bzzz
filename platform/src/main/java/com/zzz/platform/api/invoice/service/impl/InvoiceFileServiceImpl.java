@@ -18,6 +18,7 @@ import com.zzz.platform.common.code.InvoiceErrorCode;
 import com.zzz.platform.common.domain.ResponseDTO;
 import com.zzz.platform.common.enumeration.FileType;
 import com.zzz.platform.utils.EncodeUtil;
+import com.zzz.platform.utils.FileFormaterUtil;
 import com.zzz.platform.utils.RulesUtil;
 import lombok.extern.slf4j.Slf4j;
 import oasis.names.specification.ubl.schema.xsd.invoice_21.InvoiceType;
@@ -82,7 +83,9 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
         InvoiceFileEntity invoiceFileEntity = new InvoiceFileEntity();
         invoiceFileEntity.setFileType(filetype.getValue());
         invoiceFileEntity.setInvoiceId(invoiceId);
-        invoiceFileEntity.setContent(content);
+        // format file content
+        byte[] formattedFile = FileFormaterUtil.formatFile(content, filetype);
+        invoiceFileEntity.setContent(formattedFile);
         invoiceFileDao.insert(invoiceFileEntity);
 
         invoiceDbServiceImpl.updateFileFlag(invoiceId, filetype, InvoiceDbService.FileStatusFlag.EXIST);
