@@ -74,32 +74,34 @@ const ChooseConvertOption = ({ goToStep, setFile, file, setInvoice, invoice}) =>
   return (
   <>
     {isUploading && <Loading />}
-    <ActionContainer className="name">
-      <ArrowButton onClick={() => goToStep(1)}>
-          <ArrowIcon style={{ transform: 'scaleX(-1)' }} />
-      </ArrowButton>
-      <div>
-        <h1><span>Step 2 </span> Select save format </h1>
-        <p className="details">Upload the original file <b>OR</b> convert it to standard UBL e-Invoice.</p>
-        <ActionOptions>
-          <ActionOption selected={selectedAction === 'save'} onClick={() => handleActionChange('save')}>
-            <OptionLabel>Save Directly</OptionLabel>
-          </ActionOption>
-          <ActionOption selected={selectedAction === 'convert'} onClick={() => handleActionChange('convert')}>
-            <OptionLabel>Convert to UBL</OptionLabel>
-          </ActionOption>
-        </ActionOptions>
-      </div>
-      <ArrowButton onClick={async () => {
-          const uploadSuccess = await handleUpload(selectedAction);
-          if (uploadSuccess) {
-            handleNext();
-          }
-        }} 
-        disabled={!selectedAction || isUploading}>
-        <ArrowIcon />
-      </ArrowButton>
+    <PageContainer>
+      <ActionContainer className="name">
+        <ArrowBackButton onClick={() => goToStep(1)}>
+            <ArrowIcon />
+        </ArrowBackButton>
+        <Content>
+          <Heading><span>Step 2 </span> Select save format </Heading>
+          <p className="details">Upload the original file <b>OR</b> convert it to standard UBL e-Invoice.</p>
+          <ActionOptions>
+            <ActionOption selected={selectedAction === 'save'} onClick={() => handleActionChange('save')}>
+              <OptionLabel>Save Directly</OptionLabel>
+            </ActionOption>
+            <ActionOption selected={selectedAction === 'convert'} onClick={() => handleActionChange('convert')}>
+              <OptionLabel>Convert to UBL</OptionLabel>
+            </ActionOption>
+          </ActionOptions>
+        </Content>
+        <ArrowButton onClick={async () => {
+            const uploadSuccess = await handleUpload(selectedAction);
+            if (uploadSuccess) {
+              handleNext();
+            }
+          }} 
+          disabled={!selectedAction || isUploading}>
+          <ArrowIcon />
+        </ArrowButton>
       </ActionContainer>
+    </PageContainer>
     </>
     )
 }
@@ -145,6 +147,19 @@ const Loading = () => (
   </>
 );
 
+const PageContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    height: auto;
+    padding: 20px;
+  }
+`;
+
 const ActionContainer = styled.div`
   width: 80%;
   display: flex;
@@ -155,6 +170,30 @@ const ActionContainer = styled.div`
   border-radius: 10px;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   backdrop-filter: blur(10px);
+
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    width: 90%;
+    padding: 15px;
+  }
+`;
+
+const Content = styled.div`
+  flex: 1;
+  text-align: center;
+  margin: 0 20px;
+
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    margin: 0 5px;
+  }
+`;
+
+const Heading = styled.h1`
+  margin: 0;
+  font-size: 24px;
+
+  @media only screen and (max-width: 430px) {
+    font-size: 35px !important;;
+  }
 `;
 
 const ActionOptions = styled.div`
@@ -162,26 +201,42 @@ const ActionOptions = styled.div`
   justify-content: space-around;
   width: 100%;
   margin-bottom: 20px;
+
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const ActionOption = styled.div`
-  width:200px;
+  width: 200px;
   background-color: ${props => (props.selected ? '#6414FF' : 'transparent')};
   border: 2px solid #6414FF;
   border-radius: 100px;
   padding: 20px;
   cursor: pointer;
   transition: background-color 0.3s;
+  text-align: center;
+
   &:hover {
     background-color: #5011cc;
+  }
+
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    padding: 12px;
+    width: 90%;
+    margin-bottom: 10px;
   }
 `;
 
 const OptionLabel = styled.div`
   color: white;
   font-size: 16px;
-`;
 
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    font-size: 14px;
+  }
+`;
 
 const ArrowButton = styled.button`
   background-color: transparent;
@@ -197,6 +252,18 @@ const ArrowButton = styled.button`
     &:hover path {
       fill: ${props => (props.disabled ? 'grey' : '#6414FF')};
     }
+  }
+
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    svg {
+      height: 40px;
+    }
+  }
+`;
+
+const ArrowBackButton = styled(ArrowButton)`
+  svg {
+    transform: scaleX(-1);
   }
 `;
 

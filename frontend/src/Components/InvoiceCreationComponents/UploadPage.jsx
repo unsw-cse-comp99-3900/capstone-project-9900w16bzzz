@@ -18,7 +18,7 @@ const UploadPage = ({ goToStep, setFile, file }) => {
                 <ArrowIcon />
             </ArrowBackButton>
             <Content>
-                <h1><span>Step 1 </span> Upload File</h1>
+                <Heading><span>Step 1 </span> Upload File </Heading>
                 <p className="details">Please upload your invoice file. Accepted formats are PDF or JSON.</p>
                 <FileInputWrapper>
                     <FileInputLabel htmlFor="file-upload"  selected={!!file}>
@@ -47,7 +47,22 @@ const Container = styled.div`
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   backdrop-filter: blur(2px);
   color: white;
+
+  @media only screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    width: 90%;
+    padding: 15px;
+  }
 `;
+
+const Heading = styled.h1`
+  margin: 0;
+  font-size: 24px;
+
+  @media only screen and (max-width: 430px) {
+    font-size: 30px !important;;
+  }
+`;
+
 
 const FileInputWrapper = styled.div`
   margin-top: 20px;
@@ -65,6 +80,13 @@ const FileInputLabel = styled.label`
   &:hover {
     background-color: #5011cc;
   }
+
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    font-size: 0.75rem; /* Adjust font size for iPhone 14 Pro Max */
+    width: 100%; /* Ensure the label takes full width */
+    text-align: center; /* Center the text */
+  }
+
 `;
 
 

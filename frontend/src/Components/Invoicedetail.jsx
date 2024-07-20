@@ -74,10 +74,10 @@ function Invoicedetail() {
 
     return (
         <div id="main">
-            <video autoPlay muted loop id="background-video-signup">
+            <VideoBackground autoPlay muted loop id="background-video-signup">
                 <source src={video} type="video/mp4" />
                 Your browser does not support the video tag.
-            </video>
+            </VideoBackground>
             <Maincontainer>
                 <ArrowIcon onClick={handleArrowClick} />
                 {invoice ? (
@@ -113,6 +113,20 @@ function Invoicedetail() {
 
 export default Invoicedetail;
 
+const VideoBackground = styled.video`
+  position: fixed;
+  top:  0%;
+  left: 0%;
+  min-width: 10%;
+  min-height: 130%;
+  width: 90%;
+  height: 100%;
+  z-index: -1;
+  transform: translate(-0%, -0%);
+  object-fit: cover;
+`;
+
+
 const Maincontainer = styled.div`
     display: flex;
     position: relative;
@@ -126,6 +140,13 @@ const Maincontainer = styled.div`
     border-radius: 10px;
     color: #ffffff;
     z-index: 1;
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    width: 90%;
+    height: auto;
+    padding: 20px;
+    margin-top: 300px;
+    }
 `;
 
 const ArrowIcon = styled(BsBoxArrowInLeft)`
@@ -135,6 +156,12 @@ const ArrowIcon = styled(BsBoxArrowInLeft)`
     font-size: 2rem;
     &:hover {
         cursor: pointer;
+    }
+
+    media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    top: 10px;
+    left: 10px;
+    font-size: 1.5rem;
     }
 `;
 
@@ -148,6 +175,12 @@ const InvoiceName = styled.div`
     width: 100%;
     border-bottom: 3px solid rgba(255, 255, 255, 0.2);
     padding-right: 20px;
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    margin-top: 20px;
+    padding-right: 10px;
+    }
+
 `;
 
 const Title = styled.h1`
@@ -156,6 +189,13 @@ const Title = styled.h1`
     font-size: 1.5rem;
     padding-left: 80px;
     margin-right: 20px;
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    font-size: 1.2rem;
+    padding-left: 17px;
+    margin-right: 17px;
+    }
+
 `;
 
 const FileTypeDropdown = styled.div`
@@ -173,6 +213,11 @@ const FileTypeDropdown = styled.div`
             outline: none;
         }
     }
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    margin-left:20px; 
+    }
+    
 `;
 
 const Validate = styled.button`

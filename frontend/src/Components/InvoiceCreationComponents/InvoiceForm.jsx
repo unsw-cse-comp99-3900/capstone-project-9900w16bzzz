@@ -378,9 +378,9 @@ function InvoiceForm({ goToStep, invoice, setValidationResult }) {
             </ArrowButton>
             <Content>
                 <HeaderContent>
-                    <h1 style={{ fontSize: '64px' }}><span>Last Step </span>Convert to UBL</h1>
-                    <p className="details" style={{margin:"10px"}}>To generate a UBL e-invoice, you may need to provide additional information that may not be present on your original invoice.</p>
-                    <p className="details" style={{margin:"0"}}>Check the form below, fill out all necessary fields.</p>
+                  <h1><span>Last Step </span>Convert to UBL</h1>
+                  <p className="details">To generate a UBL e-invoice, you may need to provide additional information that may not be present on your original invoice.</p>
+                  <p className="details">Check the form below, fill out all necessary fields.</p>
                 </HeaderContent>
                 <ScrollableContent>
                     {sections.map(section => 
@@ -502,6 +502,10 @@ const ButtonWrapper = styled.div`
 const CheckboxWrapper = styled.div`
   position: absolute;
   right: 0;
+
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    top: 5px; /* 向下移动的距离，可以根据需要调整 */
+  }
 `;
 
 const FieldGrid = styled.div`
@@ -548,6 +552,16 @@ const MainContainer = styled.div`
     color: white;
     z-index: 1;
     height: 85%;
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) {
+    width: 95%;
+    height: 90%;
+    margin-top: 20%;
+    padding: 15px;
+    flex-direction: column;
+    justify-content: center;
+    }
+
 `;
 
 const Content = styled.div`
@@ -564,6 +578,25 @@ const Content = styled.div`
 const HeaderContent = styled.div`
     width: 100%;
     margin-bottom: 20px;
+
+    h1 {
+    font-size: 64px;
+    }
+
+    .details {
+      margin: 10px 0;
+    }
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) {
+    h1 {
+      font-size: 30px; /* 调整为适应较小屏幕的字体大小 */
+    }
+
+    .details {
+      font-size: 14px; /* 调整为适应较小屏幕的字体大小 */
+      margin: 5px 0; /* 调整为适应较小屏幕的内边距 */
+      }
+    }
 `;
 
 const ScrollableContent = styled.div`
@@ -590,6 +623,10 @@ const ScrollableContent = styled.div`
 
     &::-webkit-scrollbar-thumb:hover {
         background: rgba(255, 255, 255, 0.5);
+    }
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    height: calc(100% - 150px); /* 调整高度以适应iPhone 14 Pro Max */
     }
 `;
 
@@ -639,6 +676,15 @@ const ArrowButton = styled.button`
             fill: ${props => (props.disabled ? 'grey' : '#6414FF')};
         }
     }
+
+    @media only screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    position: absolute;
+    left: 0px; /* 调整为适应iPhone 14 Pro Max的左侧位置 */
+    top: 300px; /* 调整为适应iPhone 14 Pro Max的顶部位置 */
+    svg {
+      height: 25px; /* 调整为适应iPhone 14 Pro Max的图标大小 */
+    }
+  }
 `;
 
 const SubmitButton = styled.button`
@@ -657,6 +703,18 @@ const SubmitButton = styled.button`
   &:hover {
     background-color: #5000CC;
   }
+
+  @media only screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    position: fixed;
+    bottom: 1px; /* 距离页面底部的距离，可以根据需要调整 */
+    top:820px; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 250px); /* 使按钮宽度适应屏幕 */
+    margin: 0;
+    border-radius: 1rem; /* 可选：调整边框圆角以适应底部样式 */
+  }
+  
 `;
 
 export default InvoiceForm;

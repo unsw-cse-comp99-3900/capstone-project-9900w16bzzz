@@ -90,6 +90,13 @@ const EmailBox = styled.div`
     margin-left: 30px;
     margin-right: 30px;
     width: 90%;
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    margin-top: 40px;
+    height: auto;
+    margin-left: 30px;
+    margin-right: 20px;
+    }
 `;
 
 const EmailInput = styled.div`
@@ -114,6 +121,13 @@ const EmailInput = styled.div`
             box-shadow: 0 0 0 0.2rem #b9abe0;
             backdrop-filter: blur(12rem);
             border-radius: 2rem;
+        }
+    }
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    input {
+      width: 200px;
+      font-size: 0.9rem;
         }
     }
 `;
