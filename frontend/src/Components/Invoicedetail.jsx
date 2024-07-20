@@ -83,7 +83,7 @@ function Invoicedetail() {
                 {invoice ? (
                     <>
                         <InvoiceName>
-                            <Title>{getFileNameWithoutExtension(invoice.fileName)}</Title>
+                            <TruncatedTitle>{getFileNameWithoutExtension(invoice.fileName)}</TruncatedTitle>
                             <FileTypeDropdown>
                                 <select onChange={handleFileTypeChange} value={selectedFileType}>
                                     {invoice.pdfFlag === 1 && <option value="pdf">PDF</option>}
@@ -126,7 +126,6 @@ const VideoBackground = styled.video`
   object-fit: cover;
 `;
 
-
 const Maincontainer = styled.div`
     display: flex;
     position: relative;
@@ -142,10 +141,10 @@ const Maincontainer = styled.div`
     z-index: 1;
 
     @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    width: 90%;
-    height: auto;
-    padding: 20px;
-    margin-top: 300px;
+        width: 90%;
+        height: auto;
+        padding: 20px;
+        margin-top: 300px;
     }
 `;
 
@@ -158,10 +157,10 @@ const ArrowIcon = styled(BsBoxArrowInLeft)`
         cursor: pointer;
     }
 
-    media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    top: 10px;
-    left: 10px;
-    font-size: 1.5rem;
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+        top: 10px;
+        left: 10px;
+        font-size: 1.5rem;
     }
 `;
 
@@ -170,32 +169,35 @@ const InvoiceName = styled.div`
     margin-top: 20px;
     flex-direction: row;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
     height: 60px;
     width: 100%;
     border-bottom: 3px solid rgba(255, 255, 255, 0.2);
     padding-right: 20px;
 
     @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    margin-top: 20px;
-    padding-right: 10px;
+        margin-top: 20px;
+        padding-right: 10px;
     }
-
 `;
 
-const Title = styled.h1`
+const TruncatedTitle = styled.h1`
     color: #ffffff;
     letter-spacing: 0.1rem;
     font-size: 1.5rem;
     padding-left: 80px;
     margin-right: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
 
     @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    font-size: 1.2rem;
-    padding-left: 17px;
-    margin-right: 17px;
+        font-size: 1.2rem;
+        padding-left: 17px;
+        margin-right: 17px;
+        max-width: 150px;
     }
-
 `;
 
 const FileTypeDropdown = styled.div`
@@ -215,8 +217,8 @@ const FileTypeDropdown = styled.div`
     }
 
     @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    margin-left:40px; 
-    height: 40px;
+        margin-left: 40px; 
+        height: 40px;
     }
 `;
 
@@ -239,11 +241,10 @@ const Validate = styled.button`
     }
 
     @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    height: 40px; /* 调整高度 */
-    padding: 6px 5px; /* 调整内边距 */
-    font-size: 0.8rem; /* 调整字体大小 */
+        height: 40px;
+        padding: 6px 5px;
+        font-size: 0.8rem;
     }
-    
 `;
 
 const LoadingMessage = styled.div`

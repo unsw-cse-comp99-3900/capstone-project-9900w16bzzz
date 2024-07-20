@@ -112,18 +112,24 @@ function Myinvoice() {
                         <InvoiceList>
                             {filteredInvoices.map((invoice) => (
                                 <InvoiceItem key={invoice.invoiceId} onClick={() => handleInvoiceClick(invoice.invoiceId)}>
-                                    <InvoiceName>{getFileNameWithoutExtension(invoice.fileName)}</InvoiceName>
+                                    <InvoiceNameContainer>
+                                        <InvoiceName>{getFileNameWithoutExtension(invoice.fileName)}</InvoiceName>
+                                    </InvoiceNameContainer>
                                     {invoice.validationFlag === 1 && (
-                                        <ValidationPass>
-                                            <StatusCircleGreen />
-                                            Validation Pass
-                                        </ValidationPass>
+                                        <ValidationContainer>
+                                            <ValidationPass>
+                                                <StatusCircleGreen />
+                                                Validation Pass
+                                            </ValidationPass>
+                                        </ValidationContainer>
                                     )}
                                     {invoice.validationFlag === 2 && (
-                                        <ValidationFail>
-                                            <StatusCircleRed />
-                                            Validation Fail
-                                        </ValidationFail>
+                                        <ValidationContainer>
+                                            <ValidationFail>
+                                                <StatusCircleRed />
+                                                Validation Fail
+                                            </ValidationFail>
+                                        </ValidationContainer>
                                     )}
                                     <DownloadContainer>
                                         <Download onClick={(event) => handleDropdownToggle(event, invoice.invoiceId)} />
@@ -316,10 +322,23 @@ const InvoiceItem = styled.li`
     }
 `;
 
+const InvoiceNameContainer = styled.div`
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
 const InvoiceName = styled.span`
-    color: #ffffff;
-    font-size: 1.1rem;
-    flex: 1;
+  color: #ffffff;
+  font-size: 1.1rem;
+`;
+
+const ValidationContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-right: 170px;
+  width: 130px;
 `;
 
 const ValidationPass = styled.span`
@@ -327,7 +346,6 @@ const ValidationPass = styled.span`
     align-items: center;
     color: #00ff80;
     font-size: 1rem;
-    margin-right: 180px;
 `;
 
 const StatusCircleGreen = styled.div`
@@ -341,9 +359,8 @@ const StatusCircleGreen = styled.div`
 const ValidationFail = styled.span`
     display: flex;
     align-items: center;
-    color: #ff3333;
+    color: #ff0000;
     font-size: 1rem;
-    margin-right: 180px;
 `;
 
 const StatusCircleRed = styled.div`
