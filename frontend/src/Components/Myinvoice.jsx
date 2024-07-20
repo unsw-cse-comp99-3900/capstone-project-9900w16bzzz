@@ -6,12 +6,14 @@ import { BiDownload } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import deleteInvoice from "./Deleteinvoice";
 import DownloadInvoice from "./Downloadinvoice";
+import { usePopup } from './PopupWindow/PopupContext';
 
 function Myinvoice() {
     const [invoiceData, setInvoiceData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [openDropdown, setOpenDropdown] = useState(null);
     const navigate = useNavigate();
+    const { showPopup } = usePopup();
 
     useEffect(() => {
         fetchInvoices();
@@ -67,10 +69,15 @@ function Myinvoice() {
         setOpenDropdown(openDropdown === invoiceId ? null : invoiceId);
     };
 
-    const handleDownloadClick = (event, invoiceId, fileType) => {
+    const handleDownloadClick = async (event, invoiceId, fileType) => {
         event.stopPropagation();
         event.preventDefault();
-        DownloadInvoice(invoiceId, fileType);
+        try {
+            await DownloadInvoice(invoiceId, fileType);
+            showPopup('Download successful!', 'success');
+        } catch (error) {
+            showPopup('Download failed!', 'error');
+        }
     };
 
     const getFileNameWithoutExtension = (fileName) => {
