@@ -17,6 +17,7 @@ import com.zzz.platform.api.invoice.service.InvoiceFileService;
 import com.zzz.platform.common.code.InvoiceErrorCode;
 import com.zzz.platform.common.domain.ResponseDTO;
 import com.zzz.platform.common.enumeration.FileType;
+import com.zzz.platform.component.MailProperties;
 import com.zzz.platform.utils.EncodeUtil;
 import com.zzz.platform.utils.FileFormaterUtil;
 import com.zzz.platform.utils.RulesUtil;
@@ -53,6 +54,9 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
 
     @Resource
     private ObjectMapper objectMapper;
+
+    @Resource
+    private MailProperties mailProperties;
 
 
     @Override
@@ -130,6 +134,7 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
 
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
         mimeMessageHelper.setTo(sendForm.getTargetEmail());
+        mimeMessageHelper.setFrom(mailProperties.getUsername());
         mimeMessageHelper.setSubject(sendForm.getSubject());
         mimeMessageHelper.setText(sendForm.getText());
 

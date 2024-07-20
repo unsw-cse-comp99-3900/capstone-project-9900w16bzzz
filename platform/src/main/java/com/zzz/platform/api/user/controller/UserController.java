@@ -39,7 +39,7 @@ public class UserController {
 
     /**
      * @author Zhaoyue Zhang
-     * 修改用户登录密码
+     * update user pwd
      * @param userPwdUpdateForm
      * @return
      */
@@ -50,7 +50,7 @@ public class UserController {
 
     /**
      * @author Zhaoyue Zhang
-     * 根据登录名查询用户信息
+     * get by login name
      * @param loginName
      * @return
      */
@@ -61,7 +61,7 @@ public class UserController {
 
     /**
      * @author Zhaoyue Zhang
-     * 根据userId查询用户信息
+     * search by user id
      * @param userId
      * @return
      */
@@ -71,7 +71,7 @@ public class UserController {
     }
 
     /**
-     * 根据用户id删除用户  物理删除
+     * delete by id
      * @param userId
      * @return
      */

@@ -40,16 +40,22 @@ spring:
 
   # spring mail config
   mail:
-    host: smtp.google.com
+    host: smtp.office365.com
     port: 587
-    username: eazyinvoice9900zzz@gmail.com
-    password: pnfbtpvspjuptqfb
+    username: eazyinvoice9900zzz@outlook.com
+    password: bcjypmyxhqexiliy
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
+            required: true
+          ssl:
+            trust: smtp.office365.com
+      transport:
+        protocol: smtp
+
 
 
 # tomcat config，Primarily used to configure access logs (for future error troubleshooting)

@@ -18,7 +18,7 @@ import java.util.Properties;
 public class MailConfig {
 
     @Autowired
-    private MailProperties  mailProperties;
+    private MailProperties mailProperties;
 
     @Bean
     public JavaMailSender getJavaMailSender() {

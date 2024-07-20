@@ -2,7 +2,10 @@ package com.zzz.platform.api.invoice.domain;
 
 import com.zzz.platform.utils.VerificationUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -13,6 +16,9 @@ import javax.validation.constraints.NotNull;
  * @date: 2024/7/13
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class InvoiceSendForm {
 
     @Schema(description = "target email")
@@ -21,10 +27,10 @@ public class InvoiceSendForm {
     private String targetEmail;
 
     @Schema(description = "email subject")
-    @NotNull
-    private String subject;
+    @Builder.Default
+    private String subject = "[Eazy Invoice] Sending invoice file from Eazy Invoice";
 
     @Schema(description = "email body text")
-    @NotNull
-    private String text;
+    @Builder.Default
+    private String text = "Find invoice file from attachment";
 }

@@ -52,12 +52,12 @@ public class WebServerListener implements ApplicationListener<WebServerInitializ
         String localhostUrl = URLUtil.normalize(String.format("http://localhost:%d%s", port, contextPath), false, true);
         String externalUrl = URLUtil.normalize(String.format("http://%s:%d%s", ip, port, contextPath), false, true);
         String swaggerUrl = URLUtil.normalize(String.format("http://localhost:%d%s/swagger-ui/index.html", port, contextPath), false, true);
-        log.warn("\n{}\n" +
-                        "\tCurrent startup environment:\t{} , {}" +
-                        "\n\tservice-native address:\t{}" +
-                        "\n\tservice extranet address:\t{}" +
-                        "\n\tSwagger address:\t{}" +
-                        "\n-------------------------------------------------------------------------------------\n",
+        log.warn(new StringBuilder().append("\n{}\n").append("\tCurrent startup environment:\t{} , {}")
+                        .append("\n\tservice-native address:\t{}")
+                        .append("\n\tservice extranet address:\t{}")
+                        .append("\n\tSwagger address:\t{}")
+                        .append("\n-------------------------------------------------------------------------------------\n")
+                        .toString(),
                 title, profile, environmentEnum.getDesc(), localhostUrl, externalUrl, swaggerUrl);
     }
 }
