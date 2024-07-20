@@ -4,6 +4,7 @@ import video from "../images/video1.mp4";
 import styled from "styled-components";
 import { BsBoxArrowInLeft } from "react-icons/bs";
 import Preview from "./Preview";
+import SendInvoice from "./Sendinvoice";
 
 function Invoicedetail() {
     const { invoiceId } = useParams();
@@ -96,12 +97,11 @@ function Invoicedetail() {
                             selectedFileType={selectedFileType}
                             invoiceId={invoiceId}
                         />
-                        <EmailBox>
-                            <EmailInput>
-                                <input type="text" placeholder="Email address" />
-                            </EmailInput>
-                            <EmailButton>Send</EmailButton>
-                        </EmailBox>
+                        <SendInvoice 
+                            invoiceId={invoiceId}
+                            selectedFileType={selectedFileType}
+                            fileName={getFileNameWithoutExtension(invoice.fileName)}
+                        />
                     </>
                 ) : (
                     <LoadingMessage>Loading invoice details...</LoadingMessage>
@@ -188,62 +188,6 @@ const Validate = styled.button`
     font-size: 1rem;
     text-transform: uppercase;
     margin-left: auto;
-    &:hover {
-        background-color: transparent;
-        transition: all ease 0.5s;
-    }
-`;
-
-const EmailBox = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin-top: 20px;
-    height: 100px;
-    margin-left: 30px;
-    margin-right: 30px;
-    width: 90%;
-`;
-
-const EmailInput = styled.div`
-    position: relative;
-
-    input {
-        padding: 10px;
-        width: 280px;
-        border: none;
-        border-radius: 20px;
-        background: rgba(255, 255, 255, 0.2);
-        color: #ffffff;
-        font-size: 1rem;
-        outline: none;
-        box-shadow: 0 0 0 0.1rem #9a86d2;
-
-        &::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-        &:focus {
-            display: inline-block;
-            box-shadow: 0 0 0 0.2rem #b9abe0;
-            backdrop-filter: blur(12rem);
-            border-radius: 2rem;
-        }
-    }
-`;
-
-const EmailButton = styled.button`
-    background-color: #5011cc;
-    height: 40px;
-    position: relative;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 20px;
-    border: 2px solid #6414FF;
-    cursor: pointer;
-    letter-spacing: 0.1rem;
-    font-size: 1rem;
-    margin-left: 20px;
-    text-transform: uppercase;
     &:hover {
         background-color: transparent;
         transition: all ease 0.5s;
