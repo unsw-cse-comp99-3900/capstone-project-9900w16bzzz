@@ -215,9 +215,9 @@ const FileTypeDropdown = styled.div`
     }
 
     @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    margin-left:20px; 
+    margin-left:40px; 
+    height: 40px;
     }
-    
 `;
 
 const Validate = styled.button`
@@ -237,6 +237,13 @@ const Validate = styled.button`
         background-color: transparent;
         transition: all ease 0.5s;
     }
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    height: 40px; /* 调整高度 */
+    padding: 6px 5px; /* 调整内边距 */
+    font-size: 0.8rem; /* 调整字体大小 */
+    }
+    
 `;
 
 const LoadingMessage = styled.div`

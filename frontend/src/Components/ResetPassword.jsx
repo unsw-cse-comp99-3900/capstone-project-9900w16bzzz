@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 import video from "../images/video1.mp4";
+import styled from "styled-components";
 import SignupButton from "./SignupButton";
+import { useNavigate } from "react-router-dom";
+import { usePopup } from './PopupWindow/PopupContext';
 
 function ResetPassword() {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
 
+  const { showPopup } = usePopup();
   const navigate = useNavigate();
 
   const validatePassword = (password) => {
@@ -21,23 +21,20 @@ function ResetPassword() {
   };
 
   const handleResetPassword = async () => {
-    setError('');
-    setSuccessMessage('');
-
     const passwordError = validatePassword(newPassword);
     if (passwordError) {
-      setError(passwordError);
+      showPopup(passwordError, 'error');
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError('The passwords entered twice do not match.');
+      showPopup('The passwords entered twice do not match.', 'error');
       return;
     }
 
     const token = localStorage.getItem('token');
     if (!token) {
-      setError('You are not logged in.');
+      showPopup('You are not logged in.', 'error');
       return;
     }
 
@@ -58,7 +55,7 @@ function ResetPassword() {
       if (response.ok) {
         const data = await response.json();
         if (data.ok) {
-          setSuccessMessage('Password reset successful.');
+          showPopup('Password reset successful.', 'success');
           localStorage.removeItem('token');
           localStorage.removeItem('userId');
           window.dispatchEvent(new Event('localStorageChange'));
@@ -66,14 +63,14 @@ function ResetPassword() {
             navigate('/log-in');
           }, 1000);
         } else {
-          setError(data.msg || 'Failed to reset password. Please try again.');
+          showPopup(data.msg || 'Failed to reset password. Please try again.', 'error');
         }
       } else {
-        setError('Failed to reset password. Please try again.');
+        showPopup('Failed to reset password. Please try again.', 'error');
       }
     } catch (error) {
       console.error('Error:', error);
-      setError('An error occurred. Please try again later.');
+      showPopup('An error occurred. Please try again later.', 'error');
     }
   };
 
@@ -104,8 +101,6 @@ function ResetPassword() {
             value={confirmPassword} 
             onChange={(e) => setConfirmPassword(e.target.value)} 
           />
-          {error && <ErrorText>{error}</ErrorText>}
-          {successMessage && <SuccessText>{successMessage}</SuccessText>}
         </InputContainer>
         <ButtonContainer onClick={handleResetPassword}>
           <SignupButton content="Reset" />
@@ -175,7 +170,6 @@ const MainContainer = styled.div`
   @media only screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
     margin-top: 15vh; /* 为 iPhone 14 Pro Max 调整的顶部边距 */
   }
-
 `;
 
 const ResetText = styled.div`
@@ -203,24 +197,5 @@ const ButtonContainer = styled.div`
   align-items: center;
   justify-content: center;
 `;
-
-const ErrorText = styled.div`
-  color: red;
-  margin-top: 0.5rem;
-  font-size: 0.7rem;
-  letter-spacing: 0rem;
-  font-weight: bold;
-  text-align: center;
-`;
-
-const SuccessText = styled.div`
-  color: green;
-  margin-top: 0.5rem;
-  font-size: 0.7rem;
-  letter-spacing: 0rem;
-  font-weight: bold;
-  text-align: center;
-`;
-
 
 export default ResetPassword;
