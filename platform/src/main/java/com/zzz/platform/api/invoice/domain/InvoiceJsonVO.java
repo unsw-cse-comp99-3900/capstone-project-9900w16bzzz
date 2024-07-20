@@ -103,14 +103,6 @@ public class InvoiceJsonVO {
         private String reason;
         private String taxPercent;
         private String currencyCode;
-
-        public Allowance(String type) {
-            this.type = amount;
-            this.amount = "10";
-            this.reason = "SAA";
-            this.taxPercent = "10";
-            this.currencyCode = "AUD";
-        }
     }
 
     @Data

@@ -25,8 +25,11 @@ public class JsonToUblConverter {
 
         // set invoice ID
         IDType id = new IDType();
-        id.setSchemeID(invoiceJsonVO.getInvoiceId());
+        id.setValue(invoiceJsonVO.getInvoiceId());
         invoice.setID(id);
+        String customizationId = generateCustomizationID(invoiceJsonVO.getSeller().getName());
+        invoice.setCustomizationID(customizationId);
+
         // 380 Commercial Invoice Type Code
         invoice.setInvoiceTypeCode("380");
         // set currency code
@@ -49,13 +52,17 @@ public class JsonToUblConverter {
         setTaxTotal(invoice, invoiceJsonVO);
 
         // set delivery address
-        setDelivery(invoice, invoiceJsonVO.getDeliveryAddress(), invoiceJsonVO.getBuyer());
+        if (ObjectUtils.isNotEmpty(invoiceJsonVO.getDeliveryAddress())) {
+            setDelivery(invoice, invoiceJsonVO.getDeliveryAddress(), invoiceJsonVO.getBuyer());
+        }
 
         // set Payment means
-        setPaymentMeans(invoice, invoiceJsonVO.getPayment());
+        if (ObjectUtils.isNotEmpty(invoiceJsonVO.getPayment())) {
+            setPaymentMeans(invoice, invoiceJsonVO.getPayment());
+        }
 
         // set Allowance charge
-        AllowanceChargeType allowanceChargeType = getAllowanceCharge(invoiceJsonVO.getAllowance(), invoiceJsonVO.getInvoiceTotal());
+        AllowanceChargeType allowanceChargeType = getAllowanceCharge(invoiceJsonVO.getAllowance());
         invoice.addAllowanceCharge(allowanceChargeType);
 
         // set invoice lines
@@ -104,7 +111,10 @@ public class JsonToUblConverter {
             lineExtensionAmountType.setValue(BigDecimal.valueOf(Double.parseDouble((item.getAmount()))));
             invoiceLine.setLineExtensionAmount(lineExtensionAmountType);
 
-            invoiceLine.setInvoicedQuantity(BigDecimal.valueOf(Double.parseDouble(item.getQuantity())));
+            InvoicedQuantityType invoicedQuantityType = new InvoicedQuantityType();
+            invoicedQuantityType.setUnitCode("C62");
+            invoicedQuantityType.setValue(BigDecimal.valueOf(Double.parseDouble(item.getQuantity())));
+            invoiceLine.setInvoicedQuantity(invoicedQuantityType);
             // set item
             ItemType itemType = new ItemType();
             DescriptionType description = new DescriptionType();
@@ -113,18 +123,21 @@ public class JsonToUblConverter {
             String taxRate = item.getTaxRate();
             TaxCategoryType taxCategoryType = getTaxCategoryType(EnumUtil.getEnumByValue(taxRate, TaxType.class));
             itemType.addClassifiedTaxCategory(taxCategoryType);
+            itemType.setName(item.getDescription());
             invoiceLine.setItem(itemType);
 
-            // set price
             PriceType price = new PriceType();
             PriceAmountType priceAmount = new PriceAmountType();
             priceAmount.setValue(BigDecimal.valueOf(Double.parseDouble(item.getAmount())));
             priceAmount.setCurrencyID(currencyCode);
             price.setPriceAmount(priceAmount);
-            // set allowance charge
-            AllowanceChargeType allowanceChargeType = getAllowanceCharge(item.getAllowance(), item.getAmount());
-            price.addAllowanceCharge(allowanceChargeType);
             invoiceLine.setPrice(price);
+            if (ObjectUtils.isNotEmpty(item.getAllowance())) {
+                // set allowance charge
+                AllowanceChargeType allowanceChargeType = getAllowanceCharge(item.getAllowance());
+                price.addAllowanceCharge(allowanceChargeType);
+                invoiceLine.setPrice(price);
+            }
 
             // add invoice item to item
             invoice.addInvoiceLine(invoiceLine);
@@ -203,12 +216,35 @@ public class JsonToUblConverter {
         invoice.setAccountingSupplierParty(supplierPartyType);
     }
 
-    /**
-    <cac:Contact>
-        <cbc:Name>Ronald MacDonald</cbc:Name>
-        <cbc:Telephone>Mobile 0430123456</cbc:Telephone>
-        <cbc:ElectronicMail>ronald.macdonald@qualitygoods.com.au</cbc:ElectronicMail>
-    </cac:Contact>
+   /**
+    <cac:Party>
+      <cbc:EndpointID schemeID="0151">123456789</cbc:EndpointID>
+      <cac:PartyIdentification>
+        <cbc:ID schemeID="0060">123456789</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>Customer Company Name</cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:StreetName>Main St</cbc:StreetName>
+        <cbc:CityName>Springfield</cbc:CityName>
+        <cbc:PostalZone>12345</cbc:PostalZone>
+        <cac:AddressLine>
+          <cbc:Line>123 Main St</cbc:Line>
+        </cac:AddressLine>
+        <cac:Country>
+          <cbc:IdentificationCode>US</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Customer Company Name</cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+      <cac:Contact>
+        <cbc:Name>Customer Company Name</cbc:Name>
+        <cbc:Telephone>+1234567890</cbc:Telephone>
+        <cbc:ElectronicMail>customer@example.com</cbc:ElectronicMail>
+      </cac:Contact>
+    </cac:Party>
     */
     private static PartyType getPartyType(InvoiceJsonVO.Person person) {
         PartyType partyType = new PartyType();
@@ -219,10 +255,11 @@ public class JsonToUblConverter {
         // endpoint
         String personId = person.getId();
         SchemeID schemeID = EnumUtil.getEnumByValue(person.getSchemeId(), SchemeID.class);
+        // endpoint
         EndpointIDType endpointIDType = new EndpointIDType();
-        endpointIDType.setSchemeID(schemeID.getValue());
+        endpointIDType.setSchemeID("0151");
         endpointIDType.setValue(personId);
-        partyType.setEndpointID(personId);
+        partyType.setEndpointID(endpointIDType);
         // id
         PartyIdentificationType partyIdentificationType = new PartyIdentificationType();
         IDType idType = new IDType();
@@ -239,6 +276,12 @@ public class JsonToUblConverter {
         // Address
         AddressType addressType = getAddressType(person.getAddress());
         partyType.setPostalAddress(addressType);
+        // party legal entity
+        PartyLegalEntityType entityType = new PartyLegalEntityType();
+        RegistrationNameType registrationNameType = new RegistrationNameType();
+        registrationNameType.setValue(person.getName());
+        entityType.setRegistrationName(registrationNameType);
+        partyType.addPartyLegalEntity(entityType);
 
         return partyType;
     }
@@ -265,7 +308,7 @@ public class JsonToUblConverter {
         addressType.addAddressLine(addressLineType);
         // set country
         CountryType countryType = new CountryType();
-        countryType.setName(address.getCountryCode());
+        countryType.setIdentificationCode(address.getCountryCode());
         addressType.setCountry(countryType);
         // set street
         addressType.setStreetName(address.getStreet());
@@ -304,6 +347,11 @@ public class JsonToUblConverter {
         TaxExclusiveAmountType taxExclusiveAmountType = new TaxExclusiveAmountType(taxInclusiveAmount.subtract(BigDecimal.valueOf(taxTotal)));
         taxExclusiveAmountType.setCurrencyID(currencyCode);
         legalMonetaryTotal.setTaxExclusiveAmount(taxExclusiveAmountType);
+        // allowance amount
+        Double allowanceAmount = Double.parseDouble(invoiceJsonVO.getAllowance().getAmount());
+        ChargeTotalAmountType chargeTotalAmountType = new ChargeTotalAmountType(BigDecimal.valueOf(allowanceAmount));
+        chargeTotalAmountType.setCurrencyID(currencyCode);
+        legalMonetaryTotal.setChargeTotalAmount(chargeTotalAmountType);
 
         PayableAmountType payableAmountType = new PayableAmountType(taxInclusiveAmount);
         payableAmountType.setCurrencyID(currencyCode);
@@ -433,13 +481,19 @@ public class JsonToUblConverter {
         </cac:TaxCategory>
     </cac:AllowanceCharge>
     */
-    private static AllowanceChargeType getAllowanceCharge(InvoiceJsonVO.Allowance allowance, String baseAmount) {
+    private static AllowanceChargeType getAllowanceCharge(InvoiceJsonVO.Allowance allowance) {
+        // allowance charge type and reason
         AllowanceChargeType allowanceChargeType = new AllowanceChargeType();
         AllowanceChargeReasonCode allowanceChargeReasonCode = EnumUtil.getEnumByValue(allowance.getType(), AllowanceChargeReasonCode.class);
         allowanceChargeType.setChargeIndicator(allowanceChargeReasonCode.isCharge());
+        allowanceChargeType.setAllowanceChargeReasonCode(allowanceChargeReasonCode.getValue());
+        AllowanceChargeReasonType allowanceChargeReasonType = new AllowanceChargeReasonType();
+        allowanceChargeReasonType.setValue(allowanceChargeReasonCode.getDesc());
+        allowanceChargeType.addAllowanceChargeReason(allowanceChargeReasonType);
+        // base amount type
         BaseAmountType baseAmountType = new BaseAmountType();
-        baseAmountType.setValue(BigDecimal.valueOf(Double.parseDouble(baseAmount)));
-        baseAmountType.setCurrencyID(allowance.getAmount());
+        baseAmountType.setValue(BigDecimal.valueOf(Double.parseDouble(allowance.getAmount())));
+        baseAmountType.setCurrencyID(allowance.getCurrencyCode());
         allowanceChargeType.setBaseAmount(baseAmountType);
         AmountType amountType = new AmountType();
         amountType.setValue(BigDecimal.valueOf(Double.parseDouble(allowance.getAmount())));
@@ -468,6 +522,11 @@ public class JsonToUblConverter {
         taxSchemeType.setID("GST");
         taxCategoryType.setTaxScheme(taxSchemeType);
         return taxCategoryType;
+    }
+
+    private static String generateCustomizationID(String companyName) {
+        // generate CustomizationID
+        return "urn:oasis:" + companyName + ":specification:ubl:schema:xsd:Invoice-2";
     }
 
     @AllArgsConstructor

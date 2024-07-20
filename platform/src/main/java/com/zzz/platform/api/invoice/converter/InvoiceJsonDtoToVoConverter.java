@@ -32,7 +32,8 @@ public class InvoiceJsonDtoToVoConverter {
         // set default commercial invoice coed
         invoiceJsonVO.setTypeCode("380");
 
-        invoiceJsonVO.setCurrencyCode(getDetails(fields.getInvoiceTotal(), InvoiceApiJsonDTO.Details.CODE));
+        String countryCode = getDetails(fields.getInvoiceTotal(), InvoiceApiJsonDTO.Details.CODE);
+        invoiceJsonVO.setCurrencyCode(countryCode);
 
         // set buyer
         InvoiceApiJsonDTO.Document.Field customerAddress = null;
