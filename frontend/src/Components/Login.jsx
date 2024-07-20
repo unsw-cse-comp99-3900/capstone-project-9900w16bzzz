@@ -2,14 +2,17 @@ import React, {useState} from "react";
 import video from "../images/video1.mp4";
 import styled from "styled-components";
 import SignupButton from "./SignupButton";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { usePopup } from './PopupWindow/PopupContext';
 
 
 
 function Login (){
-    const [loginEmail, setEmail] = useState('');
-    const [loginPassword, setPassword] = useState('');
-    const [emailError, setEmailError] = useState('');
+  const [loginEmail, setEmail] = useState('');
+  const [loginPassword, setPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+
+  const { showPopup } = usePopup();
 
     const navigate = useNavigate();
 
@@ -41,9 +44,13 @@ function Login (){
           const data = await response.json();
           console.log('Login successful:', data);
           if(data.ok) {
-            localStorage.setItem("token",data.data.token);
+            localStorage.setItem("token", data.data.token);
+            showPopup('Login successful!', 'success');
             await getUserInformation();
             navigate('/');
+          }
+          else {
+            showPopup(`Error: ${data.msg}`, 'error');
           }
         } else {
           console.error('Login failed:', response.statusText);
@@ -82,24 +89,25 @@ function Login (){
           }
     }
 
-    return(
-        <div id = "main">
-            <video autoPlay muted loop id="background-video-signup">
-                <source src={video} type="video/mp4" />
-                Your browser does not support the video tag.
-            </video>
-            <Maincontainer>
-                <LoginText>Log in</LoginText>
-                <InputContainer>    
-                    <StyledInput  type = "text" placeholder="Email" value={loginEmail} onChange={(e) => setEmail(e.target.value)}/>
-                    {emailError && <ErrorText>{emailError}</ErrorText>}
-                    <StyledInput  type = "password" placeholder="Password" value={loginPassword} onChange={(e) => setPassword(e.target.value)}/>
-                </InputContainer>
-                <ButtonContainer onClick={handleLogin}>
-                    <SignupButton content="Log in"/>
-                </ButtonContainer>
-            </Maincontainer>
-        </div>
+  return (
+    <div id = "main">
+        <video autoPlay muted loop id="background-video-signup">
+            <source src={video} type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
+        <Maincontainer>
+            <LoginText>Log in</LoginText>
+            <InputContainer>    
+                <StyledInput  type = "text" placeholder="Email" value={loginEmail} onChange={(e) => setEmail(e.target.value)}/>
+                {emailError && <ErrorText>{emailError}</ErrorText>}
+                <StyledInput  type = "password" placeholder="Password" value={loginPassword} onChange={(e) => setPassword(e.target.value)}/>
+            </InputContainer>
+            <ButtonContainer onClick={handleLogin}>
+                <SignupButton content="Log in"/>
+      </ButtonContainer>
+      <StyledLink to="/sign-up">Doesn't have an account? Sign up</StyledLink>
+        </Maincontainer>
+    </div>
     )
 }
 
@@ -173,6 +181,17 @@ const ErrorText = styled.div`
   font-size: 0.7rem;
   letter-spacing: 0rem;
   font-weight: bold;
+`;
+
+const StyledLink = styled(Link)`
+  margin-top: 1rem;
+  color: #ffffff;
+  font-size: 0.6rem;
+  letter-spacing: 0rem;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 export default Login;

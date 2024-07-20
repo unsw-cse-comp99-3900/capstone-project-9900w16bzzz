@@ -4,8 +4,10 @@ import video from "../images/video1.mp4";
 import SignupInput from "./SignupInput";
 import SignupButton from "./SignupButton";
 import { Link, useNavigate } from "react-router-dom";
+import { usePopup } from "./PopupWindow/PopupContext";
 
 function Signup() {
+  const { showPopup } = usePopup();
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -49,10 +51,16 @@ function Signup() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Sign up successful:', data);
-        navigate('/');
+        if (data.ok) {
+          showPopup('Sign up successful!','success')
+          console.log('Sign up successful:', data);
+          navigate('/');
+        }
+        else {
+          showPopup(`Sign up failed: ${data.msg}`,'error');
+          console.error('Sign up failed:', data.msg);
+        }
       } else {
-        console.error('Sign up failed:', response.statusText);
         setEmailError('Sign up failed. Please try again.');
       }
     } catch (error) {

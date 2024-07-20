@@ -8,24 +8,29 @@ import Myinvoice from './Components/Myinvoice';
 import Invoicedetail from './Components/Invoicedetail';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ResetPassword from './Components/ResetPassword';
+import { PopupProvider } from './Components/PopupWindow/PopupContext';
+import GlobalPopup from './Components/PopupWindow/usePopup';
 
 
 function App() {
   return (
-    <Router>
-      <div className="App">
-        <Navbar/>
-          <Routes>
-            <Route path="/" element={<Header />} />
-            <Route path="/sign-up" element = {<Signup/>}/>
-            <Route path="/log-in" element={<Login />} />
-            <Route path="/create-invoice" element={<InvoiceCreation />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/my-invoice" element={<Myinvoice />} />
-            <Route path="/invoice/:invoiceId" element={<Invoicedetail />} />
-          </Routes>
-      </div>
-    </Router>
+    <PopupProvider>
+      <Router>
+        <GlobalPopup />
+        <div className="App">
+          <Navbar/>
+            <Routes>
+              <Route path="/" element={<Header />} />
+              <Route path="/sign-up" element = {<Signup/>}/>
+              <Route path="/log-in" element={<Login />} />
+              <Route path="/create-invoice" element={<InvoiceCreation />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/my-invoice" element={<Myinvoice />} />
+              <Route path="/invoice/:invoiceId" element={<Invoicedetail />} />
+            </Routes>
+        </div>
+        </Router>
+      </PopupProvider>
   );
 }
 

@@ -48,7 +48,7 @@ function Navbar(){
                 {username ? (
                     <li><UserMenu username={username} /></li>
                 ) : (
-                    <li><RouterLink to="/sign-up">Sign up</RouterLink></li>
+                    <li><RouterLink to="/log-in">sign in</RouterLink></li>
                 )}
             </ul>
 
