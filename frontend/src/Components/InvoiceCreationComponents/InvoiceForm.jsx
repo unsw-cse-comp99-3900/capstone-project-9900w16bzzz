@@ -4,8 +4,10 @@ import { ReactComponent as ArrowIcon } from "../../images/arrow.svg";
 import FormInput from "./FormInput";
 import SelectInput from "./FormSelector";
 import CheckboxInput from "./CheckboxInput";
+import { usePopup } from "../PopupWindow/PopupContext";
 
 function InvoiceForm({ goToStep, invoice, setValidationResult }) {
+    const { showPopup } = usePopup();
     const [formData, setFormData] = useState({});
     const [expandedSection, setExpandedSection] = useState(null);
     const [isFormValid, setIsFormValid] = useState(false);
@@ -313,7 +315,7 @@ function InvoiceForm({ goToStep, invoice, setValidationResult }) {
 
     const uploadEditedInvoice = async () => {
       if (!selectedRules) {
-          alert('You have to select validation rule!');
+          showPopup('You have to select validation rule!','error');
           return;
       }
 
@@ -365,7 +367,7 @@ function InvoiceForm({ goToStep, invoice, setValidationResult }) {
       } catch (error) {
         setIsUploading(false);
           console.error('Error processing file:', error);
-          alert('An error occurred while processing the file. Please try again.');
+          showPopup('An error occurred while processing the file. Please try again.','error');
         }
     }
 
@@ -401,7 +403,7 @@ function InvoiceForm({ goToStep, invoice, setValidationResult }) {
                                 uploadEditedInvoice();
                             } else {
                               const emptyFields = findEmptyFields(formData);
-                              alert(`Please fill in the following fields: ${emptyFields.join(', ')}`);
+                              showPopup(`Please fill in the following fields: ${emptyFields.join(', ')}`,'error');
                             }
                           }} 
                           isValid={isFormValid}
