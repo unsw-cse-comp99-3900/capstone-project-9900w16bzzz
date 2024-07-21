@@ -52,4 +52,4 @@ The output should be similar to what you would see in a macOS environment.
 
 Last but not least,
 
-You can directly access the project's main page using your browser at [http://localhost:80](http://localhost:80).
+You can directly access the project's main page using your browser at [http://localhost:80](http://localhost:8080).
