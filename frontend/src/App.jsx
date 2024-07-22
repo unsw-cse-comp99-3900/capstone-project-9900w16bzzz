@@ -10,6 +10,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ResetPassword from './Components/ResetPassword';
 import { PopupProvider } from './Components/PopupWindow/PopupContext';
 import GlobalPopup from './Components/PopupWindow/usePopup';
+import ValidationPage from './Components/ValidationPage/ValidationPage';
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/my-invoice" element={<Myinvoice />} />
               <Route path="/invoice/:invoiceId" element={<Invoicedetail />} />
+              <Route path="/validation/:invoiceId" element={<ValidationPage />} />
             </Routes>
         </div>
         </Router>

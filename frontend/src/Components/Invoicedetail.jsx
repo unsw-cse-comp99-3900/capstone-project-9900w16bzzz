@@ -72,6 +72,10 @@ function Invoicedetail() {
         setSelectedFileType(event.target.value);
     };
 
+    const handleValidateClick = () => {
+        navigate(`/validation/${invoiceId}`);
+    }
+
     return (
         <div id="main">
             <VideoBackground autoPlay muted loop id="background-video-signup">
@@ -91,7 +95,7 @@ function Invoicedetail() {
                                     {invoice.xmlFlag === 1 && <option value="xml">XML</option>}
                                 </select>
                             </FileTypeDropdown>
-                            <Validate>Validate</Validate>
+                            <Validate onClick={handleValidateClick}>Validate</Validate>
                         </InvoiceName>
                         <Preview
                             selectedFileType={selectedFileType}

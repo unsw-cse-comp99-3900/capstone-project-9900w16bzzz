@@ -6,7 +6,8 @@ import SelectInput from "./FormSelector";
 import CheckboxInput from "./CheckboxInput";
 import { usePopup } from "../PopupWindow/PopupContext";
 
-function InvoiceForm({ goToStep, invoice, setValidationResult }) {
+function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation' }) {
+  const isValidation = type === 'validation';
     const { showPopup } = usePopup();
     const [formData, setFormData] = useState({});
     const [expandedSection, setExpandedSection] = useState(null);
@@ -22,7 +23,7 @@ function InvoiceForm({ goToStep, invoice, setValidationResult }) {
     useEffect(() => {
         if (invoice && invoice.invoiceJsonVO) {
             setFormData(invoice.invoiceJsonVO);
-        }
+      }
     }, [invoice]);
 
     const toggleSection = (section) => {
@@ -369,18 +370,29 @@ function InvoiceForm({ goToStep, invoice, setValidationResult }) {
           console.error('Error processing file:', error);
           showPopup('An error occurred while processing the file. Please try again.','error');
         }
-    }
+  }
+
+  const buttonStyle = isValidation 
+  ? { opacity: 0, cursor: "not-allowed", pointerEvents: "none" } 
+  : {};
 
   return (
       <>
       {isUploading && <Loading />}
         <MainContainer className="name">
-            <ArrowButton onClick={() => goToStep(2)}>
+        <ArrowButton
+          disabled={isValidation} 
+          style={buttonStyle}
+          onClick={() => goToStep(2)}
+        >
                 <ArrowIcon style={{ transform: 'scaleX(-1)' }} />
             </ArrowButton>
             <Content>
                 <HeaderContent>
+                {isValidation ?
+                  <h1><span>Convert </span>to UBL</h1> :
                   <h1><span>Last Step </span>Convert to UBL</h1>
+                }
                   <p className="details">To generate a UBL e-invoice, you may need to provide additional information that may not be present on your original invoice.</p>
                   <p className="details">Check the form below, fill out all necessary fields.</p>
                 </HeaderContent>

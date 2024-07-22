@@ -1,8 +1,8 @@
-import InvoiceForm from "./InvoiceCreationComponents/InvoiceForm";
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import styled from "styled-components";
 import video from "../images/video1.mp4";
+import InvoiceForm from "./InvoiceCreationComponents/InvoiceForm";
 import GetStarted from "./InvoiceCreationComponents/GetStarted";
 import UploadPage from "./InvoiceCreationComponents/UploadPage";
 import ChooseConvertOption from "./InvoiceCreationComponents/ChooseConvertOption";
