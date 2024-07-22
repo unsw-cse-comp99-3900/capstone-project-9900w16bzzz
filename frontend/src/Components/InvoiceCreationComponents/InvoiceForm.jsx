@@ -406,17 +406,17 @@ function InvoiceForm({ goToStep, invoice, setValidationResult }) {
                               showPopup(`Please fill in the following fields: ${emptyFields.join(', ')}`,'error');
                             }
                           }} 
-                          isValid={isFormValid}
+                          isvalid={isFormValid}
                         >
                           Validate
                         </SubmitButton>
                       </ButtonWrapper>
                       <CheckboxWrapper>
                         <CheckboxInput
-                            options={[
+                              options={[
+                                { value: 'AUNZ_UBL_1_0_10', label: 'UBL Standard Rule 1.0.10' },
                                 { value: 'AUNZ_PEPPOL_1_0_10', label: 'Peppol Standard Rule 1.0.10' },
-                                { value: 'AUNZ_PEPPOL_SB_1_0_10', label: 'Peppol Small Business Rule 1.0.10' },
-                                { value: 'AUNZ_UBL_1_0_10', label: 'UBL Standard Rule 1.0.10' }
+                                { value: 'AUNZ_PEPPOL_SB_1_0_10', label: 'Peppol Small Business Rule 1.0.10' }
                             ]}
                             selectedRules={selectedRules}
                             onChange={handleRuleChange}
@@ -681,10 +681,10 @@ const ArrowButton = styled.button`
 
     @media only screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
     position: absolute;
-    left: 0px; /* 调整为适应iPhone 14 Pro Max的左侧位置 */
-    top: 300px; /* 调整为适应iPhone 14 Pro Max的顶部位置 */
+    left: 0px;
+    top: 300px; 
     svg {
-      height: 25px; /* 调整为适应iPhone 14 Pro Max的图标大小 */
+      height: 25px; 
     }
   }
 `;
@@ -700,7 +700,7 @@ const SubmitButton = styled.button`
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
-  opacity: ${props => props.isValid ? 1 : 0.6};
+  opacity: ${props => props.isvalid ? 1 : 0.6};
   
   &:hover {
     background-color: #5000CC;
@@ -708,13 +708,13 @@ const SubmitButton = styled.button`
 
   @media only screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
     position: fixed;
-    bottom: 1px; /* 距离页面底部的距离，可以根据需要调整 */
+    bottom: 1px; 
     top:820px; 
     left: 50%;
     transform: translateX(-50%);
-    width: calc(100% - 250px); /* 使按钮宽度适应屏幕 */
+    width: calc(100% - 250px);
     margin: 0;
-    border-radius: 1rem; /* 可选：调整边框圆角以适应底部样式 */
+    border-radius: 1rem;
   }
   
 `;
