@@ -77,15 +77,6 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
       taxPercent: newData.allowance.taxPercent || '10',
       currencyCode: newData.allowance.currencyCode || newData.currencyCode
     };
-
-    newData.payment = {
-      ...newData.payment,
-      code: newData.payment.code || '10',
-      accountName: newData.payment.accountName || 'account name',
-      accountNumber: newData.payment.accountNumber || 'account number',
-      bsbNumber: newData.payment.bsbNumber || 'business number',
-      paymentNote: newData.payment.paymentNote || 'additional note'
-    };
   
     return newData;
   };
@@ -295,7 +286,6 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
     { title: "Financial Details", fields: ["subTotal", "invoiceTotal", "taxTotal"] },
     { title: "allowance", fields: ["allowance"] },
     { title: "Invoice Lines", fields: ["invoiceLine"] },
-    { title: "Payment", fields: ["payment"] },
     { title: "Delivery Address", fields: ["deliveryAddress"] }
   ];
   const typeReasonMapping = {
@@ -451,7 +441,7 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
                   <h1><span>Last Step </span>Convert to UBL</h1>
                 }
                   <p className="details">Additional information not shown on the invoice may be required.</p>
-                  <p className="details">Please select validation rules first</p>
+                  <p className="details">Please select validation rules and check information correctness.</p>
                   <CheckboxWrapper>
                     <CheckboxInput
                           options={[
