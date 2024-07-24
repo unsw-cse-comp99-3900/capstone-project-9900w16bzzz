@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import video from "../images/video1.mp4";
 import styled from "styled-components";
 import { FaSearch } from "react-icons/fa";
@@ -12,14 +12,13 @@ function Myinvoice() {
     const [invoiceData, setInvoiceData] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [openDropdown, setOpenDropdown] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [pageSize] = useState(10);
     const navigate = useNavigate();
     const { showPopup } = usePopup();
 
-    useEffect(() => {
-        fetchInvoices();
-    }, []);
-
-    const fetchInvoices = async () => {
+    const fetchInvoices = useCallback(async (page) => {
         const userId = localStorage.getItem('userId');
         const token = localStorage.getItem('token');
         try {
@@ -30,8 +29,8 @@ function Myinvoice() {
                     'x-access-token': `${token}`
                 },
                 body: JSON.stringify({
-                    pageNum: 1,
-                    pageSize: 10,
+                    pageNum: page,
+                    pageSize: pageSize,
                     searchCount: true,
                     sortItemList: [
                         {
@@ -45,23 +44,30 @@ function Myinvoice() {
             const data = await response.json();
             console.log('API Response:', data);
 
-            if (data && data.data && data.data.list) {
+            if (data && data.data) {
                 setInvoiceData(data.data.list);
+                setTotalPages(data.data.pages);
+                setCurrentPage(data.data.pageNum);
             } else {
                 console.error("Invalid API response structure:", data);
             }
         } catch (error) {
             console.error("Error fetching invoices:", error);
         }
-    };
+    }, [pageSize]);
+
+    useEffect(() => {
+        fetchInvoices(currentPage);
+    }, [fetchInvoices, currentPage]);
 
     const handleInvoiceClick = (invoiceId) => {
         navigate(`/invoice/${invoiceId}`);
     };
 
-    const handleDeleteClick = (event, invoiceId) => {
+    const handleDeleteClick = async (event, invoiceId) => {
         event.stopPropagation();
-        deleteInvoice(invoiceId, setInvoiceData, invoiceData);
+        await deleteInvoice(invoiceId, setInvoiceData, invoiceData);
+        fetchInvoices(currentPage);
     };
 
     const handleDropdownToggle = (event, invoiceId) => {
@@ -145,6 +151,13 @@ function Myinvoice() {
                                 </InvoiceItem>
                             ))}
                         </InvoiceList>
+                        <PaginationControls>
+                            <PageButton onClick={() => fetchInvoices(1)} disabled={currentPage === 1}>First</PageButton>
+                            <PageButton onClick={() => fetchInvoices(currentPage - 1)} disabled={currentPage === 1}>Prev</PageButton>
+                            <span>{currentPage} of {totalPages}</span>
+                            <PageButton onClick={() => fetchInvoices(currentPage + 1)} disabled={currentPage === totalPages}>Next</PageButton>
+                            <PageButton onClick={() => fetchInvoices(totalPages)} disabled={currentPage === totalPages}>Last</PageButton>
+                        </PaginationControls>
                     </Invoicecontainer>
                 </Maincontainer>
             </Container>
@@ -318,7 +331,7 @@ const InvoiceItem = styled.li`
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     &:hover {
         background: rgba(0, 0, 0, 0.3);
-        cursor: pointer; /* Added to show pointer on hover */
+        cursor: pointer;
     }
 `;
 
@@ -383,5 +396,28 @@ const DeleteButton = styled.button`
     &:hover {
         background: rgba(255, 10, 40, 0.48);
         transition: all ease 0.5s;
+    }
+`;
+
+const PaginationControls = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    padding: 10px 0; 
+`;
+
+const PageButton = styled.button`
+    background-color: ${props => props.disabled ? 'rgba(100, 20, 255, 0.5)' : 'transparent'};
+    color: #ffffff;
+    border: 1px solid #6414FF;
+    padding: 8px 16px; 
+    margin: 0 8px; 
+    cursor: ${props => props.disabled ? 'default' : 'pointer'};
+    border-radius: 20px;
+    font-size: 1rem; 
+    min-width: 40px;
+    &:hover {
+        background-color: ${props => props.disabled ? 'rgba(100, 20, 255, 0.5)' : '#6414FF'};
     }
 `;
