@@ -76,12 +76,16 @@ public class InvoiceJsonDtoToVoConverter {
         invoiceJsonVO.setAllowance(allowance);
 
         // set payment details
-        InvoiceApiJsonDTO.Document.Field paymentTerm = fields.getPaymentTerm();
+        /* InvoiceApiJsonDTO.Document.Field paymentTerm = fields.getPaymentTerm();
         if (ObjectUtils.isNotEmpty(paymentTerm)) {
             InvoiceJsonVO.Payment payment = new InvoiceJsonVO.Payment();
             // set Payment details
             invoiceJsonVO.setPayment(payment);
-        }
+        } */
+        InvoiceJsonVO.Payment payment = new InvoiceJsonVO.Payment();
+        // set Payment details
+        invoiceJsonVO.setPayment(payment);
+
 
         // set delivery address
         InvoiceApiJsonDTO.Document.Field shippingAddress = fields.getShippingAddress();
