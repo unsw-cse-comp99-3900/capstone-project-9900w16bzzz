@@ -96,10 +96,10 @@ function Myinvoice() {
 
     return (
         <div id="main">
-            <video autoPlay muted loop id="background-video-signup">
+            <VideoBackground autoPlay muted loop id="background-video-signup">
                 <source src={video} type="video/mp4" />
                 Your browser does not support the video tag.
-            </video>
+            </VideoBackground>
             <Container>
                 <Title><Mytext>My </Mytext>Invoice</Title>
                 <Maincontainer>
@@ -167,11 +167,30 @@ function Myinvoice() {
 
 export default Myinvoice;
 
+const VideoBackground = styled.video`
+  position: fixed;
+  top:  0%;
+  left: 0%;
+  min-width: 10%;
+  min-height: 130%;
+  width: 90%;
+  height: 100%;
+  z-index: -1;
+  transform: translate(-0%, -0%);
+  object-fit: cover;
+`;
+
+
 const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 20px;
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    margin-top: 200px; 
+    }
+
 `;
 
 const Mytext = styled.span`
@@ -200,6 +219,13 @@ const Maincontainer = styled.div`
     border-radius: 10px;
     color: #ffffff;
     z-index: 1;
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    width: 100%;  
+    height: 10%; 
+    padding: 1px;  
+    }
+
 `;
 
 const Search = styled.div`
@@ -232,6 +258,12 @@ const SearchBox = styled.div`
         border-radius: 2rem;
         }
     }
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    input {
+      width: 140px; 
+    }
+
 `;
 
 const SearchIcon = styled(FaSearch)`
@@ -243,6 +275,11 @@ const SearchIcon = styled(FaSearch)`
     &:hover {
         cursor: pointer;
     }
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    left: 110px; 
+    }
+
 `;
 
 const DownloadContainer = styled.div`
@@ -314,6 +351,13 @@ const Invoicecontainer = styled.div`
         border-radius: 10px;
         border: 3px solid rgba(255, 255, 255, 0.3);  
     }
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    width: 93%;
+    height: 110%;
+    transform: translateX(px); 
+    }
+
 `;
 
 const InvoiceList = styled.ul`
@@ -345,6 +389,12 @@ const InvoiceNameContainer = styled.div`
 const InvoiceName = styled.span`
   color: #ffffff;
   font-size: 1.1rem;
+
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    font-size: 1.0rem; 
+    margin-right: 5px;
+    }
+
 `;
 
 const ValidationContainer = styled.div`
@@ -352,6 +402,11 @@ const ValidationContainer = styled.div`
   align-items: center;
   margin-right: 170px;
   width: 130px;
+
+  @media (max-width: 430px) {
+    margin-right: 60px;
+    width: 60px; 
+  }
 `;
 
 const ValidationPass = styled.span`
@@ -359,6 +414,13 @@ const ValidationPass = styled.span`
     align-items: center;
     color: #00ff80;
     font-size: 1rem;
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    font-size: 0.8rem; 
+    margin-right: 30px;
+    margin-left: 5px;
+        }
+
 `;
 
 const StatusCircleGreen = styled.div`
@@ -374,6 +436,13 @@ const ValidationFail = styled.span`
     align-items: center;
     color: #ff0000;
     font-size: 1rem;
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    font-size: 0.8rem;
+    margin-right: 30px; 
+    margin-left: 5px; 
+        }
+
 `;
 
 const StatusCircleRed = styled.div`
