@@ -22,28 +22,73 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
     
     useEffect(() => {
         if (invoice && invoice.invoiceJsonVO) {
-            setFormData(invoice.invoiceJsonVO);
+          let modifiedData = { ...invoice.invoiceJsonVO };
+          console.log(modifiedData);
+    
+          modifiedData = setDefaultValues(modifiedData);
+          
+          setFormData(modifiedData);
       }
     }, [invoice]);
 
     const toggleSection = (section) => {
         setExpandedSection(expandedSection === section ? null : section);
   };
-  /*
-  useEffect(() => {
-    const fetchData = async () => {
-        try {
-            const response = await fetch('/api/prefill-data');
-            const data = await response.json();
-            setFormData(data);
-        } catch (error) {
-            console.error("Error fetching prefill data:", error);
+
+  const setDefaultValues = (data) => {
+  
+    let newData = JSON.parse(JSON.stringify(data));
+  
+    if (newData.invoiceLine && Array.isArray(newData.invoiceLine)) {
+      newData.invoiceLine = newData.invoiceLine.map(line => ({
+        ...line,
+        unit: line.unit || 'pcs',
+        taxRate: line.taxRate || '10',
+        tax: line.tax || line.unitPrice * 0.1,
+        allowance: {
+          ...line.allowance,
+          amount: line.allowance.amount || '0',
+          type: line.allowance.type || 'SAA',
+          reason: line.allowance.reason || 'Shipping and Handling',
+          taxPercent: line.allowance.taxPercent || '10',
+          currencyCode: line.allowance.currencyCode || newData.currencyCode
         }
+      }));
+    }
+
+    newData.buyer.schemeId = newData.buyer.schemeId || '0060';
+    if (newData.buyer.address.countryCode === 'null') {
+      newData.buyer.address.countryCode = null;
+    }
+    newData.seller.schemeId = newData.seller.schemeId || '0060';
+    if (newData.seller.address.countryCode === 'null') {
+      newData.seller.address.countryCode = null;
+    }
+
+    if (newData.deliveryAddress.countryCode === 'null') {
+      newData.seller.address.countryCode = null;
+    }
+
+    newData.allowance = {
+      ...newData.allowance,
+      amount: newData.allowance.amount || '0',
+      type: newData.allowance.type || 'SAA',
+      reason: newData.allowance.reason || 'Shipping and Handling',
+      taxPercent: newData.allowance.taxPercent || '10',
+      currencyCode: newData.allowance.currencyCode || newData.currencyCode
     };
 
-    fetchData();
-}, []);
-*/
+    newData.payment = {
+      ...newData.payment,
+      code: newData.payment.code || '10',
+      accountName: newData.payment.accountName || 'account name',
+      accountNumber: newData.payment.accountNumber || 'account number',
+      bsbNumber: newData.payment.bsbNumber || 'business number',
+      paymentNote: newData.payment.paymentNote || 'additional note'
+    };
+  
+    return newData;
+  };
 
   const handleRuleChange = (rule) => {
     setSelectedRules(prevRules => 
@@ -132,6 +177,9 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
     
   const renderField = (key, value, prefix = '') => {
     const fullKey = prefix ? `${prefix}.${key}` : key;
+    if (hiddenFields.includes(key)) {
+      return null;
+    }
     if (key === 'dueDate' || key === 'invoiceDate') {
       return (
         <FieldWrapper key={fullKey}>
@@ -156,7 +204,8 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
               return null;
             })}
           </InvoiceLineFieldGrid>
-          <AllowanceSection>
+          {!selectedRules.includes('AUNZ_UBL_1_0_10') && (
+            <AllowanceSection>
             <AllowanceHeader>Allowance</AllowanceHeader>
             <InvoiceLineFieldGrid>
               {Object.entries(item.allowance).map(([subKey, subValue]) =>
@@ -164,6 +213,7 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
               )}
             </InvoiceLineFieldGrid>
           </AllowanceSection>
+          )}
         </InvoiceLineWrapper>
       ));
     } else if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
@@ -215,31 +265,38 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
   };
 
 
-  const renderSection = (title, data) => (
-    <Section key={title}>
+  const renderSection = (title, data) => {
+    const isUBLStandardRuleSelected = selectedRules.includes('AUNZ_UBL_1_0_10');
+    if ((title === "Payment" || title === "Delivery Address") && isUBLStandardRuleSelected) {
+      return null;
+    }
+  
+    return (
+      <Section key={title}>
         <SectionHeader onClick={() => toggleSection(title)}>
-            {title}
-            {expandedSection === title ? ' ▼' : ' ▶'}
+          {title}
+          {expandedSection === title ? ' ▼' : ' ▶'}
         </SectionHeader>
         {expandedSection === title && (
-            <SectionContent>
-                <FieldGrid>
-                    {Object.entries(data).map(([key, value]) => renderField(key, value))}
-                </FieldGrid>
-            </SectionContent>
+          <SectionContent>
+            <FieldGrid>
+              {Object.entries(data).map(([key, value]) => renderField(key, value))}
+            </FieldGrid>
+          </SectionContent>
         )}
-    </Section>
-);
-
-    const sections = [
-        { title: "Invoice Details", fields: ["invoiceId", "invoiceDate", "dueDate", "typeCode", "currencyCode"] },
-        { title: "Buyer", fields: ["buyer"] },
-        { title: "Seller", fields: ["seller"] },
-        { title: "Financial Details", fields: ["subTotal", "invoiceTotal", "taxTotal"] },
-        { title: "allowance", fields: ["allowance"] },
-        { title: "Invoice Lines", fields: ["invoiceLine"] },
-        { title: "Payment", fields: ["payment"] },
-        { title: "Delivery Address", fields: ["deliveryAddress"] }
+      </Section>
+    );
+  };
+  const hiddenFields = ['typeCode'];
+  const sections = [
+    { title: "Invoice Details", fields: ["invoiceId", "invoiceDate", "dueDate", "typeCode", "currencyCode"] },
+    { title: "Buyer", fields: ["buyer"] },
+    { title: "Seller", fields: ["seller"] },
+    { title: "Financial Details", fields: ["subTotal", "invoiceTotal", "taxTotal"] },
+    { title: "allowance", fields: ["allowance"] },
+    { title: "Invoice Lines", fields: ["invoiceLine"] },
+    { title: "Payment", fields: ["payment"] },
+    { title: "Delivery Address", fields: ["deliveryAddress"] }
   ];
   const typeReasonMapping = {
     'SAA': 'Shipping and Handling',
@@ -393,8 +450,19 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
                   <h1><span>Convert </span>to UBL</h1> :
                   <h1><span>Last Step </span>Convert to UBL</h1>
                 }
-                  <p className="details">To generate a UBL e-invoice, you may need to provide additional information that may not be present on your original invoice.</p>
-                  <p className="details">Check the form below, fill out all necessary fields.</p>
+                  <p className="details">Additional information not shown on the invoice may be required.</p>
+                  <p className="details">Please select validation rules first</p>
+                  <CheckboxWrapper>
+                    <CheckboxInput
+                          options={[
+                            { value: 'AUNZ_UBL_1_0_10', label: 'UBL Standard Rule 1.0.10' },
+                            { value: 'AUNZ_PEPPOL_1_0_10', label: 'Peppol Standard Rule 1.0.10' },
+                            { value: 'AUNZ_PEPPOL_SB_1_0_10', label: 'Peppol Small Business Rule 1.0.10' }
+                        ]}
+                        selectedRules={selectedRules}
+                        onChange={handleRuleChange}
+                    />
+                  </CheckboxWrapper>
                 </HeaderContent>
                 <ScrollableContent>
                     {sections.map(section => 
@@ -410,10 +478,14 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
                         <SubmitButton 
                           className="header-btn" 
                           onClick={() => {
-                            if (isFormValid) {
+                            if (isFormValid && selectedRules.length > 0) {
+                              console.log(selectedRules);
                               console.log(formData);
                                 uploadEditedInvoice();
-                            } else {
+                            } else if (selectedRules.length === 0) {
+                              showPopup(`Please select a validation rule!`,'error');
+                            }
+                            else {
                               const emptyFields = findEmptyFields(formData);
                               showPopup(`Please fill in the following fields: ${emptyFields.join(', ')}`,'error');
                             }
@@ -423,17 +495,6 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
                           Validate
                         </SubmitButton>
                       </ButtonWrapper>
-                      <CheckboxWrapper>
-                        <CheckboxInput
-                              options={[
-                                { value: 'AUNZ_UBL_1_0_10', label: 'UBL Standard Rule 1.0.10' },
-                                { value: 'AUNZ_PEPPOL_1_0_10', label: 'Peppol Standard Rule 1.0.10' },
-                                { value: 'AUNZ_PEPPOL_SB_1_0_10', label: 'Peppol Small Business Rule 1.0.10' }
-                            ]}
-                            selectedRules={selectedRules}
-                            onChange={handleRuleChange}
-                        />
-                      </CheckboxWrapper>
                     </ValidationWrapper>
                 </ScrollableContent>
             </Content>
@@ -514,12 +575,16 @@ const ButtonWrapper = styled.div`
 `;
 
 const CheckboxWrapper = styled.div`
-  position: absolute;
-  right: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    width: 100%;
 
-  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    top: 5px; /* 向下移动的距离，可以根据需要调整 */
-  }
+    @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 10px;
+    }
 `;
 
 const FieldGrid = styled.div`
@@ -565,7 +630,7 @@ const MainContainer = styled.div`
     backdrop-filter: blur(2px);
     color: white;
     z-index: 1;
-    height: 85%;
+    height: 90%;
 
     @media only screen and (max-width: 430px) and (max-height: 932px) {
     width: 95%;
@@ -594,22 +659,22 @@ const HeaderContent = styled.div`
     margin-bottom: 20px;
 
     h1 {
-    font-size: 64px;
+        font-size: 64px;
     }
 
     .details {
-      margin: 10px 0;
+        margin: 10px 0;
     }
 
     @media only screen and (max-width: 430px) and (max-height: 932px) {
-    h1 {
-      font-size: 30px; /* 调整为适应较小屏幕的字体大小 */
-    }
+        h1 {
+            font-size: 30px;
+        }
 
-    .details {
-      font-size: 14px; /* 调整为适应较小屏幕的字体大小 */
-      margin: 5px 0; /* 调整为适应较小屏幕的内边距 */
-      }
+        .details {
+            font-size: 14px;
+            margin: 5px 0;
+        }
     }
 `;
 

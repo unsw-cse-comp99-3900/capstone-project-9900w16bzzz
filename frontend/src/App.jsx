@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Navbar from './Components/Navbar';
 import Header from './Components/Header';
 import Signup from './Components/Signup';
@@ -14,6 +14,15 @@ import ValidationPage from './Components/ValidationPage/ValidationPage';
 
 
 function App() {
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      localStorage.removeItem('token');
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
   return (
     <PopupProvider>
       <Router>
