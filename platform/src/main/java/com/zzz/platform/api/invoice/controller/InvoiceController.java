@@ -93,6 +93,12 @@ public class InvoiceController {
         return invoiceFileService.validateInvoice(invoiceId, rules);
     }
 
+    @PostMapping("/invoice/update")
+    @Operation(summary = "update user files")
+    public ResponseDTO<String> update(@RequestParam BigInteger invoiceId, @RequestBody InvoiceJsonVO invoiceJsonVO) {
+        return invoiceFileService.saveInvoiceContentInDB(invoiceId, invoiceJsonVO);
+    }
+
     @PostMapping("/invoice/list")
     @Operation(summary = "list user files")
     public ResponseDTO<PageResult<InvoiceListVO>> list(@Valid @RequestBody InvoiceQueryForm queryForm) {
@@ -110,6 +116,12 @@ public class InvoiceController {
     public ResponseDTO<String> sendEmail(@NotNull @RequestParam BigInteger invoiceId, @NotNull @RequestParam("fileType") Integer fileType, @Valid @RequestBody InvoiceSendForm sendForm) throws MessagingException {
         FileType type = EnumUtil.getEnumByValue(fileType, FileType.class);
         return invoiceFileService.sendInvoice(invoiceId, type, sendForm);
+    }
+
+    @PostMapping("/invoice/searchByName")
+    @Operation(summary = "search by file name")
+    public ResponseDTO<PageResult<InvoiceListVO>> searchByName(@Valid @RequestBody InvoiceQueryByFileNameForm queryForm) {
+        return invoiceDbService.listByName(queryForm);
     }
 
 

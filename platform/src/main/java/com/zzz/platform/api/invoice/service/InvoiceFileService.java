@@ -18,8 +18,9 @@ public interface InvoiceFileService {
 
     String searchFileNameById(BigInteger invoiceId, FileType fileType);
 
-    void
-    saveInvoiceContentInDB(BigInteger invoiceId, byte[] content, FileType filetype);
+    void saveInvoiceContentInDB(BigInteger invoiceId, byte[] content, FileType filetype);
+
+    ResponseDTO<String> saveInvoiceContentInDB(BigInteger invoiceId, InvoiceJsonVO invoiceJsonVO);
 
     ResponseDTO<InvoiceJsonVO> searchInvoiceJsonById(BigInteger invoiceId);
 

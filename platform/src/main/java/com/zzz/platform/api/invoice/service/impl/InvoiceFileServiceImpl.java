@@ -74,6 +74,19 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
         return jointFileName(fileName, fileType);
     }
 
+    public ResponseDTO<String> saveInvoiceContentInDB(BigInteger invoiceId, InvoiceJsonVO invoiceJsonVO) {
+        byte[] content = null;
+        try {
+            String jsonString = objectMapper.writeValueAsString(invoiceJsonVO);
+            content = jsonString.getBytes();
+        } catch (Exception e) {
+            log.error("File get jsonVO bytes error, {}", e.getMessage());
+            return ResponseDTO.error(InvoiceErrorCode.INVOICE_FILE_FORMAT_ERROR);
+        }
+        saveInvoiceContentInDB(invoiceId, content, FileType.JSON);
+        return ResponseDTO.ok();
+    }
+
     public void saveInvoiceContentInDB(BigInteger invoiceId, byte[] content, FileType filetype) {
         // save file to DB
         InvoiceFileEntity entity = invoiceFileDao.selectOne(

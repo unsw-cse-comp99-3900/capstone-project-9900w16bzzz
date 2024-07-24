@@ -2,6 +2,7 @@ package com.zzz.platform.api.invoice.service;
 
 import com.zzz.platform.api.invoice.domain.InvoiceDeleteForm;
 import com.zzz.platform.api.invoice.domain.InvoiceListVO;
+import com.zzz.platform.api.invoice.domain.InvoiceQueryByFileNameForm;
 import com.zzz.platform.api.invoice.domain.InvoiceQueryForm;
 import com.zzz.platform.api.invoice.entity.InvoiceEntity;
 import com.zzz.platform.common.domain.PageResult;
@@ -21,6 +22,8 @@ public interface InvoiceDbService {
 
     ResponseDTO<PageResult<InvoiceListVO>> list(InvoiceQueryForm invoiceQueryForm);
 
+    ResponseDTO<PageResult<InvoiceListVO>> listByName(InvoiceQueryByFileNameForm queryForm);
+
     ResponseDTO<String> delete(InvoiceDeleteForm deleteForm);
 
     InvoiceEntity findById(BigInteger invoiceId);
@@ -30,6 +33,8 @@ public interface InvoiceDbService {
     void updateFileFlag(BigInteger invoiceId, FileType fileType, FileStatusFlag flag);
 
     void updateValidationFlag(BigInteger invoiceId, ValidationFlag flag);
+
+
 
     @Getter
     @AllArgsConstructor

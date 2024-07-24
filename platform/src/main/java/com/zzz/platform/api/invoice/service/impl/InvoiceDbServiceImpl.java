@@ -6,6 +6,7 @@ import com.zzz.platform.api.invoice.dao.InvoiceDao;
 import com.zzz.platform.api.invoice.dao.InvoiceFileDao;
 import com.zzz.platform.api.invoice.domain.InvoiceDeleteForm;
 import com.zzz.platform.api.invoice.domain.InvoiceListVO;
+import com.zzz.platform.api.invoice.domain.InvoiceQueryByFileNameForm;
 import com.zzz.platform.api.invoice.domain.InvoiceQueryForm;
 import com.zzz.platform.api.invoice.entity.InvoiceEntity;
 import com.zzz.platform.api.invoice.entity.InvoiceFileEntity;
@@ -39,6 +40,22 @@ public class InvoiceDbServiceImpl implements InvoiceDbService {
         Page<InvoiceEntity> entityPage = invoiceDao.selectPage(
                 new Page<>(queryForm.getPageNum(), queryForm.getPageSize()),
                 new QueryWrapper<InvoiceEntity>().eq(InvoiceDbColumn.USER_ID.getVal(), queryForm.getUserId())
+        );
+
+        PageResult<InvoiceListVO> pageResult = PageUtil.convert2PageResult(entityPage, InvoiceListVO.class);
+        if (pageResult.getEmptyFlag()) {
+            return ResponseDTO.error(InvoiceErrorCode.INVOICE_LIST_QUERY_FAILED);
+        }
+        return ResponseDTO.ok(pageResult);
+    }
+
+    @Override
+    public ResponseDTO<PageResult<InvoiceListVO>> listByName(InvoiceQueryByFileNameForm queryForm) {
+        Page<InvoiceEntity> entityPage = invoiceDao.selectPage(
+                new Page<>(queryForm.getPageNum(), queryForm.getPageSize()),
+                new QueryWrapper<InvoiceEntity>()
+                        .eq(InvoiceDbColumn.USER_ID.getVal(), queryForm.getUserId())
+                        .like(InvoiceDbColumn.FILE_NAME.getVal(), queryForm.getFileName())
         );
 
         PageResult<InvoiceListVO> pageResult = PageUtil.convert2PageResult(entityPage, InvoiceListVO.class);
