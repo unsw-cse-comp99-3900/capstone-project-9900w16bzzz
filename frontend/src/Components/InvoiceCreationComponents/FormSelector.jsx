@@ -14,6 +14,38 @@ const SelectInput = ({ placeholder, value, onChange, options, onRelatedChange, r
             }
         }
     };
+    const placeholderLabels = {
+        invoiceId: "Invoice Number",
+        invoiceDate: "Invoice Date",
+        dueDate: "Due Date",
+        currencyCode: "Currency",
+        amount: "Amount",
+        description: "Description",
+        quantity: "Quantity",
+        unitPrice: "Unit Price",
+        tax: "Tax Amount",
+        taxRate: "Tax Rate (%)",
+        id: "ABN",
+        name: "Name",
+        countryCode: "Country Code (e.g AU)",
+        subTotal: "Sub Total",
+        invoiceTotal: "Invoice Total",
+        taxTotal: "Tax Total",
+        taxPercent: "Tax Percent",
+        code: "Method",
+        accountName: "Account Name",
+        accountNumber: "Account Number",
+        bsbNumber: "Business Number",
+        paymentNote: "Payment Note",
+        postalCode: "Postal Code",
+        address: "Address",
+        street: "Street",
+        city: "City",
+        phone: "Phone",
+        mail: "Mail",
+        type: "Type"
+    };
+    const label = placeholderLabels[placeholder] || placeholder;
 
     return (
         <InputWrapper>
@@ -33,7 +65,7 @@ const SelectInput = ({ placeholder, value, onChange, options, onRelatedChange, r
                 <SelectArrow />
             </div>
             <StyledLabel htmlFor={placeholder} className={value && 'filled'}>
-                {placeholder}
+                {label}
             </StyledLabel>
         </InputWrapper>
     );

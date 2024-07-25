@@ -38,36 +38,73 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
   const setDefaultValues = (data) => {
   
     let newData = JSON.parse(JSON.stringify(data));
+
+    newData.typeCode = "380 commercial invoice";
   
     if (newData.invoiceLine && Array.isArray(newData.invoiceLine)) {
-      newData.invoiceLine = newData.invoiceLine.map(line => ({
-        ...line,
-        unit: line.unit || 'pcs',
-        taxRate: line.taxRate || '10',
-        tax: line.tax || line.unitPrice * 0.1,
-        allowance: {
-          ...line.allowance,
-          amount: line.allowance.amount || '0',
-          type: line.allowance.type || 'SAA',
-          reason: line.allowance.reason || 'Shipping and Handling',
-          taxPercent: line.allowance.taxPercent || '10',
-          currencyCode: line.allowance.currencyCode || newData.currencyCode
+      newData.invoiceLine = newData.invoiceLine.map(line => {
+        const amount = parseFloat(line.amount || '0');
+        let taxRate = line.taxRate;
+        if (taxRate && typeof taxRate === 'string') {
+          if (taxRate.endsWith('%')) {
+            taxRate = taxRate.slice(0, -1);
+          }
+          taxRate = parseFloat(taxRate) || "10";
+        } else {
+          taxRate = "10";
         }
-      }));
+        
+        let calculatedTax = amount * taxRate / 100;
+        calculatedTax = calculatedTax.toFixed(2);
+    
+        return {
+          ...line,
+          unit: line.unit || 'pcs',
+          taxRate: taxRate,
+          tax: calculatedTax.toString(),
+          allowance: {
+            ...line.allowance,
+            amount: line.allowance?.amount || '0',
+            type: line.allowance?.type || 'SAA',
+            reason: line.allowance?.reason || 'Shipping and Handling',
+            taxPercent: line.allowance?.taxPercent || '10',
+            currencyCode: line.allowance?.currencyCode || newData.currencyCode
+          }
+        };
+      });
     }
 
     newData.buyer.schemeId = newData.buyer.schemeId || '0060';
-    if (newData.buyer.address.countryCode === 'null') {
-      newData.buyer.address.countryCode = null;
-    }
-    newData.seller.schemeId = newData.seller.schemeId || '0060';
-    if (newData.seller.address.countryCode === 'null') {
-      newData.seller.address.countryCode = null;
+    if (newData.buyer.address.countryCode) {
+      if (newData.buyer.address.countryCode === 'null') {
+        newData.buyer.address.countryCode = null;
+      }
     }
 
-    if (newData.deliveryAddress.countryCode === 'null') {
-      newData.deliveryAddress.countryCode = null;
+    if (newData.buyer.address.countryCode) {
+      if (newData.seller.address.countryCode === 'null') {
+        newData.seller.address.countryCode = null;
+      }
     }
+
+    if (newData.buyer.address.countryCode) {
+      if (newData.deliveryAddress.countryCode === 'null') {
+        newData.deliveryAddress.countryCode = null;
+      }
+    }
+
+    if (!newData.deliveryAddress) {
+      newData.deliveryAddress = {
+        address: "address",
+        city: "city",
+        countryCode: "countryCode",
+        postalCode: "postal code",
+        street: "st"
+      };
+    }
+    
+    newData.seller.schemeId = newData.seller.schemeId || '0060';
+    
 
     newData.allowance = {
       ...newData.allowance,
@@ -87,7 +124,6 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
       paymentNote: newData.payment.paymentNote || 'additional note'
     };
 
-  
     return newData;
   };
 
@@ -97,10 +133,6 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
             ? prevRules.filter(r => r !== rule)
             : [...prevRules, rule]
     );
-  };
-
-  const generateRulesString = () => {
-    return selectedRules.map(rule => `${rule}`).join(',');
   };
 
   const validateForm = (data) => {
@@ -205,7 +237,7 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
               return null;
             })}
           </InvoiceLineFieldGrid>
-          {!selectedRules.includes('AUNZ_UBL_1_0_10') && (
+          {!(selectedRules.includes('AUNZ_UBL_1_0_10') && selectedRules.length === 1) && (
             <AllowanceSection>
             <AllowanceHeader>Allowance</AllowanceHeader>
             <InvoiceLineFieldGrid>
@@ -267,7 +299,7 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
 
 
   const renderSection = (title, data) => {
-    const isUBLStandardRuleSelected = selectedRules.includes('AUNZ_UBL_1_0_10');
+    const isUBLStandardRuleSelected = selectedRules.includes('AUNZ_UBL_1_0_10') && selectedRules.length === 1;
     if ((title === "Payment" || title === "Delivery Address") && isUBLStandardRuleSelected) {
       return null;
     }
@@ -288,7 +320,7 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
       </Section>
     );
   };
-  const hiddenFields = ['typeCode'];
+  const hiddenFields = ['typeCode','schemeId'];
   const sections = [
     { title: "Invoice Details", fields: ["invoiceId", "invoiceDate", "dueDate", "typeCode", "currencyCode"] },
     { title: "Buyer", fields: ["buyer"] },
@@ -370,64 +402,152 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
             { value: 'Trade Discount', label: 'Trade Discount' },
             { value: 'Volume Discount', label: 'Volume Discount' }
         ]
-    };
+  };
 
-    const uploadEditedInvoice = async () => {
-      if (!selectedRules) {
-          showPopup('You have to select validation rule!','error');
-          return;
+  const roundToTwoDecimals = (num) => {
+    return Number(parseFloat(num).toFixed(2)).toFixed(2);
+  };
+  
+  const shouldRound = (key, value) => {
+    const nonRoundFields = ['id', 'invoiceId', 'schemeId', 'quantity','taxRate','taxPercent','postalCode','phone','address','street'];
+    
+    if (nonRoundFields.includes(key)) {
+      return false;
+    }
+    return typeof value === 'string' && !isNaN(value);
+  };
+  
+  const roundAllNumbers = (obj) => {
+    if (typeof obj !== 'object' || obj === null) {
+      return obj;
+    }
+  
+    if (Array.isArray(obj)) {
+      return obj.map(roundAllNumbers);
+    }
+  
+    const result = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if (shouldRound(key, value)) {
+        result[key] = roundToTwoDecimals(value);
+      } else if (typeof value === 'object' && value !== null) {
+        result[key] = roundAllNumbers(value);
+      } else {
+        result[key] = value;
       }
+    }
+    return result;
+  };
+    
+  const handleUBLStandardRule = (dataToSend) => {
 
-      const formattedData = {...formData};
-      if (formattedData.dueDate) {
-        formattedData.dueDate = new Date(formattedData.dueDate).toISOString().split('T')[0];
-      }
-      if (formattedData.invoiceDate) {
-        formattedData.invoiceDate = new Date(formattedData.invoiceDate).toISOString().split('T')[0];
-      }
-      if (formattedData.invoiceDate) {
-        formattedData.invoiceDate = new Date(formattedData.invoiceDate).toISOString().split('T')[0];
-      }
+    const modifiedData = JSON.parse(JSON.stringify(dataToSend));
 
+    // delete illegal fields
+    delete modifiedData.payment;
+    delete modifiedData.deliveryAddress;
 
-      console.log('formData before sending:', JSON.stringify(formattedData, null, 2));
-      setIsUploading(true);
-      try {
-        const invoiceId = invoice.invoiceId;
-        const rules = generateRulesString();
-        //const rules = "rules=AUNZ_PEPPOL_1_0_10,AUNZ_PEPPOL_SB_1_0_10AUNZ_UBL_1_0_10";
-        let endpoint = `${process.env.REACT_APP_SERVER_URL}/invoice/validate?invoiceId=${invoiceId}&rules=${rules}`;
-        let token = localStorage.getItem("token");
-        
-          const response = await fetch(`${endpoint}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'x-access-token': `${token}`
-            },
-            body: JSON.stringify(formattedData),
-          });
-        if (!response.ok) {
-          setIsUploading(false);
-              throw new Error('Network response was not ok');
-          }
-          const data = await response.json();
-        if (data.ok) {
-          setIsUploading(false);
-            console.log(data);
-            setValidationResult(data.data);
-            goToStep(5);
-          }
-        if (!data.ok) {
-          setIsUploading(false);
-            throw new Error('Server response was not ok');
-          }
-          
-      } catch (error) {
+    //delete allowance for all invoice line
+    if (Array.isArray(modifiedData.invoiceLine)) {
+      modifiedData.invoiceLine = modifiedData.invoiceLine.map(line => {
+        const { allowance, ...lineWithoutAllowance } = line;
+        return lineWithoutAllowance;
+      });
+    }
+
+    const roundedData = roundAllNumbers(modifiedData);
+
+    return roundedData;
+  }
+
+  const uploadEditedInvoice = async () => {
+    if (!selectedRules) {
+        showPopup('You have to select validation rule!','error');
+        return;
+    }
+    const formattedData = {...formData};
+    if (formattedData.dueDate) {
+      formattedData.dueDate = new Date(formattedData.dueDate).toISOString().split('T')[0];
+    }
+    if (formattedData.invoiceDate) {
+      formattedData.invoiceDate = new Date(formattedData.invoiceDate).toISOString().split('T')[0];
+    }
+    
+    const invoiceId = invoice.invoiceId;
+    console.log('formData before sending:', JSON.stringify(formattedData, null, 2));
+    setIsUploading(true);
+    try {
+      let endpoint = `${process.env.REACT_APP_SERVER_URL}/invoice/update?invoiceId=${invoiceId}`;
+      let token = localStorage.getItem("token");
+      const response = await fetch(`${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': `${token}`
+        },
+        body: JSON.stringify(formattedData),
+      });
+      if (!response.ok) {
         setIsUploading(false);
-          console.error('Error processing file:', error);
-          showPopup('An error occurred while processing the file. Please try again.','error');
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      if (data.ok) {
+        console.log('update invoice successfully.');
+      }
+      if (!data.ok) {
+        setIsUploading(false);
+        throw new Error('Server response was not ok');
+      }
+    } catch (error) {
+      setIsUploading(false);
+      showPopup(`An error occurred while updating the invoice. Please try again. Error info: ${error}`, 'error');
+      return;
+    }
+    try {
+      //const rules = "rules=AUNZ_PEPPOL_1_0_10,AUNZ_PEPPOL_SB_1_0_10,AUNZ_UBL_1_0_10";
+      const validationResults = [];
+      let token = localStorage.getItem("token");
+      
+      for (const rule of selectedRules) {
+        let dataToSend = formattedData;
+
+        if (rule === 'AUNZ_UBL_1_0_10') {
+          dataToSend = handleUBLStandardRule(formattedData);
+          console.log("data to validate", dataToSend);
         }
+
+        let endpoint = `${process.env.REACT_APP_SERVER_URL}/invoice/validate?invoiceId=${invoiceId}&rules=${rule}`;
+        
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': token
+          },
+          body: JSON.stringify(dataToSend),
+        });
+        if (!response.ok) {
+          throw new Error(`Network response was not ok for rule: ${rule}`);
+        }
+    
+        const data = await response.json();
+    
+        if (data.ok) {
+          console.log(`Validation result for rule ${rule}:`, data);
+          validationResults.push({ rule, result: data.data });
+        } else {
+          throw new Error(`Server response was not ok for rule: ${rule}`);
+        }
+      }
+      setIsUploading(false);
+      setValidationResult(validationResults);
+      goToStep(5);
+        
+    } catch (error) {
+      setIsUploading(false);
+      showPopup(`An error occurred while processing the file. Please try again. Error type: ${error}`,'error');
+    }
   }
 
   const buttonStyle = isValidation 

@@ -3,54 +3,57 @@ import styled from 'styled-components';
 
 
 const ValidationResultPage = ({ validationResult }) => {
-    const { successful, report } = validationResult;
+  const overallSuccessful = validationResult.every(result => result.result.successful);
 
-    return (
-      <MainContainer>
-        <Content>
-          <HeaderContent>
-            <h1 style={{ fontSize: '64px' }}><span>Validation </span>Report</h1>
-            <Status successful={successful}>
-              {successful ? 'Success' : 'Failed'}
-            </Status>
-          </HeaderContent>
-          <ScrollableContent>
-            <Section>
-              <SectionHeader>Summary</SectionHeader>
-              <SectionContent>
-                <p>{report.summary}</p>
-                <p>File: {report.filename}</p>
-                <p>Total Errors: {report.firedAssertionErrorsCount}</p>
-              </SectionContent>
-            </Section>
-            
-            {Object.entries(report.reports).map(([reportName, reportData]) => (
-              <Section key={reportName}>
-                <SectionHeader>{reportName} Validation Results</SectionHeader>
+  return (
+    <MainContainer>
+      <Content>
+        <HeaderContent>
+          <h1 style={{ fontSize: '64px' }}><span>Validation </span>Report</h1>
+          <Status successful={overallSuccessful}>
+            {overallSuccessful ? 'Success' : 'Failed'}
+          </Status>
+        </HeaderContent>
+        <ScrollableContent>
+          {validationResult.map((result, index) => {
+            const { rule, result: { successful, report } } = result;
+            return (
+              <Section key={index}>
+                <SectionHeader>{rule} Validation Results</SectionHeader>
                 <SectionContent>
-                  <p>Status: {reportData.successful ? 'Successful' : 'Failed'}</p>
-                  <p>Summary: {reportData.summary}</p>
-                  <p>Errors: {reportData.firedAssertionErrorsCount}</p>
-                  {reportData.firedAssertionErrors && reportData.firedAssertionErrors.length > 0 && (
-                    <>
-                      <SubSectionHeader>Validation Errors</SubSectionHeader>
-                      {reportData.firedAssertionErrors.map((error, index) => (
-                        <ErrorItem key={index}>
-                          <ErrorCode>{error.id}</ErrorCode>
-                          <ErrorText>{error.text}</ErrorText>
-                          <ErrorLocation>Location: {error.location}</ErrorLocation>
-                        </ErrorItem>
-                      ))}
-                    </>
-                  )}
+                  <p>Status: {successful ? 'Successful' : 'Failed'}</p>
+                  <p>Summary: {report.summary}</p>
+                  <p>File: {report.filename}</p>
+                  <p>Total Errors: {report.firedAssertionErrorsCount}</p>
+                  
+                  {Object.entries(report.reports).map(([reportName, reportData]) => (
+                    <SubSection key={reportName}>
+                      <SubSectionHeader>Details</SubSectionHeader>
+                      <p>{reportData.summary}</p>
+                      <p>Errors number: {reportData.firedAssertionErrorsCount}</p>
+                      {reportData.firedAssertionErrors && reportData.firedAssertionErrors.length > 0 && (
+                        <>
+                          <ErrorHeader>Validation Errors</ErrorHeader>
+                          {reportData.firedAssertionErrors.map((error, errorIndex) => (
+                            <ErrorItem key={errorIndex}>
+                              <ErrorCode>{error.id}</ErrorCode>
+                              <ErrorText>{error.text}</ErrorText>
+                              <ErrorLocation>Location: {error.location}</ErrorLocation>
+                            </ErrorItem>
+                          ))}
+                        </>
+                      )}
+                    </SubSection>
+                  ))}
                 </SectionContent>
               </Section>
-            ))}
-          </ScrollableContent>
-        </Content>
-      </MainContainer>
-    );
-  };
+            );
+          })}
+        </ScrollableContent>
+      </Content>
+    </MainContainer>
+  );
+};
   
   const SubSectionHeader = styled.h4`
   margin-top: 20px;
@@ -176,5 +179,18 @@ const Status = styled.span`
     font-size: 0.9em;
     color: rgba(255, 255, 255, 0.7);
   `;
+
+  const SubSection = styled.div`
+  margin-top: 20px;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 5px;
+`;
+
+const ErrorHeader = styled.h5`
+  margin-top: 15px;
+  margin-bottom: 10px;
+  color: #F44336;
+`;
   
 export default ValidationResultPage;

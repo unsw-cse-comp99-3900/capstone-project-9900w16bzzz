@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { usePopup } from "../PopupWindow/PopupContext";
 
 const ProtectedLink = ({ to, children }) => {
+  const { showPopup } = usePopup();
   const navigate = useNavigate();
 
   const handleClick = (e) => {
@@ -10,7 +12,7 @@ const ProtectedLink = ({ to, children }) => {
     if (token) {
       navigate(to);
     } else {
-      alert('Please log in to access this page.');
+      showPopup('Please log in before access to this page.','error');
       navigate('/log-in');
     }
   };

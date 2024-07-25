@@ -44,7 +44,7 @@ function Navbar(){
             <ul className="menu">
                 <li><RouterLink to = "/">Home</RouterLink></li>
                 <li><ProtectedLink to="/create-invoice">Create invoice</ProtectedLink></li>
-                <li><RouterLink to = "/my-invoice">My invoice</RouterLink></li>
+                <li><ProtectedLink to = "/my-invoice">My invoice</ProtectedLink></li>
                 {username ? (
                     <li><UserMenu username={username} /></li>
                 ) : (
