@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa6';
 import styled from 'styled-components';
+import Modal from './Modal';
 
 const Preview = ({ selectedFileType, invoiceId, validationFlag }) => {
+    const [showModal, setShowModal] = useState(false);
+
     const handlePreviewClick = async () => {
         const token = localStorage.getItem('token');
         const fileTypeMap = {
@@ -11,7 +14,7 @@ const Preview = ({ selectedFileType, invoiceId, validationFlag }) => {
             "xml": 2
         };
         const fileType = fileTypeMap[selectedFileType];
-        
+
         const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/invoice/download?invoiceId=${invoiceId}&fileType=${fileType}`, {
             method: 'GET',
             headers: {
@@ -23,21 +26,26 @@ const Preview = ({ selectedFileType, invoiceId, validationFlag }) => {
         window.open(url, '_blank');
     };
 
-    const isPreviewAllowed = () => {
-        if (validationFlag === 0) {
-            return true;
-        } else if (selectedFileType !== "pdf") {
-            return true;
-        }
-        return false;
+    const handleEyeSlashClick = () => {
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
     };
 
     return (
         <PreviewBox>
-            {isPreviewAllowed() ? (
+            {validationFlag === 0 || selectedFileType !== "pdf" ? (
                 <EyeIcon onClick={handlePreviewClick} />
             ) : (
-                <EyeSlashIcon />
+                <EyeSlashIcon onClick={handleEyeSlashClick} />
+            )}
+            {showModal && (
+                <Modal
+                    message="The PDF file has been modified. Please view the JSON or XML file instead."
+                    onClose={handleCloseModal}
+                />
             )}
         </PreviewBox>
     );
@@ -56,11 +64,11 @@ const PreviewBox = styled.div`
     border-radius: 20px;
 
     @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    margin-top: 30px;
-    margin-left: 1px;
-    margin-right: 15px;
-    height: 220px; /* 可以根据需要调整高度 */
-    width: 100%; /* 调整宽度以适应较小屏幕 */
+        margin-top: 30px;
+        margin-left: 1px;
+        margin-right: 15px;
+        height: 220px;
+        width: 100%;
     }
 `;
 

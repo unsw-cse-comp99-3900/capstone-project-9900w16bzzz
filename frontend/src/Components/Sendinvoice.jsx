@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { usePopup } from './PopupWindow/PopupContext';
 
 const SendInvoice = ({ invoiceId, selectedFileType, fileName }) => {
     const [email, setEmail] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const { showPopup } = usePopup();
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
@@ -10,12 +13,12 @@ const SendInvoice = ({ invoiceId, selectedFileType, fileName }) => {
 
     const handleSendInvoice = async () => {
         if (!email) {
-            alert("Please enter an email address.");
+            showPopup("Please enter an email address.", "error");
             return;
         }
 
         if (!selectedFileType) {
-            alert("Please select a file type.");
+            showPopup("Please select a file type.", "error");
             return;
         }
 
@@ -27,7 +30,7 @@ const SendInvoice = ({ invoiceId, selectedFileType, fileName }) => {
 
         const fileType = fileTypeMapping[selectedFileType];
         if (!fileType) {
-            alert("Invalid file type selected.");
+            showPopup("Invalid file type selected.", "error");
             return;
         }
 
@@ -40,6 +43,8 @@ const SendInvoice = ({ invoiceId, selectedFileType, fileName }) => {
 
         console.log("Sending invoice with request body:", requestBody);
 
+        setIsLoading(true);
+
         try {
             const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/invoice/send?invoiceId=${invoiceId}&fileType=${fileType}`, {
                 method: 'POST',
@@ -51,16 +56,18 @@ const SendInvoice = ({ invoiceId, selectedFileType, fileName }) => {
             });
 
             const data = await response.json();
+            setIsLoading(false);
 
             if (response.ok && data.ok) {
-                alert("Invoice sent successfully!");
+                showPopup("Invoice sent successfully!", "success");
             } else {
                 console.error("Failed to send invoice:", data);
-                alert(`Failed to send invoice. Error: ${data.msg || 'Unknown error'}`);
+                showPopup(`Failed to send invoice. Error: ${data.msg || 'Unknown error'}`, "error");
             }
         } catch (error) {
             console.error("Error sending invoice:", error);
-            alert(`Error sending invoice: ${error.message}`);
+            setIsLoading(false);
+            showPopup(`Error sending invoice: ${error.message}`, "error");
         }
     };
 
@@ -72,9 +79,17 @@ const SendInvoice = ({ invoiceId, selectedFileType, fileName }) => {
                     placeholder="Email address" 
                     value={email} 
                     onChange={handleEmailChange} 
+                    disabled={isLoading}
                 />
             </EmailInput>
-            <EmailButton onClick={handleSendInvoice}>Send</EmailButton>
+            <EmailButton onClick={handleSendInvoice} disabled={isLoading}>
+                Send
+            </EmailButton>
+            {isLoading && <LoadingOverlay>
+                <LoadingMessage>
+                    Sending Invoice...
+                </LoadingMessage>
+            </LoadingOverlay>}
         </EmailBox>
     );
 };
@@ -149,4 +164,31 @@ const EmailButton = styled.button`
         background-color: transparent;
         transition: all ease 0.5s;
     }
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+`;
+
+const LoadingOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+`;
+
+const LoadingMessage = styled.div`
+  background-color: #5011cc;
+  color: white;
+  padding: 20px 30px;
+  border-radius: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
 `;
