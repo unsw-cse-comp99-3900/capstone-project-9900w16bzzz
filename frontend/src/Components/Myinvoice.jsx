@@ -125,7 +125,7 @@ function Myinvoice() {
                                         <ValidationContainer>
                                             <ValidationPass>
                                                 <StatusCircleGreen />
-                                                Validation Pass
+                                                Validation Passed
                                             </ValidationPass>
                                         </ValidationContainer>
                                     )}
@@ -133,8 +133,16 @@ function Myinvoice() {
                                         <ValidationContainer>
                                             <ValidationFail>
                                                 <StatusCircleRed />
-                                                Validation Fail
+                                                Validation Failed
                                             </ValidationFail>
+                                        </ValidationContainer>
+                                    )}
+                                    {invoice.validationFlag === 0 && (
+                                        <ValidationContainer>
+                                            <NotValidated>
+                                                <StatusCircleGray />
+                                                Not Validated
+                                            </NotValidated>
                                         </ValidationContainer>
                                     )}
                                     <DownloadContainer>
@@ -400,8 +408,8 @@ const InvoiceName = styled.span`
 const ValidationContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-right: 170px;
-  width: 130px;
+  margin-right: 160px;
+  width: 140px;
 
   @media (max-width: 430px) {
     margin-right: 60px;
@@ -427,6 +435,21 @@ const StatusCircleGreen = styled.div`
     width: 6px;
     height: 6px;
     background-color: #00ff00;
+    border-radius: 50%;
+    margin-right: 10px;
+`;
+
+const NotValidated = styled.span`
+    display: flex;
+    align-items: center;
+    color: #eeeeee;
+    font-size: 1rem;
+`;
+
+const StatusCircleGray = styled.div`
+    width: 6px;
+    height: 6px;
+    background-color: #eeeeee;
     border-radius: 50%;
     margin-right: 10px;
 `;
