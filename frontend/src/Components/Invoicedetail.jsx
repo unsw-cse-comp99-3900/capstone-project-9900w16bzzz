@@ -106,6 +106,7 @@ function Invoicedetail() {
                             invoiceId={invoiceId}
                             selectedFileType={selectedFileType}
                             fileName={getFileNameWithoutExtension(invoice.fileName)}
+                            validationFlag={invoice.validationFlag}
                         />
                     </>
                 ) : (
@@ -258,3 +259,4 @@ const LoadingMessage = styled.div`
     text-align: center;
     margin-top: 50px;
 `;
+

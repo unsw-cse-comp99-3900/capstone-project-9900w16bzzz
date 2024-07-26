@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { usePopup } from './PopupWindow/PopupContext';
+import Modal from './Modal';
 
-const SendInvoice = ({ invoiceId, selectedFileType, fileName }) => {
+const SendInvoice = ({ invoiceId, selectedFileType, fileName, validationFlag }) => {
     const [email, setEmail] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const { showPopup } = usePopup();
 
     const handleEmailChange = (event) => {
@@ -31,6 +33,11 @@ const SendInvoice = ({ invoiceId, selectedFileType, fileName }) => {
         const fileType = fileTypeMapping[selectedFileType];
         if (!fileType) {
             showPopup("Invalid file type selected.", "error");
+            return;
+        }
+
+        if (validationFlag !== 0 && selectedFileType === "pdf") {
+            setIsModalOpen(true);
             return;
         }
 
@@ -90,6 +97,10 @@ const SendInvoice = ({ invoiceId, selectedFileType, fileName }) => {
                     Sending Invoice...
                 </LoadingMessage>
             </LoadingOverlay>}
+            {isModalOpen && <Modal 
+                message="The PDF file has been modified. Please send the JSON or XML file instead."
+                onClose={() => setIsModalOpen(false)}
+            />}
         </EmailBox>
     );
 };
