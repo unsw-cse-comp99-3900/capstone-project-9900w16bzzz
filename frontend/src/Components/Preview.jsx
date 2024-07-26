@@ -2,25 +2,39 @@ import React from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa6';
 import styled from 'styled-components';
 
-const Preview = ({ selectedFileType, invoiceId }) => {
+const Preview = ({ selectedFileType, invoiceId, validationFlag }) => {
     const handlePreviewClick = async () => {
-        if (selectedFileType === "pdf") {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/invoice/download?invoiceId=${invoiceId}&fileType=3`, {
-                method: 'GET',
-                headers: {
-                    'x-access-token': `${token}`
-                }
-            });
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            window.open(url, '_blank');
+        const token = localStorage.getItem('token');
+        const fileTypeMap = {
+            "pdf": 3,
+            "json": 1,
+            "xml": 2
+        };
+        const fileType = fileTypeMap[selectedFileType];
+        
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/invoice/download?invoiceId=${invoiceId}&fileType=${fileType}`, {
+            method: 'GET',
+            headers: {
+                'x-access-token': `${token}`
+            }
+        });
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+    };
+
+    const isPreviewAllowed = () => {
+        if (validationFlag === 0) {
+            return true;
+        } else if (selectedFileType !== "pdf") {
+            return true;
         }
+        return false;
     };
 
     return (
         <PreviewBox>
-            {selectedFileType === "pdf" ? (
+            {isPreviewAllowed() ? (
                 <EyeIcon onClick={handlePreviewClick} />
             ) : (
                 <EyeSlashIcon />

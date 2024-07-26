@@ -100,6 +100,7 @@ function Invoicedetail() {
                         <Preview
                             selectedFileType={selectedFileType}
                             invoiceId={invoiceId}
+                            validationFlag={invoice.validationFlag}
                         />
                         <SendInvoice 
                             invoiceId={invoiceId}
