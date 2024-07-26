@@ -1,16 +1,22 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import video from "../images/video1.mp4";
 import styled from "styled-components";
 import { BsBoxArrowInLeft } from "react-icons/bs";
 import Preview from "./Preview";
 import SendInvoice from "./Sendinvoice";
 
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
+
 function Invoicedetail() {
     const { invoiceId } = useParams();
+    const query = useQuery();
     const [invoice, setInvoice] = useState(null);
     const [selectedFileType, setSelectedFileType] = useState(null);
     const navigate = useNavigate();
+    const page = query.get('page') || 1;
 
     const getFileNameWithoutExtension = (fileName) => {
         return fileName.replace(/\.[^/.]+$/, "");
@@ -27,7 +33,7 @@ function Invoicedetail() {
                     'x-access-token': `${token}`
                 },
                 body: JSON.stringify({
-                    pageNum: 1,
+                    pageNum: page,
                     pageSize: 10,
                     searchCount: true,
                     sortItemList: [
@@ -58,7 +64,7 @@ function Invoicedetail() {
         } catch (error) {
             console.error("Error fetching invoice details:", error);
         }
-    }, [invoiceId]);
+    }, [invoiceId, page]);
 
     useEffect(() => {
         fetchInvoiceDetail();
@@ -259,4 +265,3 @@ const LoadingMessage = styled.div`
     text-align: center;
     margin-top: 50px;
 `;
-

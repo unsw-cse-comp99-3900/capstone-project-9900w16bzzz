@@ -61,8 +61,9 @@ function Myinvoice() {
     }, [fetchInvoices, currentPage]);
 
     const handleInvoiceClick = (invoiceId) => {
-        navigate(`/invoice/${invoiceId}`);
+        navigate(`/invoice/${invoiceId}?page=${currentPage}`);
     };
+    
 
     const handleDeleteClick = async (event, invoiceId) => {
         event.stopPropagation();
