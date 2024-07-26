@@ -56,14 +56,57 @@ function Myinvoice() {
         }
     }, [pageSize]);
 
+    const searchInvoices = useCallback(async (page) => {
+        const userId = localStorage.getItem('userId');
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/invoice/searchByName`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    'x-access-token': `${token}`
+                },
+                body: JSON.stringify({
+                    pageNum: page,
+                    pageSize: pageSize,
+                    searchCount: true,
+                    sortItemList: [
+                        {
+                            isAsc: true,
+                            column: "string"
+                        }
+                    ],
+                    fileName: searchTerm,
+                    userId: userId
+                })
+            });
+            const data = await response.json();
+            console.log('API Response:', data);
+
+            if (data && data.data) {
+                setInvoiceData(data.data.list);
+                setTotalPages(data.data.pages);
+                setCurrentPage(data.data.pageNum);
+            } else {
+                console.error("Invalid API response structure:", data);
+            }
+        } catch (error) {
+            console.error("Error fetching invoices:", error);
+        }
+    }, [pageSize, searchTerm]);
+
     useEffect(() => {
-        fetchInvoices(currentPage);
-    }, [fetchInvoices, currentPage]);
+        if (searchTerm) {
+            setCurrentPage(1); 
+            searchInvoices(1);
+        } else {
+            fetchInvoices(currentPage);
+        }
+    }, [fetchInvoices, searchInvoices, currentPage, searchTerm]);
 
     const handleInvoiceClick = (invoiceId) => {
         navigate(`/invoice/${invoiceId}?page=${currentPage}`);
     };
-    
 
     const handleDeleteClick = async (event, invoiceId) => {
         event.stopPropagation();
@@ -91,10 +134,6 @@ function Myinvoice() {
         return fileName.replace(/\.[^/.]+$/, "");
     };
 
-    const filteredInvoices = invoiceData.filter((invoice) =>
-        invoice.fileName.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
     return (
         <div id="main">
             <VideoBackground autoPlay muted loop id="background-video-signup">
@@ -117,7 +156,7 @@ function Myinvoice() {
                     </Search>
                     <Invoicecontainer>
                         <InvoiceList>
-                            {filteredInvoices.map((invoice) => (
+                            {invoiceData.map((invoice) => (
                                 <InvoiceItem key={invoice.invoiceId} onClick={() => handleInvoiceClick(invoice.invoiceId)}>
                                     <InvoiceNameContainer>
                                         <InvoiceName>{getFileNameWithoutExtension(invoice.fileName)}</InvoiceName>
