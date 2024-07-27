@@ -129,7 +129,7 @@ function InvoiceForm({
     }
 
     if (newData.deliveryAddress?.countryCode === "null") {
-      newData.deliveryAddress.countryCode = null;
+      newData.deliveryAddress.countryCode = 'AU';
     }
 
     if (!newData.payment) {
@@ -279,7 +279,7 @@ function InvoiceForm({
           <InvoiceLineHeader>Invoice Line ID: {item.id}</InvoiceLineHeader>
           <InvoiceLineFieldGrid>
             {Object.entries(item).map(([subKey, subValue]) => {
-              if (subKey !== "allowance") {
+              if (subKey !== "allowance" && subKey !== "id") {
                 return renderField(subKey, subValue, `${key}[${index}]`);
               }
               return null;
