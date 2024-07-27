@@ -97,8 +97,7 @@ function Myinvoice() {
 
     useEffect(() => {
         if (searchTerm) {
-            setCurrentPage(1); 
-            searchInvoices(1);
+            searchInvoices(currentPage);
         } else {
             fetchInvoices(currentPage);
         }
@@ -134,6 +133,16 @@ function Myinvoice() {
         return fileName.replace(/\.[^/.]+$/, "");
     };
 
+    const PaginationControls = () => (
+        <PaginationContainer>
+            <PageButton onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>First</PageButton>
+            <PageButton onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>Prev</PageButton>
+            <span>{currentPage} of {totalPages}</span>
+            <PageButton onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>Next</PageButton>
+            <PageButton onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>Last</PageButton>
+        </PaginationContainer>
+    );
+
     return (
         <div id="main">
             <VideoBackground autoPlay muted loop id="background-video-signup">
@@ -151,6 +160,12 @@ function Myinvoice() {
                                 placeholder="Search..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        setCurrentPage(1);
+                                        searchInvoices(1);
+                                    }
+                                }}
                             />
                         </SearchBox>
                     </Search>
@@ -205,13 +220,7 @@ function Myinvoice() {
                                 </InvoiceItem>
                             ))}
                         </InvoiceList>
-                        <PaginationControls>
-                            <PageButton onClick={() => fetchInvoices(1)} disabled={currentPage === 1}>First</PageButton>
-                            <PageButton onClick={() => fetchInvoices(currentPage - 1)} disabled={currentPage === 1}>Prev</PageButton>
-                            <span>{currentPage} of {totalPages}</span>
-                            <PageButton onClick={() => fetchInvoices(currentPage + 1)} disabled={currentPage === totalPages}>Next</PageButton>
-                            <PageButton onClick={() => fetchInvoices(totalPages)} disabled={currentPage === totalPages}>Last</PageButton>
-                        </PaginationControls>
+                        <PaginationControls />
                     </Invoicecontainer>
                 </Maincontainer>
             </Container>
@@ -233,7 +242,6 @@ const VideoBackground = styled.video`
   transform: translate(-0%, -0%);
   object-fit: cover;
 `;
-
 
 const Container = styled.div`
     display: flex;
@@ -317,7 +325,6 @@ const SearchBox = styled.div`
     input {
       width: 140px; 
     }
-
 `;
 
 const SearchIcon = styled(FaSearch)`
@@ -333,7 +340,6 @@ const SearchIcon = styled(FaSearch)`
     @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
     left: 110px; 
     }
-
 `;
 
 const DownloadContainer = styled.div`
@@ -537,7 +543,7 @@ const DeleteButton = styled.button`
     }
 `;
 
-const PaginationControls = styled.div`
+const PaginationContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
