@@ -26,6 +26,9 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.UUID;
 
+/**
+ * @author zuoming yan
+ */
 @Slf4j
 @Service
 public class InvoiceUploadServiceImpl implements InvoiceUploadService {
@@ -68,9 +71,8 @@ public class InvoiceUploadServiceImpl implements InvoiceUploadService {
             if (ObjectUtils.isEmpty(invoiceApiJsonDTO)) {
                 return ResponseDTO.error(InvoiceErrorCode.UPBRAINSAI_API_REQUEST_FAILED);
             }
-            try {
-                invoiceJsonVO = InvoiceJsonDtoToVoConverter.convert(invoiceApiJsonDTO);
-            } catch (Exception e) {
+            invoiceJsonVO = InvoiceJsonDtoToVoConverter.convert(invoiceApiJsonDTO);
+            if(ObjectUtils.isEmpty(invoiceJsonVO.getBuyer()) || ObjectUtils.isEmpty(invoiceJsonVO.getSeller())){
                 return ResponseDTO.error(InvoiceErrorCode.INVOICE_FILE_FORMAT_ERROR);
             }
         } else if (VerificationUtil.match(fileName, VerificationUtil.JSON_PATTERN)) {

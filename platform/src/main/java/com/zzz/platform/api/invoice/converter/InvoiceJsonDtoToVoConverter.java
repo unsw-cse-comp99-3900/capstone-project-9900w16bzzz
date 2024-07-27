@@ -23,7 +23,6 @@ public class InvoiceJsonDtoToVoConverter {
         InvoiceJsonVO invoiceJsonVO = new InvoiceJsonVO();
 
         // set invoice id
-
         invoiceJsonVO.setInvoiceId(getContent(fields.getInvoiceId()));
         // set invoice and due date
         invoiceJsonVO.setInvoiceDate(extractDate(fields.getInvoiceDate()));
