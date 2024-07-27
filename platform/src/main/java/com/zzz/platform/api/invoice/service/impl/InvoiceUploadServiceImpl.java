@@ -67,10 +67,12 @@ public class InvoiceUploadServiceImpl implements InvoiceUploadService {
             InvoiceApiJsonDTO invoiceApiJsonDTO = convertPdfToJson(file);
             if (ObjectUtils.isEmpty(invoiceApiJsonDTO)) {
                 return ResponseDTO.error(InvoiceErrorCode.UPBRAINSAI_API_REQUEST_FAILED);
-            } else if(!invoiceApiJsonDTO.getDocumentType().equals("invoice")) {
+            }
+            try {
+                invoiceJsonVO = InvoiceJsonDtoToVoConverter.convert(invoiceApiJsonDTO);
+            } catch (Exception e) {
                 return ResponseDTO.error(InvoiceErrorCode.INVOICE_FILE_FORMAT_ERROR);
             }
-            invoiceJsonVO = InvoiceJsonDtoToVoConverter.convert(invoiceApiJsonDTO);
         } else if (VerificationUtil.match(fileName, VerificationUtil.JSON_PATTERN)) {
             fileType = FileType.JSON;
             try {

@@ -17,6 +17,7 @@ import java.util.List;
 public class InvoiceJsonVO {
 
     private String customizationId;
+    private String profileId;
     private String invoiceId;
 
     private LocalDate invoiceDate;

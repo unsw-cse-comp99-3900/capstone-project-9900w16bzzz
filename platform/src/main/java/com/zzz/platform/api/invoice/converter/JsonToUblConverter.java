@@ -29,6 +29,7 @@ public class JsonToUblConverter {
         invoice.setID(id);
         String customizationId = invoiceJsonVO.getCustomizationId();
         invoice.setCustomizationID(customizationId);
+        invoice.setProfileID(invoiceJsonVO.getProfileId());
 
         // 380 Commercial Invoice Type Code
         invoice.setInvoiceTypeCode("380");
@@ -509,6 +510,7 @@ public class JsonToUblConverter {
         String taxPercent = allowance.getTaxPercent();
         allowanceChargeType.addTaxCategory(getTaxCategoryType(EnumUtil.getEnumByValue(taxPercent, TaxType.class)));
 
+        allowanceChargeType.setMultiplierFactorNumeric(BigDecimal.valueOf(Double.parseDouble("0")));
         return allowanceChargeType;
     }
     /**
