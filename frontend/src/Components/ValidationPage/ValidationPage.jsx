@@ -17,8 +17,15 @@ const ValidationPage = () => {
     invoiceJsonVO: null,
   });
   const [validationResult, setValidationResult] = useState(null);
+  const [shouldRefresh, setShouldRefresh] = useState(false);
 
-  const goToStep = (stepNumber) => setStep(stepNumber);
+  const goToStep = useCallback((stepNumber) => {
+    setStep(stepNumber);
+    if (stepNumber === 0) {
+      setShouldRefresh(true);
+    }
+  }, []);
+
   const transition = {
     duration: 2,
   };
@@ -64,6 +71,13 @@ const ValidationPage = () => {
     loadPage();
   }, [loadPage]);
 
+  useEffect(() => {
+    if (shouldRefresh && step === 0) {
+      loadPage();
+      setShouldRefresh(false);
+    }
+  }, [shouldRefresh, step, loadPage]);
+
   return (
     <div>
       <MainContainer id="main" style={{ height: "auto" }}>
@@ -106,7 +120,7 @@ const ValidationPage = () => {
             <ValidationResultPage
               validationResult={validationResult}
               invoiceId={invoiceId}
-              setStep={setStep}
+              setStep={goToStep}
             />
           </motion.div>
         )}
