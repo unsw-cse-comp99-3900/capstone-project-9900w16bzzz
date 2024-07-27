@@ -19,7 +19,7 @@ swagger:
   host: localhost:${server.port}
 
 upbrainsai:
-  token: oPpJo-Qjzv7bOYODVUzfTNaWdTfPX45tlNXp9Z3M57uJ3rErYnSCEOsVMR4U
+  token: wRRxw-vrrrL0Agi9oCx1lof4O7bmY8DMYwwqrXkVVEuxi4C9mV9czoV6P7i2
 #logging:
 #  level:
 #    org:
