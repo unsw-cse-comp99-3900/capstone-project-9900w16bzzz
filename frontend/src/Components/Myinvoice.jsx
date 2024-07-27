@@ -17,6 +17,8 @@ function Myinvoice() {
     const [pageSize] = useState(10);
     const navigate = useNavigate();
     const { showPopup } = usePopup();
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
 
     const fetchInvoices = useCallback(async (page) => {
         const userId = localStorage.getItem('userId');
@@ -102,6 +104,14 @@ function Myinvoice() {
             fetchInvoices(currentPage);
         }
     }, [fetchInvoices, searchInvoices, currentPage, searchTerm]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleInvoiceClick = (invoiceId) => {
         navigate(`/invoice/${invoiceId}?page=${currentPage}`);
