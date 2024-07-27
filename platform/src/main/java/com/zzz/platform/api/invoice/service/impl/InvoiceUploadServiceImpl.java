@@ -71,10 +71,10 @@ public class InvoiceUploadServiceImpl implements InvoiceUploadService {
             if (ObjectUtils.isEmpty(invoiceApiJsonDTO)) {
                 return ResponseDTO.error(InvoiceErrorCode.UPBRAINSAI_API_REQUEST_FAILED);
             }
-            invoiceJsonVO = InvoiceJsonDtoToVoConverter.convert(invoiceApiJsonDTO);
-            if(ObjectUtils.isEmpty(invoiceJsonVO.getBuyer()) || ObjectUtils.isEmpty(invoiceJsonVO.getSeller())){
+            if (ObjectUtils.isEmpty(invoiceApiJsonDTO.getDocuments().get(0).getFields().getInvoiceTotal())) {
                 return ResponseDTO.error(InvoiceErrorCode.INVOICE_FILE_FORMAT_ERROR);
             }
+            invoiceJsonVO = InvoiceJsonDtoToVoConverter.convert(invoiceApiJsonDTO);
         } else if (VerificationUtil.match(fileName, VerificationUtil.JSON_PATTERN)) {
             fileType = FileType.JSON;
             try {
