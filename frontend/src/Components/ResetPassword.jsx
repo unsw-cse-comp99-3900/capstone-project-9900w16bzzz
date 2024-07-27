@@ -4,6 +4,7 @@ import styled from "styled-components";
 import SignupButton from "./SignupButton";
 import { useNavigate } from "react-router-dom";
 import { usePopup } from './PopupWindow/PopupContext';
+import CryptoJS from 'crypto-js';
 
 function ResetPassword() {
   const [oldPassword, setOldPassword] = useState('');
@@ -38,6 +39,9 @@ function ResetPassword() {
       return;
     }
 
+    const hashedOldPassword = CryptoJS.MD5(oldPassword).toString();
+    const hashedNewPassword = CryptoJS.MD5(newPassword).toString();
+
     try {
       const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/user/updateUser`, {
         method: 'POST',
@@ -46,8 +50,8 @@ function ResetPassword() {
           'x-access-token': `${token}`
         },
         body: JSON.stringify({
-          oldPassword,
-          newPassword,
+          oldPassword: hashedOldPassword,
+          newPassword: hashedNewPassword,
           userId: localStorage.getItem("userId")
         }),
       });

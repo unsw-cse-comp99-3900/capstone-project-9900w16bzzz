@@ -5,6 +5,7 @@ import SignupInput from "./SignupInput";
 import SignupButton from "./SignupButton";
 import { Link, useNavigate } from "react-router-dom";
 import { usePopup } from "./PopupWindow/PopupContext";
+import CryptoJS from 'crypto-js';
 
 function Signup() {
   const { showPopup } = usePopup();
@@ -26,18 +27,22 @@ function Signup() {
       return;
     }
 
+    if (password.length < 6) {
+      setPasswordError('Password must be at least 6 characters long.');
+      return;
+    }
+
     if (password !== confirmPassword) {
       setPasswordError('Passwords do not match.');
       return;
     }
 
-    console.log(email);
-    console.log(username);
-    console.log(password);
+    const hashedPassword = CryptoJS.MD5(password).toString();
+
     const requestBody = {
       loginName: email,
       userName: username,
-      loginPwd: password,
+      loginPwd: hashedPassword,
     };
 
     try {
@@ -52,12 +57,10 @@ function Signup() {
       if (response.ok) {
         const data = await response.json();
         if (data.ok) {
-          showPopup('Sign up successful!','success')
-          console.log('Sign up successful:', data);
+          showPopup('Sign up successful!', 'success');
           navigate('/');
-        }
-        else {
-          showPopup(`Sign up failed: ${data.msg}`,'error');
+        } else {
+          showPopup(`Sign up failed: ${data.msg}`, 'error');
           console.error('Sign up failed:', data.msg);
         }
       } else {
