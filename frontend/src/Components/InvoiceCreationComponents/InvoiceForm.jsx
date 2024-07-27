@@ -76,7 +76,7 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
 
     newData.typeCode = "380 commercial invoice";
     newData.customizationId = 'urn:oasis:company:specification:ubl:schema:xsd:Invoice-2';
-    newData.profileId = null;
+    newData.profileId = '02';
   
     if (newData.invoiceLine && Array.isArray(newData.invoiceLine)) {
       newData.invoiceLine = newData.invoiceLine.map(line => {
@@ -362,14 +362,12 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
   };
   const hiddenFields = ['typeCode','schemeId'];
   const sections = [
-    { title: "Invoice Details", fields: ["invoiceId", "invoiceDate", "dueDate", "typeCode", "currencyCode", "profileId"] },
+    { title: "Invoice Details", fields: ["invoiceId", "invoiceDate", "dueDate", "typeCode", "currencyCode"] },
     { title: "Buyer", fields: ["buyer"] },
     { title: "Seller", fields: ["seller"] },
     { title: "Financial Details", fields: ["subTotal", "invoiceTotal", "taxTotal"] },
     { title: "allowance", fields: ["allowance"] },
     { title: "Invoice Lines", fields: ["invoiceLine"] },
-    { title: "Payment", fields: ["payment"] },
-    { title: "Delivery Address", fields: ["deliveryAddress"] }
   ];
   const typeReasonMapping = {
     'SAA': 'Shipping and Handling',
@@ -567,7 +565,7 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
         }
         if (rule === 'AUNZ_PEPPOL_SB_1_0_10') {
           dataToSend.customizationId = 'urn:cen.eu:en16931:2017#conformant#urn:fdc:peppol.eu:2017:poacc:selfbilling:international:aunz:3.0';
-          dataToSend.profileId = `urn:fdc:peppol.eu:2017:poacc:billing:${formattedData.profileId}:1.0`
+          dataToSend.profileId = `urn:fdc:peppol.eu:2017:poacc:selfbilling:${formattedData.profileId}:1.0`
         }
 
         let endpoint = `${process.env.REACT_APP_SERVER_URL}/invoice/validate?invoiceId=${invoiceId}&rules=${rule}`;
