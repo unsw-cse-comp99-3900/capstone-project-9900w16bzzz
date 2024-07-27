@@ -133,6 +133,26 @@ function Myinvoice() {
         return fileName.replace(/\.[^/.]+$/, "");
     };
 
+    const truncateText = (text, maxLength) => {
+        if (text.length > maxLength) {
+            return text.substring(0, maxLength) + '...';
+        }
+        return text;
+    };
+
+    const isIphone14ProMax = () => {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const pixelRatio = window.devicePixelRatio;
+        return width === 430 && height === 932 && pixelRatio === 3;
+    };
+
+    const handleMoreOptionsClick = (event, invoiceId) => {
+        event.stopPropagation();
+        setOpenDropdown(openDropdown === invoiceId ? null : invoiceId);
+    };
+    
+
     const PaginationControls = () => (
         <PaginationContainer>
             <PageButton onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>First</PageButton>
@@ -174,7 +194,7 @@ function Myinvoice() {
                             {invoiceData.map((invoice) => (
                                 <InvoiceItem key={invoice.invoiceId} onClick={() => handleInvoiceClick(invoice.invoiceId)}>
                                     <InvoiceNameContainer>
-                                        <InvoiceName>{getFileNameWithoutExtension(invoice.fileName)}</InvoiceName>
+                                        <InvoiceName>{isIphone14ProMax() ? truncateText(getFileNameWithoutExtension(invoice.fileName), 15) : getFileNameWithoutExtension(invoice.fileName)}</InvoiceName>
                                     </InvoiceNameContainer>
                                     {invoice.validationFlag === 1 && (
                                         <ValidationContainer>
@@ -200,23 +220,39 @@ function Myinvoice() {
                                             </NotValidated>
                                         </ValidationContainer>
                                     )}
-                                    <DownloadContainer>
-                                        <Download onClick={(event) => handleDropdownToggle(event, invoice.invoiceId)} />
-                                        {openDropdown === invoice.invoiceId && (
-                                            <DownloadOptions>
-                                                {invoice.pdfFlag === 1 && invoice.validationFlag === 0 && (
-                                                    <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 3)}>PDF</DownloadOption>
+                                    {isIphone14ProMax() ? (
+                                        <MoreOptionsContainer>
+                                            <MoreOptions onClick={(event) => handleMoreOptionsClick(event, invoice.invoiceId)}>...</MoreOptions>
+                                            {openDropdown === invoice.invoiceId && (
+                                                <MoreOptionsDropdown>
+                                                    {invoice.pdfFlag === 1 && <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 3)}>PDF<BiDownload style={{ marginLeft: '8px' }} /></DownloadOption>}
+                                                    {invoice.jsonFlag === 1 && <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 1)}>JSON<BiDownload style={{ marginLeft: '8px' }} /></DownloadOption>}
+                                                    {invoice.xmlFlag === 1 && <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 2)}>XML<BiDownload style={{ marginLeft: '8px' }} /></DownloadOption>}
+                                                    <DropdownOption onClick={(event) => handleDeleteClick(event, invoice.invoiceId)}>Delete</DropdownOption>
+                                                </MoreOptionsDropdown>
+                                            )}
+                                        </MoreOptionsContainer>
+                                    ) : (
+                                        <>
+                                            <DownloadContainer>
+                                                <Download onClick={(event) => handleDropdownToggle(event, invoice.invoiceId)} />
+                                                {openDropdown === invoice.invoiceId && (
+                                                    <DownloadOptions>
+                                                        {invoice.pdfFlag === 1 && invoice.validationFlag === 0 && (
+                                                            <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 3)}>PDF</DownloadOption>
+                                                        )}
+                                                        {invoice.jsonFlag === 1 && (
+                                                            <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 1)}>JSON</DownloadOption>
+                                                        )}
+                                                        {invoice.xmlFlag === 1 && (
+                                                            <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 2)}>XML</DownloadOption>
+                                                        )}
+                                                    </DownloadOptions>
                                                 )}
-                                                {invoice.jsonFlag === 1 && (
-                                                    <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 1)}>JSON</DownloadOption>
-                                                )}
-                                                {invoice.xmlFlag === 1 && (
-                                                    <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 2)}>XML</DownloadOption>
-                                                )}
-                                            </DownloadOptions>
-                                        )}
-                                    </DownloadContainer>
-                                    <DeleteButton onClick={(event) => handleDeleteClick(event, invoice.invoiceId)}>Delete</DeleteButton>
+                                            </DownloadContainer>
+                                            <DeleteButton onClick={(event) => handleDeleteClick(event, invoice.invoiceId)}>Delete</DeleteButton>
+                                        </>
+                                    )}    
                                 </InvoiceItem>
                             ))}
                         </InvoiceList>
@@ -250,8 +286,9 @@ const Container = styled.div`
     margin-top: 20px;
 
     @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    margin-top: 200px; 
+    margin-top: 250px; 
     }
+
 
 `;
 
@@ -283,8 +320,8 @@ const Maincontainer = styled.div`
     z-index: 1;
 
     @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    width: 100%;  
-    height: 10%; 
+    width: 410px;  
+    height: 680px;
     padding: 1px;  
     }
 
@@ -293,6 +330,48 @@ const Maincontainer = styled.div`
 const Search = styled.div`
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     width: 100%;
+`;
+
+const MoreOptions = styled.span`
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.5rem;
+    cursor: pointer;
+    &:hover {
+        color: rgba(255, 255, 255, 1);
+    }
+`;
+
+const MoreOptionsDropdown = styled.div`
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7);
+    min-width: 100px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 5px;
+    padding: 5px 0;
+`;
+
+const DropdownOption = styled.div`
+    color: rgba(255, 255, 255, 0.7);
+    padding: 5px 10px;
+    text-decoration: none;
+    display: block;
+    font-size: 1rem;
+    cursor: pointer;
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+`;
+
+
+const MoreOptionsContainer = styled.div`
+    position: relative;
+    display: inline-block;
+    top: -8px; 
+    left: -18px; 
 `;
 
 const SearchBox = styled.div`
@@ -444,6 +523,11 @@ const InvoiceNameContainer = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    width: 10%;
+  }
+
 `;
 
 const InvoiceName = styled.span`
@@ -452,9 +536,8 @@ const InvoiceName = styled.span`
 
   @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
     font-size: 1.0rem; 
-    margin-right: 5px;
+    argin-right: 100px;
     }
-
 `;
 
 const ValidationContainer = styled.div`
@@ -464,8 +547,8 @@ const ValidationContainer = styled.div`
   width: 140px;
 
   @media (max-width: 430px) {
-    margin-right: 60px;
-    width: 60px; 
+    margin-right: 115px;
+    width: 40px; 
   }
 `;
 
@@ -496,6 +579,12 @@ const NotValidated = styled.span`
     align-items: center;
     color: #eeeeee;
     font-size: 1rem;
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    font-size: 0.8rem;
+    margin-right: 30px; 
+    margin-left: 5px; 
+        }
 `;
 
 const StatusCircleGray = styled.div`
