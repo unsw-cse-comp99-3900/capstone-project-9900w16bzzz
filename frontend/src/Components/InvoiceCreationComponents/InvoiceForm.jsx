@@ -23,7 +23,8 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
     const unfilledFields = validateForm(formData);
     setUnfilledFields(unfilledFields);  
     setIsFormValid(unfilledFields.length === 0);
-  }, []);
+    console.log(unfilledFields);
+  }, [formData]);
   
   useEffect(() => {
     if (showValidation && unfilledFields.length > 0) {
@@ -74,6 +75,8 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
     let newData = JSON.parse(JSON.stringify(data));
 
     newData.typeCode = "380 commercial invoice";
+    newData.customizationId = 'urn:oasis:company:specification:ubl:schema:xsd:Invoice-2';
+    newData.profileId = null;
   
     if (newData.invoiceLine && Array.isArray(newData.invoiceLine)) {
       newData.invoiceLine = newData.invoiceLine.map(line => {
@@ -109,22 +112,26 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
     }
 
     newData.buyer.schemeId = newData.buyer.schemeId || '0060';
-    if (newData.buyer.address.countryCode) {
-      if (newData.buyer.address.countryCode === 'null') {
-        newData.buyer.address.countryCode = null;
-      }
+    if (newData.buyer?.address?.countryCode === 'null') {
+      newData.buyer.address.countryCode = null;
+    }
+    
+    if (newData.seller?.address?.countryCode === 'null') {
+      newData.seller.address.countryCode = null;
     }
 
-    if (newData.buyer.address.countryCode) {
-      if (newData.seller.address.countryCode === 'null') {
-        newData.seller.address.countryCode = null;
-      }
+    if (newData.deliveryAddress?.countryCode === 'null') {
+      newData.deliveryAddress.countryCode = null;
     }
 
-    if (newData.buyer.address.countryCode) {
-      if (newData.deliveryAddress.countryCode === 'null') {
-        newData.deliveryAddress.countryCode = null;
-      }
+    if (!newData.payment) {
+      newData.payment = {
+        code: "10",
+        accountName: "account Name",
+        accountNumber: "12345678",
+        bsbNumber: "123-456",
+        paymentNote: "payment for invoice"
+      };
     }
 
     if (!newData.deliveryAddress) {
@@ -355,7 +362,7 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
   };
   const hiddenFields = ['typeCode','schemeId'];
   const sections = [
-    { title: "Invoice Details", fields: ["invoiceId", "invoiceDate", "dueDate", "typeCode", "currencyCode"] },
+    { title: "Invoice Details", fields: ["invoiceId", "invoiceDate", "dueDate", "typeCode", "currencyCode", "profileId"] },
     { title: "Buyer", fields: ["buyer"] },
     { title: "Seller", fields: ["seller"] },
     { title: "Financial Details", fields: ["subTotal", "invoiceTotal", "taxTotal"] },
@@ -554,8 +561,13 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
         if (rule === 'AUNZ_UBL_1_0_10') {
           dataToSend.customizationId = 'urn:oasis:company:specification:ubl:schema:xsd:Invoice-2';
         }
-        if (rule === 'AUNZ_PEPPOL_1_0_10' || rule === 'AUNZ_PEPPOL_SB_1_0_10') {
+        if (rule === 'AUNZ_PEPPOL_1_0_10') {
+          dataToSend.customizationId = 'urn:cen.eu:en16931:2017#conformant#urn:fdc:peppol.eu:2017:poacc:billing:international:aunz:3.0';
+          dataToSend.profileId = `urn:fdc:peppol.eu:2017:poacc:billing:${formattedData.profileId}:1.0`
+        }
+        if (rule === 'AUNZ_PEPPOL_SB_1_0_10') {
           dataToSend.customizationId = 'urn:cen.eu:en16931:2017#conformant#urn:fdc:peppol.eu:2017:poacc:selfbilling:international:aunz:3.0';
+          dataToSend.profileId = `urn:fdc:peppol.eu:2017:poacc:billing:${formattedData.profileId}:1.0`
         }
 
         let endpoint = `${process.env.REACT_APP_SERVER_URL}/invoice/validate?invoiceId=${invoiceId}&rules=${rule}`;

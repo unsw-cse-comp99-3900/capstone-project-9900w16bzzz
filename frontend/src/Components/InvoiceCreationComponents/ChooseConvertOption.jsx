@@ -1,9 +1,10 @@
 import React,{ useState, useEffect} from "react";
 import styled from "styled-components";
 import { ReactComponent as ArrowIcon } from "../../images/arrow.svg";
+import { usePopup } from "../PopupWindow/PopupContext";
 
 const ChooseConvertOption = ({ goToStep, setFile, file, setInvoice, invoice}) => {
-    
+  const { showPopup } = usePopup();
   const [selectedAction, setSelectedAction] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -27,7 +28,7 @@ const ChooseConvertOption = ({ goToStep, setFile, file, setInvoice, invoice}) =>
     console.log(file);
 
     if (!file) {
-        alert('No file to upload!');
+        showPopup('No file to upload!','error');
         return;
     }
     setIsUploading(true);
@@ -58,14 +59,20 @@ const ChooseConvertOption = ({ goToStep, setFile, file, setInvoice, invoice}) =>
         }
         setIsUploading(false);
         if (!data.ok) {
-          throw new Error('Server response was not ok');
+          const errorMsg = data.msg;
+          const match = errorMsg.match(/"detail":\s*"([^"]*)"/);
+          if (match && match[1]) {
+            throw new Error(match[1]);
+          } else {
+            throw new Error(errorMsg);
+          }
         }
         console.log('File processed successfully', data);
         return true;
       }
     } catch (error) {
       console.error('Error processing file:', error);
-      alert('An error occurred while processing the file. Please try again.');
+      showPopup(`An error occurred while processing the file. Please try again.${error}`,'error');
       setIsUploading(false);
       return false;
     }
