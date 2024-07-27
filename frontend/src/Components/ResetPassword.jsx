@@ -178,7 +178,7 @@ const MainContainer = styled.div`
   z-index: 1;
 
   @media only screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    margin-top: 15vh; /* 为 iPhone 14 Pro Max 调整的顶部边距 */
+    margin-top: 15vh;
   }
 `;
 
