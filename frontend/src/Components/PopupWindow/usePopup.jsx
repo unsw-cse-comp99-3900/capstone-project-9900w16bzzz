@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import styled, { keyframes, css } from 'styled-components';
-import { usePopup } from './PopupContext';
+import React, { useEffect, useState } from "react";
+import styled, { keyframes, css } from "styled-components";
+import { usePopup } from "./PopupContext";
 
 const slideIn = keyframes`
   from { transform: translateX(100%); }
@@ -17,19 +17,28 @@ const PopupWrapper = styled.div`
   top: 9vh;
   right: 5vh;
   z-index: 1000;
-  ${props => props.isVisible && !props.isClosing && css`
-    animation: ${slideIn} 0.3s ease-in-out;
-  `}
-  ${props => props.isClosing && css`
-    animation: ${slideOut} 0.3s ease-in-out forwards;
-  `}
-  ${props => !props.isVisible && !props.isClosing && css`
-    display: none;
-  `}
+  ${(props) =>
+    props.isVisible &&
+    !props.isClosing &&
+    css`
+      animation: ${slideIn} 0.3s ease-in-out;
+    `}
+  ${(props) =>
+    props.isClosing &&
+    css`
+      animation: ${slideOut} 0.3s ease-in-out forwards;
+    `}
+  ${(props) =>
+    !props.isVisible &&
+    !props.isClosing &&
+    css`
+      display: none;
+    `}
 `;
 
 const PopupContent = styled.div`
-  background-color: ${props => props.type === 'error' ? '#FF4136' : '#2ECC40'};
+  background-color: ${(props) =>
+    props.type === "error" ? "#FF4136" : "#2ECC40"};
   color: white;
   padding: 15px 20px;
   border-radius: 8px;
@@ -71,7 +80,7 @@ const GlobalPopup = () => {
     if (popupState.isVisible && !isClosing) {
       timer = setTimeout(() => {
         setIsClosing(true);
-      }, 3000); 
+      }, 3000);
     }
     return () => clearTimeout(timer);
   }, [popupState.isVisible, isClosing]);
@@ -82,7 +91,7 @@ const GlobalPopup = () => {
       timer = setTimeout(() => {
         hidePopup();
         setIsClosing(false);
-      }, 300); 
+      }, 300);
     }
     return () => clearTimeout(timer);
   }, [isClosing, hidePopup]);

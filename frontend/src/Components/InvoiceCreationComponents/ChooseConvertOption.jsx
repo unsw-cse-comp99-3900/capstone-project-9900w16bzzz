@@ -1,9 +1,15 @@
-import React,{ useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { ReactComponent as ArrowIcon } from "../../images/arrow.svg";
 import { usePopup } from "../PopupWindow/PopupContext";
 
-const ChooseConvertOption = ({ goToStep, setFile, file, setInvoice, invoice}) => {
+const ChooseConvertOption = ({
+  goToStep,
+  setFile,
+  file,
+  setInvoice,
+  invoice,
+}) => {
   const { showPopup } = usePopup();
   const [selectedAction, setSelectedAction] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -17,9 +23,9 @@ const ChooseConvertOption = ({ goToStep, setFile, file, setInvoice, invoice}) =>
   }, [invoice]);
 
   const handleNext = () => {
-    if (selectedAction === 'save') {
+    if (selectedAction === "save") {
       goToStep(4);
-    } else if (selectedAction === 'convert') {
+    } else if (selectedAction === "convert") {
       goToStep(3);
     }
   };
@@ -28,32 +34,32 @@ const ChooseConvertOption = ({ goToStep, setFile, file, setInvoice, invoice}) =>
     console.log(file);
 
     if (!file) {
-        showPopup('No file to upload!','error');
-        return;
+      showPopup("No file to upload!", "error");
+      return;
     }
     setIsUploading(true);
 
     try {
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append("file", file);
       const userId = localStorage.getItem("userId");
       let endpoint = `${process.env.REACT_APP_SERVER_URL}/invoice/upload`;
       let token = localStorage.getItem("token");
-      if (selectedAction === 'save' || selectedAction === 'convert') {
+      if (selectedAction === "save" || selectedAction === "convert") {
         const response = await fetch(`${endpoint}?userId=${userId}`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-              'x-access-token': `${token}`
+            "x-access-token": `${token}`,
           },
           body: formData,
         });
-        
+
         setFile(null);
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        
+
         if (data.ok) {
           setInvoice(data.data);
         }
@@ -67,51 +73,67 @@ const ChooseConvertOption = ({ goToStep, setFile, file, setInvoice, invoice}) =>
             throw new Error(errorMsg);
           }
         }
-        console.log('File processed successfully', data);
+        console.log("File processed successfully", data);
         return true;
       }
     } catch (error) {
-      console.error('Error processing file:', error);
-      showPopup(`An error occurred while processing the file. Please try again.${error}`,'error');
+      console.error("Error processing file:", error);
+      showPopup(
+        `An error occurred while processing the file. Please try again.${error}`,
+        "error"
+      );
       setIsUploading(false);
       return false;
     }
-};
+  };
 
   return (
-  <>
-    {isUploading && <Loading />}
-    <PageContainer>
-      <ActionContainer className="name">
-        <ArrowBackButton onClick={() => goToStep(1)}>
+    <>
+      {isUploading && <Loading />}
+      <PageContainer>
+        <ActionContainer className="name">
+          <ArrowBackButton onClick={() => goToStep(1)}>
             <ArrowIcon />
-        </ArrowBackButton>
-        <Content>
-          <Heading><span>Step 2 </span> Select save format </Heading>
-          <p className="details">Upload the original file <b>OR</b> convert it to standard UBL e-Invoice.</p>
-          <ActionOptions>
-            <ActionOption selected={selectedAction === 'save'} onClick={() => handleActionChange('save')}>
-              <OptionLabel>Save Directly</OptionLabel>
-            </ActionOption>
-            <ActionOption selected={selectedAction === 'convert'} onClick={() => handleActionChange('convert')}>
-              <OptionLabel>Convert to UBL</OptionLabel>
-            </ActionOption>
-          </ActionOptions>
-        </Content>
-        <ArrowButton onClick={async () => {
-            const uploadSuccess = await handleUpload(selectedAction);
-            if (uploadSuccess) {
-              handleNext();
-            }
-          }} 
-          disabled={!selectedAction || isUploading}>
-          <ArrowIcon />
-        </ArrowButton>
-      </ActionContainer>
-    </PageContainer>
+          </ArrowBackButton>
+          <Content>
+            <Heading>
+              <span>Step 2 </span> Select save format{" "}
+            </Heading>
+            <p className="details">
+              Upload the original file <b>OR</b> convert it to standard UBL
+              e-Invoice.
+            </p>
+            <ActionOptions>
+              <ActionOption
+                selected={selectedAction === "save"}
+                onClick={() => handleActionChange("save")}
+              >
+                <OptionLabel>Save Directly</OptionLabel>
+              </ActionOption>
+              <ActionOption
+                selected={selectedAction === "convert"}
+                onClick={() => handleActionChange("convert")}
+              >
+                <OptionLabel>Convert to UBL</OptionLabel>
+              </ActionOption>
+            </ActionOptions>
+          </Content>
+          <ArrowButton
+            onClick={async () => {
+              const uploadSuccess = await handleUpload(selectedAction);
+              if (uploadSuccess) {
+                handleNext();
+              }
+            }}
+            disabled={!selectedAction || isUploading}
+          >
+            <ArrowIcon />
+          </ArrowButton>
+        </ActionContainer>
+      </PageContainer>
     </>
-    )
-}
+  );
+};
 
 const BlurredBackground = styled.div`
   position: fixed;
@@ -199,7 +221,7 @@ const Heading = styled.h1`
   font-size: 24px;
 
   @media only screen and (max-width: 430px) {
-    font-size: 35px !important;;
+    font-size: 35px !important;
   }
 `;
 
@@ -217,8 +239,8 @@ const ActionOptions = styled.div`
 
 const ActionOption = styled.div`
   width: 200px;
-  background-color: ${props => (props.selected ? '#6414FF' : 'transparent')};
-  border: 2px solid #6414FF;
+  background-color: ${(props) => (props.selected ? "#6414FF" : "transparent")};
+  border: 2px solid #6414ff;
   border-radius: 100px;
   padding: 20px;
   cursor: pointer;
@@ -254,10 +276,10 @@ const ArrowButton = styled.button`
     width: auto;
     height: 50px;
     path {
-      fill: ${props => (props.disabled ? 'grey' : 'white')};
+      fill: ${(props) => (props.disabled ? "grey" : "white")};
     }
     &:hover path {
-      fill: ${props => (props.disabled ? 'grey' : '#6414FF')};
+      fill: ${(props) => (props.disabled ? "grey" : "#6414FF")};
     }
   }
 

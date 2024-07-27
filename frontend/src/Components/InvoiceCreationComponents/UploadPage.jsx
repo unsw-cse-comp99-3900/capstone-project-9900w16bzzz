@@ -3,53 +3,63 @@ import styled from "styled-components";
 import { ReactComponent as ArrowIcon } from "../../images/arrow.svg";
 
 const UploadPage = ({ goToStep, setFile, file }) => {
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    if (typeof setFile === "function") {
+      setFile(selectedFile);
+    } else {
+      console.error("setFile is not a function");
+    }
+  };
 
-    const handleFileChange = (event) => {
-      const selectedFile = event.target.files[0];
-      if (typeof setFile === 'function') {
-          setFile(selectedFile);
-      } else {
-          console.error('setFile is not a function');
-      }
-    };
+  const truncateText = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + "...";
+    }
+    return text;
+  };
 
-    const truncateText = (text, maxLength) => {
-      if (text.length > maxLength) {
-          return text.substring(0, maxLength) + '...';
-      }
-      return text;
-    };
+  const isIphone14ProMax = () => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const pixelRatio = window.devicePixelRatio;
+    return width === 430 && height === 932 && pixelRatio === 3;
+  };
 
-    const isIphone14ProMax = () => {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-        const pixelRatio = window.devicePixelRatio;
-        return width === 430 && height === 932 && pixelRatio === 3;
-    };
-
-    return (
-        <Container className="name">
-            <ArrowBackButton onClick={() => goToStep(0)}>
-                <ArrowIcon />
-            </ArrowBackButton>
-            <Content>
-                <Heading><span>Step 1 </span> Upload File </Heading>
-                <p className="details">Please upload your invoice file. Accepted formats are PDF or JSON.</p>
-                <FileInputWrapper>
-                    <FileInputLabel htmlFor="file-upload"  selected={!!file}>
-                        {file ? `Uploaded: ${isIphone14ProMax() ? truncateText(file.name, 10) : file.name}` : 'Choose File'}
-                    </FileInputLabel>
-                    <FileInput id="file-upload" type="file" accept=".pdf, .json" onChange={handleFileChange} />
-                </FileInputWrapper>
-            </Content>
-            <ArrowButton onClick={() => goToStep(2)} disabled={!file}>
-                <ArrowIcon />
-            </ArrowButton>
-        </Container>
-    )
-}
-
-
+  return (
+    <Container className="name">
+      <ArrowBackButton onClick={() => goToStep(0)}>
+        <ArrowIcon />
+      </ArrowBackButton>
+      <Content>
+        <Heading>
+          <span>Step 1 </span> Upload File{" "}
+        </Heading>
+        <p className="details">
+          Please upload your invoice file. Accepted formats are PDF or JSON.
+        </p>
+        <FileInputWrapper>
+          <FileInputLabel htmlFor="file-upload" selected={!!file}>
+            {file
+              ? `Uploaded: ${
+                  isIphone14ProMax() ? truncateText(file.name, 10) : file.name
+                }`
+              : "Choose File"}
+          </FileInputLabel>
+          <FileInput
+            id="file-upload"
+            type="file"
+            accept=".pdf, .json"
+            onChange={handleFileChange}
+          />
+        </FileInputWrapper>
+      </Content>
+      <ArrowButton onClick={() => goToStep(2)} disabled={!file}>
+        <ArrowIcon />
+      </ArrowButton>
+    </Container>
+  );
+};
 
 const Container = styled.div`
   width: 80%;
@@ -74,10 +84,9 @@ const Heading = styled.h1`
   font-size: 24px;
 
   @media only screen and (max-width: 430px) {
-    font-size: 30px !important;;
+    font-size: 30px !important;
   }
 `;
-
 
 const FileInputWrapper = styled.div`
   margin-top: 20px;
@@ -86,10 +95,10 @@ const FileInputWrapper = styled.div`
 `;
 
 const FileInputLabel = styled.label`
-  background-color: ${props => (props.selected ? '#6414FF' : 'transparent')};
+  background-color: ${(props) => (props.selected ? "#6414FF" : "transparent")};
   color: white;
   padding: 10px 20px;
-  border: 2px solid #6414FF;
+  border: 2px solid #6414ff;
   border-radius: 100px;
   cursor: pointer;
   &:hover {
@@ -101,9 +110,7 @@ const FileInputLabel = styled.label`
     width: 80%; /* Ensure the label takes full width */
     text-align: center; /* Center the text */
   }
-
 `;
-
 
 const FileInput = styled.input`
   opacity: 0;
@@ -114,7 +121,7 @@ const FileInput = styled.input`
 
 const Content = styled.div`
   text-align: center;
-  
+
   margin-bottom: 20px;
 
   h1 {
@@ -139,13 +146,12 @@ const ArrowButton = styled.button`
     width: auto;
     height: 50px;
     path {
-      fill: ${props => (props.disabled ? 'grey' : 'white')};
+      fill: ${(props) => (props.disabled ? "grey" : "white")};
     }
     &:hover path {
-      fill: ${props => (props.disabled ? 'grey' : '#6414FF')};
+      fill: ${(props) => (props.disabled ? "grey" : "#6414FF")};
     }
   }
-
 `;
 
 const ArrowBackButton = styled(ArrowButton)`

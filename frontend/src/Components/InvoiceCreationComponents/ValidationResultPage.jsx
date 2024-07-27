@@ -1,63 +1,78 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 import { useNavigate, useLocation } from "react-router-dom";
 
-
 const ValidationResultPage = ({ validationResult, invoiceId, setStep }) => {
-  const overallSuccessful = validationResult.every(result => result.result.successful);
+  const overallSuccessful = validationResult.every(
+    (result) => result.result.successful
+  );
   const navigate = useNavigate();
   const location = useLocation();
   const handleValidateClick = () => {
-    if (location.pathname.includes('/validation')) {
+    if (location.pathname.includes("/validation")) {
       setStep(0);
     } else {
       navigate(`/validation/${invoiceId}`);
     }
-  }
+  };
 
   return (
     <MainContainer>
       <Content>
         <HeaderContent>
-          <Title><span>Validation </span>Report</Title>
+          <Title>
+            <span>Validation </span>Report
+          </Title>
           <ButtonContainer>
             <Button onClick={handleValidateClick}>Edit Invoice</Button>
             <Status successful={overallSuccessful}>
-              {overallSuccessful ? 'Success' : 'Failed'}
+              {overallSuccessful ? "Success" : "Failed"}
             </Status>
-        </ButtonContainer>
+          </ButtonContainer>
         </HeaderContent>
         <ScrollableContent>
           {validationResult.map((result, index) => {
-            const { rule, result: { successful, report } } = result;
+            const {
+              rule,
+              result: { successful, report },
+            } = result;
             return (
               <Section key={index}>
                 <SectionHeader>{rule} Validation Results</SectionHeader>
                 <SectionContent>
-                  <p>Status: {successful ? 'Successful' : 'Failed'}</p>
+                  <p>Status: {successful ? "Successful" : "Failed"}</p>
                   <p>Summary: {report.summary}</p>
                   <p>File: {report.filename}</p>
                   <p>Total Errors: {report.firedAssertionErrorsCount}</p>
-                  
-                  {Object.entries(report.reports).map(([reportName, reportData]) => (
-                    <SubSection key={reportName}>
-                      <SubSectionHeader>Details</SubSectionHeader>
-                      <p>{reportData.summary}</p>
-                      <p>Errors number: {reportData.firedAssertionErrorsCount}</p>
-                      {reportData.firedAssertionErrors && reportData.firedAssertionErrors.length > 0 && (
-                        <>
-                          <ErrorHeader>Validation Errors</ErrorHeader>
-                          {reportData.firedAssertionErrors.map((error, errorIndex) => (
-                            <ErrorItem key={errorIndex}>
-                              <ErrorCode>{error.id}</ErrorCode>
-                              <ErrorText>{error.text}</ErrorText>
-                              <ErrorLocation>Location: {error.location}</ErrorLocation>
-                            </ErrorItem>
-                          ))}
-                        </>
-                      )}
-                    </SubSection>
-                  ))}
+
+                  {Object.entries(report.reports).map(
+                    ([reportName, reportData]) => (
+                      <SubSection key={reportName}>
+                        <SubSectionHeader>Details</SubSectionHeader>
+                        <p>{reportData.summary}</p>
+                        <p>
+                          Errors number: {reportData.firedAssertionErrorsCount}
+                        </p>
+                        {reportData.firedAssertionErrors &&
+                          reportData.firedAssertionErrors.length > 0 && (
+                            <>
+                              <ErrorHeader>Validation Errors</ErrorHeader>
+                              {reportData.firedAssertionErrors.map(
+                                (error, errorIndex) => (
+                                  <ErrorItem key={errorIndex}>
+                                    <ErrorCode>{error.id}</ErrorCode>
+                                    <ErrorText>{error.text}</ErrorText>
+                                    <ErrorLocation>
+                                      Location: {error.location}
+                                    </ErrorLocation>
+                                  </ErrorItem>
+                                )
+                              )}
+                            </>
+                          )}
+                      </SubSection>
+                    )
+                  )}
                 </SectionContent>
               </Section>
             );
@@ -67,180 +82,175 @@ const ValidationResultPage = ({ validationResult, invoiceId, setStep }) => {
     </MainContainer>
   );
 };
-  const Title = styled.h1`
+const Title = styled.h1`
   font-size: 64px;
 
   @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
     font-size: 38px;
   }
-  `;
-  const SubSectionHeader = styled.h4`
+`;
+const SubSectionHeader = styled.h4`
   margin-top: 20px;
   margin-bottom: 10px;
   color: #ffffff;
-  `;
-  const MainContainer = styled.div`
-    width: 80%;
-    margin: 3% auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: blur(2px);
-    color: white;
-    z-index: 1;
-    height: 85vh;
+`;
+const MainContainer = styled.div`
+  width: 80%;
+  margin: 3% auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(2px);
+  color: white;
+  z-index: 1;
+  height: 85vh;
 
-    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-        width: 400px; 
-        height: 90vh; 
-        padding: 15px;
-        margin-top: 120px; 
-        margin-left: 1%; 
-    }
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    width: 400px;
+    height: 90vh;
+    padding: 15px;
+    margin-top: 120px;
+    margin-left: 1%;
+  }
+`;
 
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  margin: 0 10px;
+`;
 
-  `;
-  
-  const Content = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    margin: 0 10px;
-  `;
-  
-  const HeaderContent = styled.div`
-    width: 100%;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  `;
-  const ButtonContainer = styled.div`
-    display: flex;
-    gap: 10px;
-  `;
+const HeaderContent = styled.div`
+  width: 100%;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 10px;
+`;
 
-  const Button = styled.button`
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #6414FF;
-    color: white;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s;
+const Button = styled.button`
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #6414ff;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
 
-    &:hover {
-      background-color: #5000CC;
-    }
-  `;
-  
-  const Status = styled.span`
-    width:15vh;
-    text-align:center;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-weight: bold;
-    color: white;
-    background-color: ${props => props.successful ? '#4CAF50' : '#F44336'};
+  &:hover {
+    background-color: #5000cc;
+  }
+`;
 
-    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-        margin-top: 50px; 
-        margin-right: 12%;
-    }
+const Status = styled.span`
+  width: 15vh;
+  text-align: center;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  color: white;
+  background-color: ${(props) => (props.successful ? "#4CAF50" : "#F44336")};
 
-  `;
-  
-  const ScrollableContent = styled.div`
-    width: 100%;
-    height: calc(100% - 150px);
-    overflow-y: auto;
-    margin: 17px 0;
-    box-sizing: content-box;
-  
-    &::-webkit-scrollbar {
-      width: 10px;
-    }
-  
-    &::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-    }
-  
-    &::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 10px;
-      border: 2px solid rgba(0, 0, 0, 0.5); 
-    }
-  
-    &::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.5);
-    }
-  `;
-  
-  
-  const Section = styled.div`
-    margin-bottom: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 2rem;
-  `;
-  
-  const SectionHeader = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 2rem;
-    
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.2);
-    }
-  `;
-  
-  const SectionContent = styled.div`
-    padding: 0 30px;
-  `;
-  
-  const ErrorItem = styled.div`
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
-  `;
-  
-  const ErrorCode = styled.div`
-    font-weight: bold;
-    color: #F44336;
-    margin-bottom: 5px;
-  `;
-  
-  const ErrorText = styled.div`
-    margin-bottom: 5px;
-  `;
-  
-  const ErrorLocation = styled.div`
-    font-size: 0.9em;
-    color: rgba(255, 255, 255, 0.7);
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    margin-top: 50px;
+    margin-right: 12%;
+  }
+`;
 
-    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    word-wrap: break-word; 
-    word-break: break-all; 
+const ScrollableContent = styled.div`
+  width: 100%;
+  height: calc(100% - 150px);
+  overflow-y: auto;
+  margin: 17px 0;
+  box-sizing: content-box;
+
+  &::-webkit-scrollbar {
+    width: 10px;
   }
 
-  `;
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
 
-  const SubSection = styled.div`
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    border: 2px solid rgba(0, 0, 0, 0.5);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+  }
+`;
+
+const Section = styled.div`
+  margin-bottom: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 2rem;
+`;
+
+const SectionHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 2rem;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+`;
+
+const SectionContent = styled.div`
+  padding: 0 30px;
+`;
+
+const ErrorItem = styled.div`
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+`;
+
+const ErrorCode = styled.div`
+  font-weight: bold;
+  color: #f44336;
+  margin-bottom: 5px;
+`;
+
+const ErrorText = styled.div`
+  margin-bottom: 5px;
+`;
+
+const ErrorLocation = styled.div`
+  font-size: 0.9em;
+  color: rgba(255, 255, 255, 0.7);
+
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    word-wrap: break-word;
+    word-break: break-all;
+  }
+`;
+
+const SubSection = styled.div`
   margin-top: 20px;
   padding: 10px;
   background-color: rgba(255, 255, 255, 0.05);
@@ -250,7 +260,7 @@ const ValidationResultPage = ({ validationResult, invoiceId, setStep }) => {
 const ErrorHeader = styled.h5`
   margin-top: 15px;
   margin-bottom: 10px;
-  color: #F44336;
+  color: #f44336;
 `;
-  
+
 export default ValidationResultPage;

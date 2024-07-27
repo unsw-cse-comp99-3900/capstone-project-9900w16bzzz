@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
 import styled from "styled-components";
 import video from "../images/video1.mp4";
 import InvoiceForm from "./InvoiceCreationComponents/InvoiceForm";
@@ -18,15 +18,15 @@ const InvoiceCreation = () => {
 
   const goToStep = (stepNumber) => setStep(stepNumber);
   const transition = {
-      duration: 2,
+    duration: 2,
   };
 
   return (
     <div>
-      <MainContainer id="main" style={{height: "auto"}}>
-          <BackgroundVideo autoPlay muted loop id="background-video">
-                <source src={video} type="video/mp4" />
-                Your browser does not support the video tag.
+      <MainContainer id="main" style={{ height: "auto" }}>
+        <BackgroundVideo autoPlay muted loop id="background-video">
+          <source src={video} type="video/mp4" />
+          Your browser does not support the video tag.
         </BackgroundVideo>
         {step === 0 && (
           <motion.div
@@ -55,7 +55,13 @@ const InvoiceCreation = () => {
             exit={{ opacity: 0 }}
             transition={transition}
           >
-            <ChooseConvertOption goToStep={goToStep} setFile={setFile} file={file} setInvoice={setInvoice} invoice={invoice} />
+            <ChooseConvertOption
+              goToStep={goToStep}
+              setFile={setFile}
+              file={file}
+              setInvoice={setInvoice}
+              invoice={invoice}
+            />
           </motion.div>
         )}
         {step === 3 && (
@@ -65,7 +71,11 @@ const InvoiceCreation = () => {
             exit={{ opacity: 0 }}
             transition={transition}
           >
-            <InvoiceForm  goToStep={goToStep} invoice={invoice} setValidationResult={setValidationResult} />
+            <InvoiceForm
+              goToStep={goToStep}
+              invoice={invoice}
+              setValidationResult={setValidationResult}
+            />
           </motion.div>
         )}
         {step === 4 && (
@@ -95,7 +105,10 @@ const InvoiceCreation = () => {
             exit={{ opacity: 0 }}
             transition={transition}
           >
-            <ValidationResultPage validationResult={validationResult} invoiceId={invoice.invoiceId} />
+            <ValidationResultPage
+              validationResult={validationResult}
+              invoiceId={invoice.invoiceId}
+            />
           </motion.div>
         )}
       </MainContainer>
@@ -103,27 +116,24 @@ const InvoiceCreation = () => {
   );
 };
 
-
-
 const MainContainer = styled.div`
-    position: relative;
-    width: 100%;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    z-index: 1;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 1;
 `;
 
 const BackgroundVideo = styled.video`
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
 `;
-
 
 export default InvoiceCreation;
