@@ -95,7 +95,7 @@ const InvoiceCreation = () => {
             exit={{ opacity: 0 }}
             transition={transition}
           >
-            <ValidationResultPage validationResult={validationResult} />
+            <ValidationResultPage validationResult={validationResult} invoiceId={invoice.invoiceId} />
           </motion.div>
         )}
       </MainContainer>

@@ -1,18 +1,31 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate, useLocation } from "react-router-dom";
 
 
-const ValidationResultPage = ({ validationResult }) => {
+const ValidationResultPage = ({ validationResult, invoiceId, setStep }) => {
   const overallSuccessful = validationResult.every(result => result.result.successful);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const handleValidateClick = () => {
+    if (location.pathname.includes('/validation')) {
+      setStep(0);
+    } else {
+      navigate(`/validation/${invoiceId}`);
+    }
+  }
 
   return (
     <MainContainer>
       <Content>
         <HeaderContent>
           <Title><span>Validation </span>Report</Title>
-          <Status successful={overallSuccessful}>
-            {overallSuccessful ? 'Success' : 'Failed'}
-          </Status>
+          <ButtonContainer>
+            <Button onClick={handleValidateClick}>Edit Invoice</Button>
+            <Status successful={overallSuccessful}>
+              {overallSuccessful ? 'Success' : 'Failed'}
+            </Status>
+        </ButtonContainer>
         </HeaderContent>
         <ScrollableContent>
           {validationResult.map((result, index) => {
@@ -110,8 +123,27 @@ const ValidationResultPage = ({ validationResult }) => {
     justify-content: space-between;
     align-items: center;
   `;
+  const ButtonContainer = styled.div`
+    display: flex;
+    gap: 10px;
+  `;
+
+  const Button = styled.button`
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #6414FF;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #5000CC;
+    }
+  `;
   
-const Status = styled.span`
+  const Status = styled.span`
     width:15vh;
     text-align:center;
     padding: 5px 10px;

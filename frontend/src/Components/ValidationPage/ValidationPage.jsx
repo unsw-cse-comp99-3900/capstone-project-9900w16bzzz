@@ -89,7 +89,7 @@ const ValidationPage = () => {
             exit={{ opacity: 0 }}
             transition={transition}
           >
-            <ValidationResultPage validationResult={validationResult} />
+            <ValidationResultPage validationResult={validationResult} invoiceId={invoiceId} setStep={setStep} />
           </motion.div>
         )}
       </MainContainer>
