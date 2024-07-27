@@ -8,31 +8,65 @@ import { usePopup } from "../PopupWindow/PopupContext";
 
 function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation' }) {
   const isValidation = type === 'validation';
-    const { showPopup } = usePopup();
-    const [formData, setFormData] = useState({});
-    const [expandedSection, setExpandedSection] = useState(null);
-    const [isFormValid, setIsFormValid] = useState(false);
-    const [selectedRules, setSelectedRules] = useState([]);
-    
-    const [isUploading, setIsUploading] = useState(false);
+  const [unfilledFields, setUnfilledFields] = useState([]);
+  const { showPopup } = usePopup();
+  const [formData, setFormData] = useState({});
+  const [expandedSections, setExpandedSections] = useState([]);
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [selectedRules, setSelectedRules] = useState([]);
+  const [showValidation, setShowValidation] = useState(false);
+  
+  const [isUploading, setIsUploading] = useState(false);
 
-    useEffect(() => {
-        setIsFormValid(validateForm(formData));
-    }, [formData]);
     
-    useEffect(() => {
-        if (invoice && invoice.invoiceJsonVO) {
-          let modifiedData = { ...invoice.invoiceJsonVO };
-          console.log(modifiedData);
-    
-          modifiedData = setDefaultValues(modifiedData);
-          
-          setFormData(modifiedData);
+  useEffect(() => {
+    const unfilledFields = validateForm(formData);
+    setUnfilledFields(unfilledFields);  
+    setIsFormValid(unfilledFields.length === 0);
+  }, []);
+  
+  useEffect(() => {
+    if (showValidation && unfilledFields.length > 0) {
+      const sectionsToExpand = sections
+        .filter(section => 
+          section.fields.some(field => 
+            unfilledFields.some(unfilledField => unfilledField.startsWith(field))
+          )
+        )
+        .map(section => section.title);
+      
+      setExpandedSections(sectionsToExpand);
+  
+      const firstUnfilledField = unfilledFields[0];
+      setTimeout(() => {
+        const fieldElement = document.getElementById(firstUnfilledField.split('.').pop());
+        if (fieldElement) {
+          fieldElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          fieldElement.focus();
+        }
+      }, 100);
+    }
+  }, [showValidation, unfilledFields]);
+  
+  useEffect(() => {
+      if (invoice && invoice.invoiceJsonVO) {
+        let modifiedData = { ...invoice.invoiceJsonVO };
+        console.log(modifiedData);
+  
+        modifiedData = setDefaultValues(modifiedData);
+        
+        setFormData(modifiedData);
+    }
+  }, [invoice]);
+  const toggleSection = (section) => {
+    setExpandedSections(prev => {
+      const prevArray = Array.isArray(prev) ? prev : [];
+      if (prevArray.includes(section)) {
+        return prevArray.filter(s => s !== section);
+      } else {
+        return showValidation ? [...prevArray, section] : [section];
       }
-    }, [invoice]);
-
-    const toggleSection = (section) => {
-        setExpandedSection(expandedSection === section ? null : section);
+    });
   };
 
   const setDefaultValues = (data) => {
@@ -136,43 +170,34 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
   };
 
   const validateForm = (data) => {
-    const isValid = (obj) => {
+    const unfilledFields = [];
+    
+    const checkFields = (obj, prefix = '') => {
       for (let key in obj) {
         if (obj.hasOwnProperty(key)) {
+          const fullKey = prefix ? `${prefix}.${key}` : key;
           if (obj[key] === null || obj[key] === undefined || obj[key] === '') {
-            return false;
-          }
-          if (typeof obj[key] === 'object') {
-            if (!isValid(obj[key])) {
-              return false;
-            }
+            unfilledFields.push(fullKey);
+          } else if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+            checkFields(obj[key], fullKey);
           }
         }
       }
-      return true;
     };
   
-    return isValid(data);
-    };
-    
-    const findEmptyFields = (data, prefix = '') => {
-        let emptyFields = [];
-        for (let key in data) {
-          if (data.hasOwnProperty(key)) {
-            const fullKey = prefix ? `${prefix}.${key}` : key;
-            if (data[key] === null || data[key] === undefined || data[key] === '') {
-              emptyFields.push(fullKey);
-            } else if (typeof data[key] === 'object') {
-              emptyFields = [...emptyFields, ...findEmptyFields(data[key], fullKey)];
-            }
-          }
-        }
-        return emptyFields;
-      };
-      
-      
+    checkFields(data);
+    return unfilledFields;
+  };
 
   const handleInputChange = (field, value) => {
+    setShowValidation(false);
+    const currentSection = sections.find(section => 
+      section.fields.some(sectionField => field.startsWith(sectionField))
+    )?.title;
+  
+    if (currentSection) {
+      setExpandedSections([currentSection]);
+    }
     if (field === 'dueDate' || field === 'invoiceDate') {
       setFormData(prevData => ({
         ...prevData,
@@ -207,9 +232,10 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
       });
     }
   };
-    
+
   const renderField = (key, value, prefix = '') => {
     const fullKey = prefix ? `${prefix}.${key}` : key;
+    const isInvalid = showValidation && unfilledFields.includes(fullKey);
     if (hiddenFields.includes(key)) {
       return null;
     }
@@ -221,6 +247,7 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
             placeholder={key}
             value={value || ''}
             onChange={(newValue) => handleInputChange(fullKey, newValue)}
+            isInvalid={isInvalid}
           />
         </FieldWrapper>
       );
@@ -290,6 +317,7 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
                         placeholder={key}
                         value={value || ''}
                         onChange={(newValue) => handleInputChange(fullKey, newValue)}
+                        isInvalid={isInvalid}
                     />
                 </FieldWrapper>
             );
@@ -304,13 +332,18 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
       return null;
     }
   
+    const sectionHasUnfilledFields = showValidation && Object.keys(data).some(key => 
+      unfilledFields.some(field => field.startsWith(`${key}.`) || field === key)
+    );
+  
     return (
       <Section key={title}>
         <SectionHeader onClick={() => toggleSection(title)}>
           {title}
-          {expandedSection === title ? ' ▼' : ' ▶'}
+          {expandedSections.includes(title) ? ' ▼' : ' ▶'}
+          {sectionHasUnfilledFields && <UnfilledIndicator>!</UnfilledIndicator>}
         </SectionHeader>
-        {expandedSection === title && (
+        {expandedSections.includes(title) && (
           <SectionContent>
             <FieldGrid>
               {Object.entries(data).map(([key, value]) => renderField(key, value))}
@@ -512,9 +545,17 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
       for (const rule of selectedRules) {
         let dataToSend = formattedData;
 
-        if (rule === 'AUNZ_UBL_1_0_10') {
+        //if (rule === 'AUNZ_UBL_1_0_10') {
+        if (true) {
           dataToSend = handleUBLStandardRule(formattedData);
           console.log("data to validate", dataToSend);
+        }
+        
+        if (rule === 'AUNZ_UBL_1_0_10') {
+          dataToSend.customizationId = 'urn:oasis:company:specification:ubl:schema:xsd:Invoice-2';
+        }
+        if (rule === 'AUNZ_PEPPOL_1_0_10' || rule === 'AUNZ_PEPPOL_SB_1_0_10') {
+          dataToSend.customizationId = 'urn:cen.eu:en16931:2017#conformant#urn:fdc:peppol.eu:2017:poacc:selfbilling:international:aunz:3.0';
         }
 
         let endpoint = `${process.env.REACT_APP_SERVER_URL}/invoice/validate?invoiceId=${invoiceId}&rules=${rule}`;
@@ -599,16 +640,28 @@ function InvoiceForm({ goToStep, invoice, setValidationResult, type = 'creation'
                         <SubmitButton 
                           className="header-btn" 
                           onClick={() => {
-                            if (isFormValid && selectedRules.length > 0) {
-                              console.log(selectedRules);
-                              console.log(formData);
+                            if (selectedRules.length === 0) {
+                              showPopup(`Please select a validation rule!`, 'error');
+                            } else {
+                              const emptyFields = validateForm(formData);
+                              setUnfilledFields(emptyFields);
+                              setShowValidation(true);
+
+                              const sectionsToExpand = sections
+                                .filter(section => 
+                                  section.fields.some(field => 
+                                    emptyFields.some(emptyField => emptyField.startsWith(field))
+                                  )
+                                )
+                                .map(section => section.title);
+                              
+                              setExpandedSections(sectionsToExpand);
+                              
+                              if (emptyFields.length === 0 && selectedRules.length > 0) {
                                 uploadEditedInvoice();
-                            } else if (selectedRules.length === 0) {
-                              showPopup(`Please select a validation rule!`,'error');
-                            }
-                            else {
-                              const emptyFields = findEmptyFields(formData);
-                              showPopup(`Please fill in the following fields: ${emptyFields.join(', ')}`,'error');
+                              } else {
+                                showPopup(`Please fill in all required fields.`, 'error');
+                              }
                             }
                           }} 
                           isvalid={isFormValid}
@@ -826,7 +879,7 @@ const ScrollableContent = styled.div`
     }
 
     @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    height: calc(100% - 150px); /* 调整高度以适应iPhone 14 Pro Max */
+    height: calc(100% - 150px);
     }
 `;
 
@@ -915,6 +968,11 @@ const SubmitButton = styled.button`
     border-radius: 1rem;
   }
   
+`;
+const UnfilledIndicator = styled.div`
+  color: red;
+  font-weight: bold;
+  margin-right: 10px;
 `;
 
 export default InvoiceForm;

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const FormInput = ({ type, placeholder, value, onChange }) => {
+const FormInput = ({ type, placeholder, value, onChange, isInvalid }) => {
     const placeholderLabels = {
         invoiceId: "Invoice Number",
         invoiceDate: "Invoice Date",
@@ -37,18 +37,19 @@ const FormInput = ({ type, placeholder, value, onChange }) => {
 
     return (
         <InputWrapper>
-            <StyledInput 
-                type={type} 
-                placeholder={placeholder}
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-                id={placeholder}
-            />
-            <StyledLabel htmlFor={placeholder} className={value && 'filled'}>
-                {label}
-            </StyledLabel>
+          <StyledInput
+            type={type}
+            placeholder={placeholder}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            id={placeholder}
+            isInvalid={isInvalid}
+          />
+          <StyledLabel htmlFor={placeholder} className={value && 'filled'}>
+            {label}
+          </StyledLabel>
         </InputWrapper>
-    );
+      );
 };
 
 const InputWrapper = styled.div`
@@ -88,6 +89,11 @@ const StyledInput = styled.input`
         background-color: rgba(0, 0, 0, 0);
         padding: 0 0.5rem;
     }
+
+    ${props => props.isInvalid && `
+        border-color: #ff0000;
+        box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.3);
+      `}
 `;
 
 const StyledLabel = styled.label`
