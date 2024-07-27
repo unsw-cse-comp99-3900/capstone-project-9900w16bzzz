@@ -47,7 +47,7 @@ const DropdownContent = styled.div`
   top: 100%;
   transform: translateX(-50%);
   margin-top: 5px;
-  min-width: 200px;
+  min-width: 170px;
   background-color: rgba(0, 0, 0, 0.5);
   border-radius: 10px;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
@@ -69,6 +69,7 @@ const DropdownItem = styled(Link)`
   justify-content: center;
   transition: 0.2s ease-in-out;
   font-weight: 500;
+  font-size: 0.8rem;
 
   &:hover {
     background-color: rgba(100, 20, 255, 0.5);
@@ -117,7 +118,6 @@ const UserMenu = ({ username }) => {
       <UserNameDisplay>{username}</UserNameDisplay>
       <DropdownContent show={showDropdown}>
         <UsernameDisplay>{username}</UsernameDisplay>
-        <DropdownItem to="/settings">Settings</DropdownItem>
         <DropdownItem to="/reset-password">Reset Password</DropdownItem>
         <DropdownItem to="/" onClick={()=>{
             localStorage.removeItem('username');

@@ -793,7 +793,7 @@ font-weight: bold;
 
 const MainContainer = styled.div`
     width: 80%;
-    margin-top: 3%;
+    margin-top: 6%;
     display: flex;
     align-items: center;
     justify-content: space-between;

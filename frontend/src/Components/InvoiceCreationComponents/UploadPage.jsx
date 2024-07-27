@@ -12,6 +12,21 @@ const UploadPage = ({ goToStep, setFile, file }) => {
           console.error('setFile is not a function');
       }
     };
+
+    const truncateText = (text, maxLength) => {
+      if (text.length > maxLength) {
+          return text.substring(0, maxLength) + '...';
+      }
+      return text;
+    };
+
+    const isIphone14ProMax = () => {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const pixelRatio = window.devicePixelRatio;
+        return width === 430 && height === 932 && pixelRatio === 3;
+    };
+
     return (
         <Container className="name">
             <ArrowBackButton onClick={() => goToStep(0)}>
@@ -22,7 +37,7 @@ const UploadPage = ({ goToStep, setFile, file }) => {
                 <p className="details">Please upload your invoice file. Accepted formats are PDF or JSON.</p>
                 <FileInputWrapper>
                     <FileInputLabel htmlFor="file-upload"  selected={!!file}>
-                        {file ? `Uploaded: ${file.name}` : 'Choose File'}
+                        {file ? `Uploaded: ${isIphone14ProMax() ? truncateText(file.name, 10) : file.name}` : 'Choose File'}
                     </FileInputLabel>
                     <FileInput id="file-upload" type="file" accept=".pdf, .json" onChange={handleFileChange} />
                 </FileInputWrapper>
@@ -83,7 +98,7 @@ const FileInputLabel = styled.label`
 
   @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
     font-size: 0.75rem; /* Adjust font size for iPhone 14 Pro Max */
-    width: 100%; /* Ensure the label takes full width */
+    width: 80%; /* Ensure the label takes full width */
     text-align: center; /* Center the text */
   }
 

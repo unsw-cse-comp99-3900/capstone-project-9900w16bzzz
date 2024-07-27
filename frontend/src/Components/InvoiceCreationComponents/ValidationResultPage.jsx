@@ -9,7 +9,7 @@ const ValidationResultPage = ({ validationResult }) => {
     <MainContainer>
       <Content>
         <HeaderContent>
-          <h1 style={{ fontSize: '64px' }}><span>Validation </span>Report</h1>
+          <Title><span>Validation </span>Report</Title>
           <Status successful={overallSuccessful}>
             {overallSuccessful ? 'Success' : 'Failed'}
           </Status>
@@ -54,7 +54,13 @@ const ValidationResultPage = ({ validationResult }) => {
     </MainContainer>
   );
 };
-  
+  const Title = styled.h1`
+  font-size: 64px;
+
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    font-size: 38px;
+  }
+  `;
   const SubSectionHeader = styled.h4`
   margin-top: 20px;
   margin-bottom: 10px;
@@ -74,6 +80,16 @@ const ValidationResultPage = ({ validationResult }) => {
     color: white;
     z-index: 1;
     height: 85vh;
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+        width: 400px; 
+        height: 90vh; 
+        padding: 15px;
+        margin-top: 120px; 
+        margin-left: 1%; 
+    }
+
+
   `;
   
   const Content = styled.div`
@@ -103,6 +119,12 @@ const Status = styled.span`
     font-weight: bold;
     color: white;
     background-color: ${props => props.successful ? '#4CAF50' : '#F44336'};
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+        margin-top: 50px; 
+        margin-right: 12%;
+    }
+
   `;
   
   const ScrollableContent = styled.div`
@@ -178,6 +200,12 @@ const Status = styled.span`
   const ErrorLocation = styled.div`
     font-size: 0.9em;
     color: rgba(255, 255, 255, 0.7);
+
+    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    word-wrap: break-word; 
+    word-break: break-all; 
+  }
+
   `;
 
   const SubSection = styled.div`
