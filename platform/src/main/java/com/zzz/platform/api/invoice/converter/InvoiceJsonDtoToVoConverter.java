@@ -42,12 +42,20 @@ public class InvoiceJsonDtoToVoConverter {
             customerAddress = fields.getRemittanceAddress();
         } else if (ObjectUtils.isNotEmpty(fields.getServiceAddress())) {
             customerAddress = fields.getServiceAddress();
+        } else if (ObjectUtils.isNotEmpty(fields.getShippingAddress())) {
+            customerAddress = fields.getShippingAddress();
         }
         InvoiceJsonVO.Person buyer = extractPerson(fields.getCustomerName(), customerAddress);
         invoiceJsonVO.setBuyer(buyer);
 
         // set seller
-        InvoiceJsonVO.Person seller = extractPerson(fields.getVendorName(), fields.getVendorAddress());
+        InvoiceApiJsonDTO.Document.Field sellerAddress = null;
+        if (ObjectUtils.isNotEmpty(fields.getBillingAddress())) {
+            sellerAddress = fields.getBillingAddress();
+        } else if (ObjectUtils.isNotEmpty(fields.getVendorAddress())) {
+            sellerAddress = fields.getVendorAddress();
+        }
+        InvoiceJsonVO.Person seller = extractPerson(fields.getVendorName(), sellerAddress);
         seller.setId(getContent(fields.getCustomerId()));
         invoiceJsonVO.setSeller(seller);
 

@@ -120,6 +120,12 @@ public class InvoiceApiJsonDTO {
             @JsonProperty("ShippingAddressRecipient")
             private Field shippingAddressRecipient;
 
+            @JsonProperty("BillingAddress")
+            private Field billingAddress;
+
+            @JsonProperty("BillingAddressRecipient")
+            private Field billingAddressRecipient;
+
             private Map<String, Field> additionalProperties = new HashMap<>();
 
             @JsonAnySetter
