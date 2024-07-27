@@ -5,35 +5,35 @@ import SignupInput from "./SignupInput";
 import SignupButton from "./SignupButton";
 import { Link, useNavigate } from "react-router-dom";
 import { usePopup } from "./PopupWindow/PopupContext";
-import CryptoJS from 'crypto-js';
+import CryptoJS from "crypto-js";
 
 function Signup() {
   const { showPopup } = usePopup();
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
 
   const handleSignUp = async () => {
-    setEmailError('');
-    setPasswordError('');
+    setEmailError("");
+    setPasswordError("");
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
-      setEmailError('Please enter a valid email address.');
+      setEmailError("Please enter a valid email address.");
       return;
     }
 
     if (password.length < 6) {
-      setPasswordError('Password must be at least 6 characters long.');
+      setPasswordError("Password must be at least 6 characters long.");
       return;
     }
 
     if (password !== confirmPassword) {
-      setPasswordError('Passwords do not match.');
+      setPasswordError("Passwords do not match.");
       return;
     }
 
@@ -46,29 +46,32 @@ function Signup() {
     };
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/signup`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVER_URL}/signup`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
         if (data.ok) {
-          showPopup('Sign up successful!', 'success');
-          navigate('/');
+          showPopup("Sign up successful!", "success");
+          navigate("/");
         } else {
-          showPopup(`Sign up failed: ${data.msg}`, 'error');
-          console.error('Sign up failed:', data.msg);
+          showPopup(`Sign up failed: ${data.msg}`, "error");
+          console.error("Sign up failed:", data.msg);
         }
       } else {
-        setEmailError('Sign up failed. Please try again.');
+        setEmailError("Sign up failed. Please try again.");
       }
     } catch (error) {
-      console.error('Error:', error);
-      setPasswordError('An error occurred. Please try again.');
+      console.error("Error:", error);
+      setPasswordError("An error occurred. Please try again.");
     }
   };
 
@@ -81,11 +84,31 @@ function Signup() {
       <Maincontainer>
         <WelcomeText>Welcome</WelcomeText>
         <InputContainer>
-          <SignupInput type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <SignupInput
+            type="text"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
           {emailError && <ErrorText>{emailError}</ErrorText>}
-          <SignupInput type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-          <SignupInput type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <SignupInput type="password" placeholder="Confirm password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+          <SignupInput
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <SignupInput
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <SignupInput
+            type="password"
+            placeholder="Confirm password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
           {passwordError && <ErrorText>{passwordError}</ErrorText>}
         </InputContainer>
         <ButtonContainer onClick={handleSignUp}>

@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
-import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from "react";
+import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const UserMenuContainer = styled.div`
   position: relative;
@@ -10,12 +10,10 @@ const UserMenuContainer = styled.div`
     justify-content: center;
     width: 100%;
   }
-
 `;
 
-
 const UserNameDisplay = styled.div`
-  font-family: 'Lato';
+  font-family: "Lato";
   height: 40px;
   line-height: 40px;
   margin: 3px;
@@ -30,7 +28,7 @@ const UserNameDisplay = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: #6414FF;
+    background-color: #6414ff;
     color: #ffffff;
     box-shadow: 5px 10px 30px rgba(64, 64, 198, 0.411);
   }
@@ -54,9 +52,9 @@ const DropdownContent = styled.div`
   backdrop-filter: blur(2px);
   z-index: 1;
   overflow: hidden;
-  border: 2px solid #6414FF;
-  opacity: ${props => props.show ? 1 : 0};
-  visibility: ${props => props.show ? 'visible' : 'hidden'};
+  border: 2px solid #6414ff;
+  opacity: ${(props) => (props.show ? 1 : 0)};
+  visibility: ${(props) => (props.show ? "visible" : "hidden")};
   transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
 `;
 
@@ -99,7 +97,7 @@ const UserMenu = ({ username }) => {
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => {
       setShowDropdown(false);
-    }, 1000);  // 1 second delay
+    }, 1000); // 1 second delay
   };
 
   useEffect(() => {
@@ -111,19 +109,24 @@ const UserMenu = ({ username }) => {
   }, []);
 
   return (
-    <UserMenuContainer 
-      onMouseEnter={handleMouseEnter} 
+    <UserMenuContainer
+      onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <UserNameDisplay>{username}</UserNameDisplay>
       <DropdownContent show={showDropdown}>
         <UsernameDisplay>{username}</UsernameDisplay>
         <DropdownItem to="/reset-password">Reset Password</DropdownItem>
-        <DropdownItem to="/" onClick={()=>{
-            localStorage.removeItem('username');
-            localStorage.removeItem('token');
-            window.dispatchEvent(new Event('localStorageChange'));
-        }}>Log out</DropdownItem>
+        <DropdownItem
+          to="/"
+          onClick={() => {
+            localStorage.removeItem("username");
+            localStorage.removeItem("token");
+            window.dispatchEvent(new Event("localStorageChange"));
+          }}
+        >
+          Log out
+        </DropdownItem>
       </DropdownContent>
     </UserMenuContainer>
   );

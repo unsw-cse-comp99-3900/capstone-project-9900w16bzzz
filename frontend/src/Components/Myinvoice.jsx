@@ -6,279 +6,403 @@ import { BiDownload } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import deleteInvoice from "./Deleteinvoice";
 import DownloadInvoice from "./Downloadinvoice";
-import { usePopup } from './PopupWindow/PopupContext';
+import { usePopup } from "./PopupWindow/PopupContext";
 
 function Myinvoice() {
-    const [invoiceData, setInvoiceData] = useState([]);
-    const [searchTerm, setSearchTerm] = useState("");
-    const [openDropdown, setOpenDropdown] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [pageSize] = useState(10);
-    const navigate = useNavigate();
-    const { showPopup } = usePopup();
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [invoiceData, setInvoiceData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize] = useState(10);
+  const navigate = useNavigate();
+  const { showPopup } = usePopup();
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-
-    const fetchInvoices = useCallback(async (page) => {
-        const userId = localStorage.getItem('userId');
-        const token = localStorage.getItem('token');
-        try {
-            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/invoice/list`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    'x-access-token': `${token}`
+  const fetchInvoices = useCallback(
+    async (page) => {
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_SERVER_URL}/invoice/list`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-access-token": `${token}`,
+            },
+            body: JSON.stringify({
+              pageNum: page,
+              pageSize: pageSize,
+              searchCount: true,
+              sortItemList: [
+                {
+                  isAsc: true,
+                  column: "string",
                 },
-                body: JSON.stringify({
-                    pageNum: page,
-                    pageSize: pageSize,
-                    searchCount: true,
-                    sortItemList: [
-                        {
-                            isAsc: true,
-                            column: "string"
-                        }
-                    ],
-                    userId: userId
-                })
-            });
-            const data = await response.json();
-            console.log('API Response:', data);
+              ],
+              userId: userId,
+            }),
+          }
+        );
+        const data = await response.json();
+        console.log("API Response:", data);
 
-            if (data && data.data) {
-                setInvoiceData(data.data.list);
-                setTotalPages(data.data.pages);
-                setCurrentPage(data.data.pageNum);
-            } else {
-                console.error("Invalid API response structure:", data);
-            }
-        } catch (error) {
-            console.error("Error fetching invoices:", error);
-        }
-    }, [pageSize]);
-
-    const searchInvoices = useCallback(async (page) => {
-        const userId = localStorage.getItem('userId');
-        const token = localStorage.getItem('token');
-        try {
-            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/invoice/searchByName`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    'x-access-token': `${token}`
-                },
-                body: JSON.stringify({
-                    pageNum: page,
-                    pageSize: pageSize,
-                    searchCount: true,
-                    sortItemList: [
-                        {
-                            isAsc: true,
-                            column: "string"
-                        }
-                    ],
-                    fileName: searchTerm,
-                    userId: userId
-                })
-            });
-            const data = await response.json();
-            console.log('API Response:', data);
-
-            if (data && data.data) {
-                setInvoiceData(data.data.list);
-                setTotalPages(data.data.pages);
-                setCurrentPage(data.data.pageNum);
-            } else {
-                console.error("Invalid API response structure:", data);
-            }
-        } catch (error) {
-            console.error("Error fetching invoices:", error);
-        }
-    }, [pageSize, searchTerm]);
-
-    useEffect(() => {
-        if (searchTerm) {
-            searchInvoices(currentPage);
+        if (data && data.data) {
+          setInvoiceData(data.data.list);
+          setTotalPages(data.data.pages);
+          setCurrentPage(data.data.pageNum);
         } else {
-            fetchInvoices(currentPage);
+          console.error("Invalid API response structure:", data);
         }
-    }, [fetchInvoices, searchInvoices, currentPage, searchTerm]);
+      } catch (error) {
+        console.error("Error fetching invoices:", error);
+      }
+    },
+    [pageSize]
+  );
 
-    useEffect(() => {
-        const handleResize = () => {
-            setWindowWidth(window.innerWidth);
-        };
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
+  const searchInvoices = useCallback(
+    async (page) => {
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
+      try {
+        const response = await fetch(
+          `${process.env.REACT_APP_SERVER_URL}/invoice/searchByName`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-access-token": `${token}`,
+            },
+            body: JSON.stringify({
+              pageNum: page,
+              pageSize: pageSize,
+              searchCount: true,
+              sortItemList: [
+                {
+                  isAsc: true,
+                  column: "string",
+                },
+              ],
+              fileName: searchTerm,
+              userId: userId,
+            }),
+          }
+        );
+        const data = await response.json();
+        console.log("API Response:", data);
 
-    const handleInvoiceClick = (invoiceId) => {
-        navigate(`/invoice/${invoiceId}?page=${currentPage}`);
-    };
-
-    const handleDeleteClick = async (event, invoiceId) => {
-        event.stopPropagation();
-        await deleteInvoice(invoiceId, setInvoiceData, invoiceData);
-        fetchInvoices(currentPage);
-    };
-
-    const handleDropdownToggle = (event, invoiceId) => {
-        event.stopPropagation();
-        setOpenDropdown(openDropdown === invoiceId ? null : invoiceId);
-    };
-
-    const handleDownloadClick = async (event, invoiceId, fileType) => {
-        event.stopPropagation();
-        event.preventDefault();
-        try {
-            await DownloadInvoice(invoiceId, fileType);
-            showPopup('Download successful!', 'success');
-        } catch (error) {
-            showPopup('Download failed!', 'error');
+        if (data && data.data) {
+          setInvoiceData(data.data.list);
+          setTotalPages(data.data.pages);
+          setCurrentPage(data.data.pageNum);
+        } else {
+          console.error("Invalid API response structure:", data);
         }
+      } catch (error) {
+        console.error("Error fetching invoices:", error);
+      }
+    },
+    [pageSize, searchTerm]
+  );
+
+  useEffect(() => {
+    if (searchTerm) {
+      searchInvoices(currentPage);
+    } else {
+      fetchInvoices(currentPage);
+    }
+  }, [fetchInvoices, searchInvoices, currentPage, searchTerm]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
     };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-    const getFileNameWithoutExtension = (fileName) => {
-        return fileName.replace(/\.[^/.]+$/, "");
-    };
+  const handleInvoiceClick = (invoiceId) => {
+    navigate(`/invoice/${invoiceId}?page=${currentPage}`);
+  };
 
-    const truncateText = (text, maxLength) => {
-        if (text.length > maxLength) {
-            return text.substring(0, maxLength) + '...';
-        }
-        return text;
-    };
+  const handleDeleteClick = async (event, invoiceId) => {
+    event.stopPropagation();
+    await deleteInvoice(invoiceId, setInvoiceData, invoiceData);
+    fetchInvoices(currentPage);
+  };
 
-    const isIphone14ProMax = () => {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-        const pixelRatio = window.devicePixelRatio;
-        return width === 430 && height === 932 && pixelRatio === 3;
-    };
+  const handleDropdownToggle = (event, invoiceId) => {
+    event.stopPropagation();
+    setOpenDropdown(openDropdown === invoiceId ? null : invoiceId);
+  };
 
-    const handleMoreOptionsClick = (event, invoiceId) => {
-        event.stopPropagation();
-        setOpenDropdown(openDropdown === invoiceId ? null : invoiceId);
-    };
-    
+  const handleDownloadClick = async (event, invoiceId, fileType) => {
+    event.stopPropagation();
+    event.preventDefault();
+    try {
+      await DownloadInvoice(invoiceId, fileType);
+      showPopup("Download successful!", "success");
+    } catch (error) {
+      showPopup("Download failed!", "error");
+    }
+  };
 
-    const PaginationControls = () => (
-        <PaginationContainer>
-            <PageButton onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>First</PageButton>
-            <PageButton onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>Prev</PageButton>
-            <span>{currentPage} of {totalPages}</span>
-            <PageButton onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages}>Next</PageButton>
-            <PageButton onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages}>Last</PageButton>
-        </PaginationContainer>
-    );
+  const getFileNameWithoutExtension = (fileName) => {
+    return fileName.replace(/\.[^/.]+$/, "");
+  };
 
-    return (
-        <div id="main">
-            <VideoBackground autoPlay muted loop id="background-video-signup">
-                <source src={video} type="video/mp4" />
-                Your browser does not support the video tag.
-            </VideoBackground>
-            <Container>
-                <Title><Mytext>My </Mytext>Invoice</Title>
-                <Maincontainer>
-                    <Search>
-                        <SearchBox>
-                            <SearchIcon />
-                            <input
-                                type="text"
-                                placeholder="Search..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                        setCurrentPage(1);
-                                        searchInvoices(1);
-                                    }
-                                }}
-                            />
-                        </SearchBox>
-                    </Search>
-                    <Invoicecontainer>
-                        <InvoiceList>
-                            {invoiceData.map((invoice) => (
-                                <InvoiceItem key={invoice.invoiceId} onClick={() => handleInvoiceClick(invoice.invoiceId)}>
-                                    <InvoiceNameContainer>
-                                        <InvoiceName>{isIphone14ProMax() ? truncateText(getFileNameWithoutExtension(invoice.fileName), 15) : getFileNameWithoutExtension(invoice.fileName)}</InvoiceName>
-                                    </InvoiceNameContainer>
-                                    {invoice.validationFlag === 1 && (
-                                        <ValidationContainer>
-                                            <ValidationPass>
-                                                <StatusCircleGreen />
-                                                Validation Passed
-                                            </ValidationPass>
-                                        </ValidationContainer>
-                                    )}
-                                    {invoice.validationFlag === 2 && (
-                                        <ValidationContainer>
-                                            <ValidationFail>
-                                                <StatusCircleRed />
-                                                Validation Failed
-                                            </ValidationFail>
-                                        </ValidationContainer>
-                                    )}
-                                    {invoice.validationFlag === 0 && (
-                                        <ValidationContainer>
-                                            <NotValidated>
-                                                <StatusCircleGray />
-                                                Not Validated
-                                            </NotValidated>
-                                        </ValidationContainer>
-                                    )}
-                                    {isIphone14ProMax() ? (
-                                        <MoreOptionsContainer>
-                                            <MoreOptions onClick={(event) => handleMoreOptionsClick(event, invoice.invoiceId)}>...</MoreOptions>
-                                            {openDropdown === invoice.invoiceId && (
-                                                <MoreOptionsDropdown>
-                                                    {invoice.pdfFlag === 1 && <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 3)}>PDF<BiDownload style={{ marginLeft: '8px' }} /></DownloadOption>}
-                                                    {invoice.jsonFlag === 1 && <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 1)}>JSON<BiDownload style={{ marginLeft: '8px' }} /></DownloadOption>}
-                                                    {invoice.xmlFlag === 1 && <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 2)}>XML<BiDownload style={{ marginLeft: '8px' }} /></DownloadOption>}
-                                                    <DropdownOption onClick={(event) => handleDeleteClick(event, invoice.invoiceId)}>Delete</DropdownOption>
-                                                </MoreOptionsDropdown>
-                                            )}
-                                        </MoreOptionsContainer>
-                                    ) : (
-                                        <>
-                                            <DownloadContainer>
-                                                <Download onClick={(event) => handleDropdownToggle(event, invoice.invoiceId)} />
-                                                {openDropdown === invoice.invoiceId && (
-                                                    <DownloadOptions>
-                                                        {invoice.pdfFlag === 1 && invoice.validationFlag === 0 && (
-                                                            <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 3)}>PDF</DownloadOption>
-                                                        )}
-                                                        {invoice.jsonFlag === 1 && (
-                                                            <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 1)}>JSON</DownloadOption>
-                                                        )}
-                                                        {invoice.xmlFlag === 1 && (
-                                                            <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 2)}>XML</DownloadOption>
-                                                        )}
-                                                    </DownloadOptions>
-                                                )}
-                                            </DownloadContainer>
-                                            <DeleteButton onClick={(event) => handleDeleteClick(event, invoice.invoiceId)}>Delete</DeleteButton>
-                                        </>
-                                    )}    
-                                </InvoiceItem>
-                            ))}
-                        </InvoiceList>
-                        <PaginationControls />
-                    </Invoicecontainer>
-                </Maincontainer>
-            </Container>
-        </div>
-    );
+  const truncateText = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + "...";
+    }
+    return text;
+  };
+
+  const isIphone14ProMax = () => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const pixelRatio = window.devicePixelRatio;
+    return width === 430 && height === 932 && pixelRatio === 3;
+  };
+
+  const handleMoreOptionsClick = (event, invoiceId) => {
+    event.stopPropagation();
+    setOpenDropdown(openDropdown === invoiceId ? null : invoiceId);
+  };
+
+  const PaginationControls = () => (
+    <PaginationContainer>
+      <PageButton
+        onClick={() => setCurrentPage(1)}
+        disabled={currentPage === 1}
+      >
+        First
+      </PageButton>
+      <PageButton
+        onClick={() => setCurrentPage(currentPage - 1)}
+        disabled={currentPage === 1}
+      >
+        Prev
+      </PageButton>
+      <span>
+        {currentPage} of {totalPages}
+      </span>
+      <PageButton
+        onClick={() => setCurrentPage(currentPage + 1)}
+        disabled={currentPage === totalPages}
+      >
+        Next
+      </PageButton>
+      <PageButton
+        onClick={() => setCurrentPage(totalPages)}
+        disabled={currentPage === totalPages}
+      >
+        Last
+      </PageButton>
+    </PaginationContainer>
+  );
+
+  return (
+    <div id="main">
+      <VideoBackground autoPlay muted loop id="background-video-signup">
+        <source src={video} type="video/mp4" />
+        Your browser does not support the video tag.
+      </VideoBackground>
+      <Container>
+        <Title>
+          <Mytext>My </Mytext>Invoice
+        </Title>
+        <Maincontainer>
+          <Search>
+            <SearchBox>
+              <SearchIcon />
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    setCurrentPage(1);
+                    searchInvoices(1);
+                  }
+                }}
+              />
+            </SearchBox>
+          </Search>
+          <Invoicecontainer>
+            <InvoiceList>
+              {invoiceData.map((invoice) => (
+                <InvoiceItem
+                  key={invoice.invoiceId}
+                  onClick={() => handleInvoiceClick(invoice.invoiceId)}
+                >
+                  <InvoiceNameContainer>
+                    <InvoiceName>
+                      {isIphone14ProMax()
+                        ? truncateText(
+                            getFileNameWithoutExtension(invoice.fileName),
+                            15
+                          )
+                        : getFileNameWithoutExtension(invoice.fileName)}
+                    </InvoiceName>
+                  </InvoiceNameContainer>
+                  {invoice.validationFlag === 1 && (
+                    <ValidationContainer>
+                      <ValidationPass>
+                        <StatusCircleGreen />
+                        Validation Passed
+                      </ValidationPass>
+                    </ValidationContainer>
+                  )}
+                  {invoice.validationFlag === 2 && (
+                    <ValidationContainer>
+                      <ValidationFail>
+                        <StatusCircleRed />
+                        Validation Failed
+                      </ValidationFail>
+                    </ValidationContainer>
+                  )}
+                  {invoice.validationFlag === 0 && (
+                    <ValidationContainer>
+                      <NotValidated>
+                        <StatusCircleGray />
+                        Not Validated
+                      </NotValidated>
+                    </ValidationContainer>
+                  )}
+                  {isIphone14ProMax() ? (
+                    <MoreOptionsContainer>
+                      <MoreOptions
+                        onClick={(event) =>
+                          handleMoreOptionsClick(event, invoice.invoiceId)
+                        }
+                      >
+                        ...
+                      </MoreOptions>
+                      {openDropdown === invoice.invoiceId && (
+                        <MoreOptionsDropdown>
+                          {invoice.pdfFlag === 1 && (
+                            <DownloadOption
+                              onClick={(event) =>
+                                handleDownloadClick(event, invoice.invoiceId, 3)
+                              }
+                            >
+                              PDF
+                              <BiDownload style={{ marginLeft: "8px" }} />
+                            </DownloadOption>
+                          )}
+                          {invoice.jsonFlag === 1 && (
+                            <DownloadOption
+                              onClick={(event) =>
+                                handleDownloadClick(event, invoice.invoiceId, 1)
+                              }
+                            >
+                              JSON
+                              <BiDownload style={{ marginLeft: "8px" }} />
+                            </DownloadOption>
+                          )}
+                          {invoice.xmlFlag === 1 && (
+                            <DownloadOption
+                              onClick={(event) =>
+                                handleDownloadClick(event, invoice.invoiceId, 2)
+                              }
+                            >
+                              XML
+                              <BiDownload style={{ marginLeft: "8px" }} />
+                            </DownloadOption>
+                          )}
+                          <DropdownOption
+                            onClick={(event) =>
+                              handleDeleteClick(event, invoice.invoiceId)
+                            }
+                          >
+                            Delete
+                          </DropdownOption>
+                        </MoreOptionsDropdown>
+                      )}
+                    </MoreOptionsContainer>
+                  ) : (
+                    <>
+                      <DownloadContainer>
+                        <Download
+                          onClick={(event) =>
+                            handleDropdownToggle(event, invoice.invoiceId)
+                          }
+                        />
+                        {openDropdown === invoice.invoiceId && (
+                          <DownloadOptions>
+                            {invoice.pdfFlag === 1 &&
+                              invoice.validationFlag === 0 && (
+                                <DownloadOption
+                                  onClick={(event) =>
+                                    handleDownloadClick(
+                                      event,
+                                      invoice.invoiceId,
+                                      3
+                                    )
+                                  }
+                                >
+                                  PDF
+                                </DownloadOption>
+                              )}
+                            {invoice.jsonFlag === 1 && (
+                              <DownloadOption
+                                onClick={(event) =>
+                                  handleDownloadClick(
+                                    event,
+                                    invoice.invoiceId,
+                                    1
+                                  )
+                                }
+                              >
+                                JSON
+                              </DownloadOption>
+                            )}
+                            {invoice.xmlFlag === 1 && (
+                              <DownloadOption
+                                onClick={(event) =>
+                                  handleDownloadClick(
+                                    event,
+                                    invoice.invoiceId,
+                                    2
+                                  )
+                                }
+                              >
+                                XML
+                              </DownloadOption>
+                            )}
+                          </DownloadOptions>
+                        )}
+                      </DownloadContainer>
+                      <DeleteButton
+                        onClick={(event) =>
+                          handleDeleteClick(event, invoice.invoiceId)
+                        }
+                      >
+                        Delete
+                      </DeleteButton>
+                    </>
+                  )}
+                </InvoiceItem>
+              ))}
+            </InvoiceList>
+            <PaginationControls />
+          </Invoicecontainer>
+        </Maincontainer>
+      </Container>
+    </div>
+  );
 }
 
 export default Myinvoice;
 
 const VideoBackground = styled.video`
   position: fixed;
-  top:  0%;
+  top: 0%;
   left: 0%;
   min-width: 10%;
   min-height: 130%;
@@ -290,98 +414,94 @@ const VideoBackground = styled.video`
 `;
 
 const Container = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
 
-    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    margin-top: 250px; 
-    }
-
-
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    margin-top: 250px;
+  }
 `;
 
 const Mytext = styled.span`
-    color: #6414FF;
+  color: #6414ff;
 `;
 
 const Title = styled.h1`
-    color: #ffffff;
-    text-transform: uppercase;
-    letter-spacing: 0.4rem;
-    z-index: 1;
-    margin-bottom: 20px;
-    font-size: 2.5rem;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.4rem;
+  z-index: 1;
+  margin-bottom: 20px;
+  font-size: 2.5rem;
 `;
 
 const Maincontainer = styled.div`
-    display: flex;
-    position: relative;
-    justify-content: flex-start;
-    align-items: flex-start;
-    flex-direction: column;
-    height: 480px;
-    width: 800px;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    backdrop-filter: invert(20%);
-    border-radius: 10px;
-    color: #ffffff;
-    z-index: 1;
+  display: flex;
+  position: relative;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  height: 480px;
+  width: 800px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: invert(20%);
+  border-radius: 10px;
+  color: #ffffff;
+  z-index: 1;
 
-    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    width: 410px;  
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    width: 410px;
     height: 680px;
-    padding: 1px;  
-    }
-
+    padding: 1px;
+  }
 `;
 
 const Search = styled.div`
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    width: 100%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  width: 100%;
 `;
 
 const MoreOptions = styled.span`
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 1.5rem;
-    cursor: pointer;
-    &:hover {
-        color: rgba(255, 255, 255, 1);
-    }
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.5rem;
+  cursor: pointer;
+  &:hover {
+    color: rgba(255, 255, 255, 1);
+  }
 `;
 
 const MoreOptionsDropdown = styled.div`
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.7);
-    min-width: 100px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 5px;
-    padding: 5px 0;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.7);
+  min-width: 100px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 5px;
+  padding: 5px 0;
 `;
 
 const DropdownOption = styled.div`
-    color: rgba(255, 255, 255, 0.7);
-    padding: 5px 10px;
-    text-decoration: none;
-    display: block;
-    font-size: 1rem;
-    cursor: pointer;
-    &:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-    }
+  color: rgba(255, 255, 255, 0.7);
+  padding: 5px 10px;
+  text-decoration: none;
+  display: block;
+  font-size: 1rem;
+  cursor: pointer;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
 `;
 
-
 const MoreOptionsContainer = styled.div`
-    position: relative;
-    display: inline-block;
-    top: -8px; 
-    left: -18px; 
+  position: relative;
+  display: inline-block;
+  top: -8px;
+  left: -18px;
 `;
 
 const SearchBox = styled.div`
@@ -417,115 +537,114 @@ const SearchBox = styled.div`
 `;
 
 const SearchIcon = styled(FaSearch)`
-    position: absolute;
-    top: 10px;
-    left: 165px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 1.2rem;
-    &:hover {
-        cursor: pointer;
-    }
+  position: absolute;
+  top: 10px;
+  left: 165px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.2rem;
+  &:hover {
+    cursor: pointer;
+  }
 
-    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    left: 110px; 
-    }
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    left: 110px;
+  }
 `;
 
 const DownloadContainer = styled.div`
-    position: relative;
-    display: inline-block;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 1.2rem;
-    margin-right: 20px;
-    &:hover {
-        cursor: pointer;
-    }
-    &:hover > div {
-        display: block;
-    }
+  position: relative;
+  display: inline-block;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.2rem;
+  margin-right: 20px;
+  &:hover {
+    cursor: pointer;
+  }
+  &:hover > div {
+    display: block;
+  }
 `;
 
 const Download = styled(BiDownload)`
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 1.2rem;
-    &:hover {
-        cursor: pointer;
-    }
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.2rem;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const DownloadOptions = styled.div`
-    display: block;
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.7);
-    min-width: 100px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 5px;
-    padding: 5px 0;
+  display: block;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.7);
+  min-width: 100px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 5px;
+  padding: 5px 0;
 `;
 
 const DownloadOption = styled.div`
-    color: rgba(255, 255, 255, 0.7);
-    padding: 5px 10px;
-    text-decoration: none;
-    display: block;
-    font-size: 1rem;
-    &:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-    }
+  color: rgba(255, 255, 255, 0.7);
+  padding: 5px 10px;
+  text-decoration: none;
+  display: block;
+  font-size: 1rem;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
 `;
 
 const Invoicecontainer = styled.div`
-    position: relative;
-    margin: 0 20px 20px 20px;
-    height: 350px;
-    width: 760px;
-    backdrop-filter: blur(10px);
-    overflow: hidden;
-    overflow-y: scroll; 
-    &::-webkit-scrollbar {
-        width: 12px;
-    }
+  position: relative;
+  margin: 0 20px 20px 20px;
+  height: 350px;
+  width: 760px;
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    width: 12px;
+  }
 
-    &::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.1); 
-        border-radius: 10px;
-    }
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
 
-    &::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 10px;
-        border: 3px solid rgba(255, 255, 255, 0.3);  
-    }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+  }
 
-    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
     width: 93%;
     height: 110%;
-    transform: translateX(px); 
-    }
-
+    transform: translateX(px);
+  }
 `;
 
 const InvoiceList = styled.ul`
-    margin: 0;
-    list-style-type: none;
-    padding: 0;
-    width: 100%;
+  margin: 0;
+  list-style-type: none;
+  padding: 0;
+  width: 100%;
 `;
 
 const InvoiceItem = styled.li`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    &:hover {
-        background: rgba(0, 0, 0, 0.3);
-        cursor: pointer;
-    }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  &:hover {
+    background: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+  }
 `;
 
 const InvoiceNameContainer = styled.div`
@@ -537,7 +656,6 @@ const InvoiceNameContainer = styled.div`
   @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
     width: 10%;
   }
-
 `;
 
 const InvoiceName = styled.span`
@@ -545,9 +663,9 @@ const InvoiceName = styled.span`
   font-size: 1.1rem;
 
   @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    font-size: 1.0rem; 
+    font-size: 1rem;
     argin-right: 100px;
-    }
+  }
 `;
 
 const ValidationContainer = styled.div`
@@ -558,109 +676,109 @@ const ValidationContainer = styled.div`
 
   @media (max-width: 430px) {
     margin-right: 115px;
-    width: 40px; 
+    width: 40px;
   }
 `;
 
 const ValidationPass = styled.span`
-    display: flex;
-    align-items: center;
-    color: #00ff80;
-    font-size: 1rem;
+  display: flex;
+  align-items: center;
+  color: #00ff80;
+  font-size: 1rem;
 
-    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    font-size: 0.8rem; 
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    font-size: 0.8rem;
     margin-right: 30px;
     margin-left: 5px;
-        }
-
+  }
 `;
 
 const StatusCircleGreen = styled.div`
-    width: 6px;
-    height: 6px;
-    background-color: #00ff00;
-    border-radius: 50%;
-    margin-right: 10px;
+  width: 6px;
+  height: 6px;
+  background-color: #00ff00;
+  border-radius: 50%;
+  margin-right: 10px;
 `;
 
 const NotValidated = styled.span`
-    display: flex;
-    align-items: center;
-    color: #eeeeee;
-    font-size: 1rem;
+  display: flex;
+  align-items: center;
+  color: #eeeeee;
+  font-size: 1rem;
 
-    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
     font-size: 0.8rem;
-    margin-right: 30px; 
-    margin-left: 5px; 
-        }
+    margin-right: 30px;
+    margin-left: 5px;
+  }
 `;
 
 const StatusCircleGray = styled.div`
-    width: 6px;
-    height: 6px;
-    background-color: #eeeeee;
-    border-radius: 50%;
-    margin-right: 10px;
+  width: 6px;
+  height: 6px;
+  background-color: #eeeeee;
+  border-radius: 50%;
+  margin-right: 10px;
 `;
 
 const ValidationFail = styled.span`
-    display: flex;
-    align-items: center;
-    color: #ff0000;
-    font-size: 1rem;
+  display: flex;
+  align-items: center;
+  color: #ff0000;
+  font-size: 1rem;
 
-    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
     font-size: 0.8rem;
-    margin-right: 30px; 
-    margin-left: 5px; 
-        }
-
+    margin-right: 30px;
+    margin-left: 5px;
+  }
 `;
 
 const StatusCircleRed = styled.div`
-    width: 6px;
-    height: 6px;
-    background-color: #ff0000;
-    border-radius: 50%;
-    margin-right: 10px;
+  width: 6px;
+  height: 6px;
+  background-color: #ff0000;
+  border-radius: 50%;
+  margin-right: 10px;
 `;
 
 const DeleteButton = styled.button`
-    background-color: transparent;
-    border-radius: 20px;
-    border: 1px solid #ff1a1a;
-    color: rgba(255, 255, 255, 0.7);
-    padding: 4px 15px;
-    font-size: 1rem;
-    cursor: pointer;
-    outline: none;
-    &:hover {
-        background: rgba(255, 10, 40, 0.48);
-        transition: all ease 0.5s;
-    }
+  background-color: transparent;
+  border-radius: 20px;
+  border: 1px solid #ff1a1a;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 4px 15px;
+  font-size: 1rem;
+  cursor: pointer;
+  outline: none;
+  &:hover {
+    background: rgba(255, 10, 40, 0.48);
+    transition: all ease 0.5s;
+  }
 `;
 
 const PaginationContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-    padding: 10px 0; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  padding: 10px 0;
 `;
 
 const PageButton = styled.button`
-    background-color: ${props => props.disabled ? 'rgba(100, 20, 255, 0.5)' : 'transparent'};
-    color: #ffffff;
-    border: 1px solid #6414FF;
-    padding: 8px 16px; 
-    margin: 0 8px; 
-    cursor: ${props => props.disabled ? 'default' : 'pointer'};
-    border-radius: 20px;
-    font-size: 1rem; 
-    min-width: 40px;
-    &:hover {
-        background-color: ${props => props.disabled ? 'rgba(100, 20, 255, 0.5)' : '#6414FF'};
-    }
+  background-color: ${(props) =>
+    props.disabled ? "rgba(100, 20, 255, 0.5)" : "transparent"};
+  color: #ffffff;
+  border: 1px solid #6414ff;
+  padding: 8px 16px;
+  margin: 0 8px;
+  cursor: ${(props) => (props.disabled ? "default" : "pointer")};
+  border-radius: 20px;
+  font-size: 1rem;
+  min-width: 40px;
+  &:hover {
+    background-color: ${(props) =>
+      props.disabled ? "rgba(100, 20, 255, 0.5)" : "#6414FF"};
+  }
 `;

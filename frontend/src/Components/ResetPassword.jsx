@@ -3,39 +3,39 @@ import video from "../images/video1.mp4";
 import styled from "styled-components";
 import SignupButton from "./SignupButton";
 import { useNavigate } from "react-router-dom";
-import { usePopup } from './PopupWindow/PopupContext';
-import CryptoJS from 'crypto-js';
+import { usePopup } from "./PopupWindow/PopupContext";
+import CryptoJS from "crypto-js";
 
 function ResetPassword() {
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const { showPopup } = usePopup();
   const navigate = useNavigate();
 
   const validatePassword = (password) => {
     if (password.length < 6) {
-      return 'Password must be at least 6 characters long.';
+      return "Password must be at least 6 characters long.";
     }
-    return '';
+    return "";
   };
 
   const handleResetPassword = async () => {
     const passwordError = validatePassword(newPassword);
     if (passwordError) {
-      showPopup(passwordError, 'error');
+      showPopup(passwordError, "error");
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      showPopup('The passwords entered twice do not match.', 'error');
+      showPopup("The passwords entered twice do not match.", "error");
       return;
     }
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      showPopup('You are not logged in.', 'error');
+      showPopup("You are not logged in.", "error");
       return;
     }
 
@@ -43,38 +43,44 @@ function ResetPassword() {
     const hashedNewPassword = CryptoJS.MD5(newPassword).toString();
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/user/updateUser`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': `${token}`
-        },
-        body: JSON.stringify({
-          oldPassword: hashedOldPassword,
-          newPassword: hashedNewPassword,
-          userId: localStorage.getItem("userId")
-        }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVER_URL}/user/updateUser`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": `${token}`,
+          },
+          body: JSON.stringify({
+            oldPassword: hashedOldPassword,
+            newPassword: hashedNewPassword,
+            userId: localStorage.getItem("userId"),
+          }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
         if (data.ok) {
-          showPopup('Password reset successful.', 'success');
-          localStorage.removeItem('token');
-          localStorage.removeItem('userId');
-          window.dispatchEvent(new Event('localStorageChange'));
+          showPopup("Password reset successful.", "success");
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          window.dispatchEvent(new Event("localStorageChange"));
           setTimeout(() => {
-            navigate('/log-in');
+            navigate("/log-in");
           }, 1000);
         } else {
-          showPopup(data.msg || 'Failed to reset password. Please try again.', 'error');
+          showPopup(
+            data.msg || "Failed to reset password. Please try again.",
+            "error"
+          );
         }
       } else {
-        showPopup('Failed to reset password. Please try again.', 'error');
+        showPopup("Failed to reset password. Please try again.", "error");
       }
     } catch (error) {
-      console.error('Error:', error);
-      showPopup('An error occurred. Please try again later.', 'error');
+      console.error("Error:", error);
+      showPopup("An error occurred. Please try again later.", "error");
     }
   };
 
@@ -87,23 +93,23 @@ function ResetPassword() {
       <MainContainer>
         <ResetText>Reset Password</ResetText>
         <InputContainer>
-          <StyledInput 
-            type="password" 
-            placeholder="Current Password" 
-            value={oldPassword} 
-            onChange={(e) => setOldPassword(e.target.value)} 
+          <StyledInput
+            type="password"
+            placeholder="Current Password"
+            value={oldPassword}
+            onChange={(e) => setOldPassword(e.target.value)}
           />
-          <StyledInput 
-            type="password" 
-            placeholder="New Password" 
-            value={newPassword} 
-            onChange={(e) => setNewPassword(e.target.value)} 
+          <StyledInput
+            type="password"
+            placeholder="New Password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
           />
-          <StyledInput 
-            type="password" 
-            placeholder="Confirm New Password" 
-            value={confirmPassword} 
-            onChange={(e) => setConfirmPassword(e.target.value)} 
+          <StyledInput
+            type="password"
+            placeholder="Confirm New Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </InputContainer>
         <ButtonContainer onClick={handleResetPassword}>
@@ -162,7 +168,7 @@ const MainContainer = styled.div`
   flex-direction: column;
   height: 400px;
   width: 300px;
-  background: rgba(255, 255, 255, 0.30);
+  background: rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   backdrop-filter: blur(8.5px);
   border-radius: 10px;
@@ -194,7 +200,7 @@ const InputContainer = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-  margin-top: 1.8rem; 
+  margin-top: 1.8rem;
   width: 100%;
   height: 10%;
   display: flex;

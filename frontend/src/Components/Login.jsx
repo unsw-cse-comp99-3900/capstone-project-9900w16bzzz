@@ -3,22 +3,22 @@ import video from "../images/video1.mp4";
 import styled from "styled-components";
 import SignupButton from "./SignupButton";
 import { Link, useNavigate } from "react-router-dom";
-import { usePopup } from './PopupWindow/PopupContext';
-import CryptoJS from 'crypto-js';
+import { usePopup } from "./PopupWindow/PopupContext";
+import CryptoJS from "crypto-js";
 
 function Login() {
-  const [loginEmail, setEmail] = useState('');
-  const [loginPassword, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
+  const [loginEmail, setEmail] = useState("");
+  const [loginPassword, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
 
   const { showPopup } = usePopup();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    setEmailError('');
+    setEmailError("");
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(loginEmail)) {
-      setEmailError('Please enter a valid email address.');
+      setEmailError("Please enter a valid email address.");
       return;
     }
 
@@ -30,57 +30,63 @@ function Login() {
     };
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVER_URL}/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
         if (data.ok) {
           localStorage.setItem("token", data.data.token);
-          showPopup('Login successful!', 'success');
+          showPopup("Login successful!", "success");
           await getUserInformation();
-          navigate('/');
+          navigate("/");
         } else {
-          showPopup(`Error: ${data.msg}`, 'error');
+          showPopup(`Error: ${data.msg}`, "error");
         }
       } else {
-        console.error('Login failed:', response.statusText);
+        console.error("Login failed:", response.statusText);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
 
   const getUserInformation = async () => {
     const token = localStorage.getItem("token");
     try {
-      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/getLoginName`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': `${token}`
-        },
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVER_URL}/getLoginName`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": `${token}`,
+          },
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
         if (data.ok) {
           localStorage.setItem("username", data.data.userName);
           localStorage.setItem("userId", data.data.userId);
-          window.dispatchEvent(new Event('localStorageChange'));
+          window.dispatchEvent(new Event("localStorageChange"));
         }
       } else {
-        console.error('Login failed:', response.statusText);
+        console.error("Login failed:", response.statusText);
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
-  }
+  };
 
   return (
     <div id="main">
@@ -91,9 +97,19 @@ function Login() {
       <Maincontainer>
         <LoginText>Log in</LoginText>
         <InputContainer>
-          <StyledInput type="text" placeholder="Email" value={loginEmail} onChange={(e) => setEmail(e.target.value)} />
+          <StyledInput
+            type="text"
+            placeholder="Email"
+            value={loginEmail}
+            onChange={(e) => setEmail(e.target.value)}
+          />
           {emailError && <ErrorText>{emailError}</ErrorText>}
-          <StyledInput type="password" placeholder="Password" value={loginPassword} onChange={(e) => setPassword(e.target.value)} />
+          <StyledInput
+            type="password"
+            placeholder="Password"
+            value={loginPassword}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </InputContainer>
         <ButtonContainer onClick={handleLogin}>
           <SignupButton content="Log in" />
@@ -101,7 +117,7 @@ function Login() {
         <StyledLink to="/sign-up">Doesn't have an account? Sign up</StyledLink>
       </Maincontainer>
     </div>
-  )
+  );
 }
 
 const StyledInput = styled.input`
