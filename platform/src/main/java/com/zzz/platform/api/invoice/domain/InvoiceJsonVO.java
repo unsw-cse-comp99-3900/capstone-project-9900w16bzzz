@@ -16,6 +16,7 @@ import java.util.List;
 @Data
 public class InvoiceJsonVO {
 
+    private String customizationId;
     private String invoiceId;
 
     private LocalDate invoiceDate;

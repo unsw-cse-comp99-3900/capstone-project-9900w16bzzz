@@ -27,13 +27,14 @@ public class JsonToUblConverter {
         IDType id = new IDType();
         id.setValue(invoiceJsonVO.getInvoiceId());
         invoice.setID(id);
-        String customizationId = generateCustomizationID(invoiceJsonVO.getSeller().getName());
+        String customizationId = invoiceJsonVO.getCustomizationId();
         invoice.setCustomizationID(customizationId);
 
         // 380 Commercial Invoice Type Code
         invoice.setInvoiceTypeCode("380");
         // set currency code
         invoice.setDocumentCurrencyCode(invoiceJsonVO.getCurrencyCode());
+        invoice.setBuyerReference("Commercial details");
 
         // set issue and due date
         invoice.setIssueDate(invoiceJsonVO.getInvoiceDate());
@@ -281,6 +282,11 @@ public class JsonToUblConverter {
         RegistrationNameType registrationNameType = new RegistrationNameType();
         registrationNameType.setValue(person.getName());
         entityType.setRegistrationName(registrationNameType);
+        // company ID
+        CompanyIDType companyIDType = new CompanyIDType();
+        companyIDType.setSchemeID("0151");
+        companyIDType.setValue(personId);
+        entityType.setCompanyID(companyIDType);
         partyType.addPartyLegalEntity(entityType);
 
         return partyType;
@@ -522,11 +528,6 @@ public class JsonToUblConverter {
         taxSchemeType.setID("GST");
         taxCategoryType.setTaxScheme(taxSchemeType);
         return taxCategoryType;
-    }
-
-    private static String generateCustomizationID(String companyName) {
-        // generate CustomizationID
-        return "urn:oasis:" + companyName + ":specification:ubl:schema:xsd:Invoice-2";
     }
 
     @AllArgsConstructor
