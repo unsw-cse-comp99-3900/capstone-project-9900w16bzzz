@@ -189,9 +189,15 @@ function Myinvoice() {
                                         <Download onClick={(event) => handleDropdownToggle(event, invoice.invoiceId)} />
                                         {openDropdown === invoice.invoiceId && (
                                             <DownloadOptions>
-                                                {invoice.pdfFlag === 1 && <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 3)}>PDF</DownloadOption>}
-                                                {invoice.jsonFlag === 1 && <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 1)}>JSON</DownloadOption>}
-                                                {invoice.xmlFlag === 1 && <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 2)}>XML</DownloadOption>}
+                                                {invoice.pdfFlag === 1 && invoice.validationFlag === 0 && (
+                                                    <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 3)}>PDF</DownloadOption>
+                                                )}
+                                                {invoice.jsonFlag === 1 && (
+                                                    <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 1)}>JSON</DownloadOption>
+                                                )}
+                                                {invoice.xmlFlag === 1 && (
+                                                    <DownloadOption onClick={(event) => handleDownloadClick(event, invoice.invoiceId, 2)}>XML</DownloadOption>
+                                                )}
                                             </DownloadOptions>
                                         )}
                                     </DownloadContainer>
