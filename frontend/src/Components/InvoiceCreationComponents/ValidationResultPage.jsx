@@ -139,6 +139,13 @@ const HeaderContent = styled.div`
 const ButtonContainer = styled.div`
   display: flex;
   gap: 10px;
+
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    position: relative;
+    top: 8px;  
+    right: -20px; 
+  }
+    
 `;
 
 const Button = styled.button`
@@ -154,6 +161,14 @@ const Button = styled.button`
   &:hover {
     background-color: #5000cc;
   }
+
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    padding: 5px 10px; /* Adjust the padding to make the buttons smaller */
+    font-size: 0.8rem; /* Adjust the font size to make the text smaller */
+    top: -50px;  /* 向上移动 */
+    right: -10px; /* 向右移动 */
+  }
+
 `;
 
 const Status = styled.span`
@@ -166,8 +181,11 @@ const Status = styled.span`
   background-color: ${(props) => (props.successful ? "#4CAF50" : "#F44336")};
 
   @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    margin-top: 50px;
-    margin-right: 12%;
+    margin-top: 0px;
+    margin-right: 30%;
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    line-height: 1.8rem;
   }
 `;
 
