@@ -1,5 +1,6 @@
 package com.zzz.platform.api.invoice.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zzz.platform.api.invoice.dao.InvoiceDao;
@@ -39,7 +40,9 @@ public class InvoiceDbServiceImpl implements InvoiceDbService {
     public ResponseDTO<PageResult<InvoiceListVO>> list(InvoiceQueryForm queryForm) {
         Page<InvoiceEntity> entityPage = invoiceDao.selectPage(
                 new Page<>(queryForm.getPageNum(), queryForm.getPageSize()),
-                new QueryWrapper<InvoiceEntity>().eq(InvoiceDbColumn.USER_ID.getVal(), queryForm.getUserId())
+                new QueryWrapper<InvoiceEntity>()
+                        .eq(InvoiceDbColumn.USER_ID.getVal(), queryForm.getUserId())
+                        .orderByDesc(InvoiceDbColumn.UPDATE_TIME.getVal())
         );
 
         PageResult<InvoiceListVO> pageResult = PageUtil.convert2PageResult(entityPage, InvoiceListVO.class);
@@ -56,6 +59,7 @@ public class InvoiceDbServiceImpl implements InvoiceDbService {
                 new QueryWrapper<InvoiceEntity>()
                         .eq(InvoiceDbColumn.USER_ID.getVal(), queryForm.getUserId())
                         .like(InvoiceDbColumn.FILE_NAME.getVal(), queryForm.getFileName())
+                        .orderByDesc(InvoiceDbColumn.UPDATE_TIME.getVal())
         );
 
         PageResult<InvoiceListVO> pageResult = PageUtil.convert2PageResult(entityPage, InvoiceListVO.class);
