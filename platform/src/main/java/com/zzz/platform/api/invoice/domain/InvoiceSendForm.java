@@ -23,7 +23,7 @@ public class InvoiceSendForm {
 
     @Schema(description = "target email")
     @NotNull
-    @Email(regexp = VerificationUtil.EMAIL, message = "login name should be email address")
+    @Email(regexp = VerificationUtil.EMAIL, message = "This field should be an email address")
     private String targetEmail;
 
     @Schema(description = "email subject")
