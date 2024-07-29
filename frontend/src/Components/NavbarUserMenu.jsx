@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { usePopup } from "./PopupWindow/PopupContext";
 
+import { useCookies } from 'react-cookie';
+
 const UserMenuContainer = styled.div`
   position: relative;
   display: inline-block;
@@ -87,6 +89,8 @@ const UsernameDisplay = styled.div`
 `;
 
 const UserMenu = ({ username }) => {
+  
+  const [cookies, setCookie, removeCookie] = useCookies(['x-access-token']);
   const [showDropdown, setShowDropdown] = useState(false);
   const timeoutRef = useRef(null);
   const { showPopup } = usePopup();
@@ -106,20 +110,14 @@ const UserMenu = ({ username }) => {
       );
   
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error("Response was not ok, plesea check your network.");
       }
-      const data = await response.json();
   
-      if (data.ok) {
-        showPopup("Log out successfully", "success");
-      }
-      if (!data.ok) {
-        throw new Error(`Log out failed`);
-      }
+      showPopup("Log out successfully", "success");
     } catch (error) {
       console.error("Error processing file:", error);
       showPopup(
-        "An error occurred while processing the file. Please try again.",
+        `${error}`,
         "error"
       );
     }
@@ -159,6 +157,7 @@ const UserMenu = ({ username }) => {
             logoutRequest();
             localStorage.removeItem("username");
             localStorage.removeItem("token");
+            removeCookie('x-access-token', { path: '/' });
             window.dispatchEvent(new Event("localStorageChange"));
           }}
         >
