@@ -22,7 +22,7 @@ public enum InvoiceErrorCode implements ErrorCode{
 
     JSON_INVOICE_FORMAT_ERROR(40005, "Upload json invoice file format error"),
 
-    INVOICE_FILE_FORMAT_ERROR(40006, "Upload invoice file format error, only accept pdf/json file"),
+    INVOICE_FILE_FORMAT_ERROR(40006, "Upload invoice file format error, only accept pdf/json invoice file"),
 
     INVOICE_FILE_DOES_NOT_EXIST(40007, "Selected invoice file not exist, please check it"),
 
