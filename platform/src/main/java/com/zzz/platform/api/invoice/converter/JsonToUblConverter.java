@@ -130,16 +130,16 @@ public class JsonToUblConverter {
 
             PriceType price = new PriceType();
             PriceAmountType priceAmount = new PriceAmountType();
-            priceAmount.setValue(BigDecimal.valueOf(Double.parseDouble(item.getAmount())));
+            priceAmount.setValue(BigDecimal.valueOf(Double.parseDouble(item.getUnitPrice())));
             priceAmount.setCurrencyID(currencyCode);
             price.setPriceAmount(priceAmount);
-            invoiceLine.setPrice(price);
+
             if (ObjectUtils.isNotEmpty(item.getAllowance())) {
                 // set allowance charge
                 AllowanceChargeType allowanceChargeType = getAllowanceCharge(item.getAllowance());
                 price.addAllowanceCharge(allowanceChargeType);
-                invoiceLine.setPrice(price);
             }
+            invoiceLine.setPrice(price);
 
             // add invoice item to item
             invoice.addInvoiceLine(invoiceLine);
