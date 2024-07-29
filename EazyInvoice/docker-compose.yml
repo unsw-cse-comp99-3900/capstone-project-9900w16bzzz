@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: nginx:alpine
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - platform
+    networks:
+      - app-networks
+
+  platform:
+    build:
+      context: ./platform
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/e-invoice
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: admin123
+    ports:
+      - "9900:9900"
+    networks:
+      - app-networks
+  
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_DATABASE: e-invoice
+    volumes:
+      - ./platform/V1__init_database.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    networks:
+      - app-networks
+
+networks:
+  app-networks:
+    driver: bridge
