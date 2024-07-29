@@ -11,20 +11,8 @@ import ResetPassword from "./Components/ResetPassword";
 import { PopupProvider } from "./Components/PopupWindow/PopupContext";
 import GlobalPopup from "./Components/PopupWindow/usePopup";
 import ValidationPage from "./Components/ValidationPage/ValidationPage";
-import { useCookies } from 'react-cookie';
 
 function App() {
-  const [cookies, setCookie, removeCookie] = useCookies(['x-access-token']);
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      localStorage.removeItem("token");
-      removeCookie('x-access-token', { path: '/' });
-    };
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
   return (
     <PopupProvider>
       <Router>
