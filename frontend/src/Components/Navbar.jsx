@@ -4,7 +4,8 @@ import UserMenu from "./NavbarUserMenu";
 import ProtectedLink from "./InvoiceCreationComponents/ProtectedPage";
 
 function Navbar() {
-  const [nav, setnav] = useState(false);
+  const [nav, setNav] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [username, setUsername] = useState(null);
 
   useEffect(() => {
@@ -21,26 +22,41 @@ function Navbar() {
     checkUserAuth();
 
     window.addEventListener("localStorageChange", checkUserAuth);
+    window.addEventListener("scroll", changeBackground);
+    document.addEventListener("click", handleClickOutside);
 
     return () => {
       window.removeEventListener("localStorageChange", checkUserAuth);
+      window.removeEventListener("scroll", changeBackground);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
   const changeBackground = () => {
     if (window.scrollY >= 50) {
-      setnav(true);
+      setNav(true);
     } else {
-      setnav(false);
+      setNav(false);
     }
   };
-  window.addEventListener("scroll", changeBackground);
+
+  const handleClickOutside = (event) => {
+    if (!event.target.closest('.nav') && !event.target.closest('.menu-icon')) {
+      setMenuOpen(false);
+    }
+  };
+
+  const handleMenuToggle = () => {
+    setMenuOpen((prevMenuOpen) => !prevMenuOpen);
+  };
+
   return (
     <nav className={nav ? "nav active" : "nav"}>
-      <input className="menu-btn" type="checkbox" id="menu-btn"></input>
-      <label className="menu-icon" htmlFor="menu-btn">
+      <input className="menu-btn" type="checkbox" id="menu-btn" checked={menuOpen} readOnly />
+      <label className="menu-icon" htmlFor="menu-btn" onClick={handleMenuToggle}>
         <span className="nav-icon"></span>
       </label>
-      <ul className="menu">
+      <ul className={menuOpen ? "menu open" : "menu"}>
         <li>
           <RouterLink to="/">Home</RouterLink>
         </li>
@@ -63,4 +79,5 @@ function Navbar() {
     </nav>
   );
 }
+
 export default Navbar;
