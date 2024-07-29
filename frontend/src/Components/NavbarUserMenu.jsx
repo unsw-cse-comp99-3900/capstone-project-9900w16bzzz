@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { usePopup } from "./PopupWindow/PopupContext";
 
 const UserMenuContainer = styled.div`
   position: relative;
@@ -88,6 +89,41 @@ const UsernameDisplay = styled.div`
 const UserMenu = ({ username }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const timeoutRef = useRef(null);
+  const { showPopup } = usePopup();
+
+  const logoutRequest = async () => {
+    try {
+      let endpoint = `${process.env.REACT_APP_SERVER_URL}/login/logout`;
+      let token = localStorage.getItem("token");
+      const response = await fetch(
+        `${endpoint}`,
+        {
+          method: "GET",
+          headers: {
+            "x-access-token": `${token}`,
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+  
+      if (data.ok) {
+        showPopup("Log out successfully", "success");
+      }
+      if (!data.ok) {
+        throw new Error(`Log out failed`);
+      }
+    } catch (error) {
+      console.error("Error processing file:", error);
+      showPopup(
+        "An error occurred while processing the file. Please try again.",
+        "error"
+      );
+    }
+  };
 
   const handleMouseEnter = () => {
     clearTimeout(timeoutRef.current);
@@ -120,6 +156,7 @@ const UserMenu = ({ username }) => {
         <DropdownItem
           to="/"
           onClick={() => {
+            logoutRequest();
             localStorage.removeItem("username");
             localStorage.removeItem("token");
             window.dispatchEvent(new Event("localStorageChange"));
