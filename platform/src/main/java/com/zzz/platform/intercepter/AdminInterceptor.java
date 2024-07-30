@@ -102,6 +102,8 @@ public class AdminInterceptor implements HandlerInterceptor {
             } else {
                 ResponseUtil.write(response, ResponseDTO.error(UserErrorCode.PARAM_ERROR));
             }
+            // delete login status
+            StpUtil.logout();
             return false;
         } catch (Throwable e) {
             ResponseUtil.write(response, ResponseDTO.error(SystemErrorCode.SYSTEM_ERROR));
