@@ -90,7 +90,7 @@ public class LoginService {
             log.info("User {} login password error", userEntity.getLoginName());
             // Number of times level of protection was recorded
             String msg = protectLoginService.recordLoginFail(userEntity.getUserId(), UserTypeEnum.NORMAL, userEntity.getLoginName(), loginFailEntityResponseDTO.getData());
-            return msg == null ? ResponseDTO.userErrorParam("Login name or password incorrect！") : ResponseDTO.error(UserErrorCode.LOGIN_FAIL_WILL_LOCK, msg);
+            return msg == null ? ResponseDTO.userErrorParam("Login name or password error！") : ResponseDTO.error(UserErrorCode.LOGIN_FAIL_WILL_LOCK, msg);
         }
 
         String tokenLoginId = UserTypeEnum.NORMAL.getValue() + "," + userEntity.getUserId();

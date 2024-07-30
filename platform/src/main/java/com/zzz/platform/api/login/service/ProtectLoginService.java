@@ -25,7 +25,7 @@ public class ProtectLoginService {
 
     private static final String LOGIN_LOCK_MSG = "You have failed to log in %s times in a row, the account is locked for %s minutes, the unlock time is: %s, please be patient!";
 
-    private static final String LOGIN_FAIL_MSG = "Wrong login name or password! Login failed %s times in a row and the account will be locked for %s minutes! You can try again %s times!";
+    private static final String LOGIN_FAIL_MSG = "login name or password error!\n You have %s more attempts to enter the correct information, otherwise your account will be locked %s minutes";
 
     /**
      * The number of consecutive failed login attempts will lock you out, -1 means there is no restriction
@@ -119,11 +119,15 @@ public class ProtectLoginService {
         }
 
         // alert info
-        if (loginFailEntity.getLoginFailCount() >= loginMaxFailTimes) {
+        Integer failCount = loginFailEntity.getLoginFailCount();
+        if (failCount <= loginMaxFailTimes / 2) {
+            return null;
+        }
+            if (failCount >= loginMaxFailTimes) {
             LocalDateTime unlockTime = loginFailEntity.getLoginLockBeginTime().plusSeconds(loginFailLockedSeconds);
             return String.format(LOGIN_LOCK_MSG, loginFailEntity.getLoginFailCount(), loginFailLockedSeconds / 60, LocalDateTimeUtil.formatNormal(unlockTime));
         } else {
-            return String.format(LOGIN_FAIL_MSG, loginMaxFailTimes, loginFailLockedSeconds / 60, loginMaxFailTimes - loginFailEntity.getLoginFailCount());
+            return String.format(LOGIN_FAIL_MSG, loginMaxFailTimes - loginFailEntity.getLoginFailCount(), loginFailLockedSeconds / 60);
         }
     }
 
