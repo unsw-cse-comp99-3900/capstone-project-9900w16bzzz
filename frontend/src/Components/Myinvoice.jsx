@@ -3,20 +3,26 @@ import video from "../images/video1.mp4";
 import styled from "styled-components";
 import { FaSearch } from "react-icons/fa";
 import { BiDownload } from "react-icons/bi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import deleteInvoice from "./Deleteinvoice";
 import DownloadInvoice from "./Downloadinvoice";
 import { usePopup } from "./PopupWindow/PopupContext";
 
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
 function Myinvoice() {
+  const query = useQuery();
+  const navigate = useNavigate();
+  const { showPopup } = usePopup();
+
   const [invoiceData, setInvoiceData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [openDropdown, setOpenDropdown] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(parseInt(query.get("page") || 1));
   const [totalPages, setTotalPages] = useState(1);
   const [pageSize] = useState(10);
-  const navigate = useNavigate();
-  const { showPopup } = usePopup();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   const fetchInvoices = useCallback(
@@ -505,35 +511,36 @@ const MoreOptionsContainer = styled.div`
 `;
 
 const SearchBox = styled.div`
-    position: relative;
-    margin: 20px;
+  position: relative;
+  margin: 20px;
 
-    input {
-        padding: 10px;
-        width: 200px;
-        border: none;
-        border-radius: 20px;
-        background: rgba(255, 255, 255, 0.2);
-        box-shadow: 0 0 0 0.1rem #9a86d2;
-        color: #ffffff;
-        font-size: 1rem;
-        outline: none;
+  input {
+    padding: 10px;
+    width: 200px;
+    border: none;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 0 0.1rem #9a86d2;
+    color: #ffffff;
+    font-size: 1rem;
+    outline: none;
 
-        &::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-        &:focus {
-        display: inline-block;
-        box-shadow: 0 0 0 0.2rem #b9abe0;
-        backdrop-filter: blur(12rem);
-        border-radius: 2rem;
-        }
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.7);
     }
-
-    @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    input {
-      width: 140px; 
+    &:focus {
+      display: inline-block;
+      box-shadow: 0 0 0 0.2rem #b9abe0;
+      backdrop-filter: blur(12rem);
+      border-radius: 2rem;
     }
+  }
+
+  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
+    input {
+      width: 140px;
+    }
+  }
 `;
 
 const SearchIcon = styled(FaSearch)`
