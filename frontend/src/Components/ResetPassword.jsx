@@ -112,8 +112,8 @@ function ResetPassword() {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </InputContainer>
-        <ButtonContainer onClick={handleResetPassword}>
-          <SignupButton content="Reset" />
+        <ButtonContainer>
+          <SignupButton content="Reset"  onClick={handleResetPassword}/>
         </ButtonContainer>
       </MainContainer>
     </div>

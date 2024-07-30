@@ -119,8 +119,8 @@ function Signup() {
           />
           {passwordError && <ErrorText>{passwordError}</ErrorText>}
         </InputContainer>
-        <ButtonContainer onClick={handleSignUp}>
-          <SignupButton content="Sign up" />
+        <ButtonContainer>
+          <SignupButton content="Sign up" onClick={handleSignUp} />
         </ButtonContainer>
         <StyledLink to="/log-in">Already have an account? Login</StyledLink>
       </Maincontainer>
