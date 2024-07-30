@@ -14,16 +14,23 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
 
   const handleSignUp = async () => {
     setEmailError("");
+    setUsernameError("");
     setPasswordError("");
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
       setEmailError("Please enter a valid email address.");
+      return;
+    }
+
+    if (!username) {
+      setUsernameError("Please enter a username");
       return;
     }
 
@@ -97,6 +104,7 @@ function Signup() {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
+          {usernameError && <ErrorText>{usernameError}</ErrorText>}
           <SignupInput
             type="password"
             placeholder="Password"

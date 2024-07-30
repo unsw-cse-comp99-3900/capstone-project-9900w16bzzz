@@ -10,15 +10,23 @@ function Login() {
   const [loginEmail, setEmail] = useState("");
   const [loginPassword, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const { showPopup } = usePopup();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     setEmailError("");
+    setPasswordError("");
+    
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(loginEmail)) {
       setEmailError("Please enter a valid email address.");
+      return;
+    }
+
+    if (!loginPassword) {
+      setPasswordError("Please enter a password.");
       return;
     }
 
@@ -110,11 +118,12 @@ function Login() {
             value={loginPassword}
             onChange={(e) => setPassword(e.target.value)}
           />
+          {passwordError && <ErrorText>{passwordError}</ErrorText>}
         </InputContainer>
         <ButtonContainer onClick={handleLogin}>
           <SignupButton content="Log in" />
         </ButtonContainer>
-        <StyledLink to="/sign-up">Doesn't have an account? Sign up</StyledLink>
+        <StyledLink to="/sign-up">Don't have an account? Sign up</StyledLink>
       </Maincontainer>
     </div>
   );
