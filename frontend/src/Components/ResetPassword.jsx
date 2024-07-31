@@ -185,10 +185,6 @@ const MainContainer = styled.div`
   text-transform: uppercase;
   letter-spacing: 0.4rem;
   z-index: 0;
-
-  @media only screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    margin-top: 15vh;
-  }
 `;
 
 const ResetText = styled.div`

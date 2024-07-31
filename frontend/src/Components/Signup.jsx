@@ -154,10 +154,6 @@ const Maincontainer = styled.div`
   text-transform: uppercase;
   letter-spacing: 0.4rem;
   z-index: 1;
-
-  @media only screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    margin-top: 30vh;
-  }
 `;
 
 const WelcomeText = styled.div`

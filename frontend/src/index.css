@@ -41,12 +41,7 @@ input{
     object-fit: cover; /* Ensures the video covers the entire area */
     z-index: -1; /* Places the video behind the content */
 }
-@media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    #background-video-signup {
-        top: 80px; 
-        height: 150%;
-    }
-}
+
 #main{
     display: flex;
     width:100%;
