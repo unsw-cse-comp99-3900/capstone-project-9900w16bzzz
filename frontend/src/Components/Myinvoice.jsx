@@ -212,194 +212,195 @@ function Myinvoice() {
   );
 
   return (
-    <div id="main">
+    <div>
       <VideoBackground autoPlay muted loop id="background-video-signup">
         <source src={video} type="video/mp4" />
         Your browser does not support the video tag.
       </VideoBackground>
-      <Container>
-        <Title>
-          <Mytext>My </Mytext>Invoice
-        </Title>
-        <Maincontainer>
-          <Search>
-            <SearchBox>
-              <SearchIcon />
-              <input
-                type="text"
-                placeholder="Search..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    setCurrentPage(1);
-                    searchInvoices(1);
-                  }
-                }}
-              />
-            </SearchBox>
-          </Search>
-          <Invoicecontainer>
-            <InvoiceList>
-              {invoiceData.map((invoice) => (
-                <InvoiceItem
-                  key={invoice.invoiceId}
-                  onClick={() => handleInvoiceClick(invoice.invoiceId)}
-                >
-                  <InvoiceNameContainer>
-                    <InvoiceName>
-                      {isIphone14ProMax()
-                        ? truncateText(
-                            getFileNameWithoutExtension(invoice.fileName),
-                            15
-                          )
-                        : getFileNameWithoutExtension(invoice.fileName)}
-                    </InvoiceName>
-                  </InvoiceNameContainer>
-                  {invoice.validationFlag === 1 && (
-                    <ValidationContainer>
-                      <ValidationPass>
-                        <StatusCircleGreen />
-                        Validation Passed
-                      </ValidationPass>
-                    </ValidationContainer>
-                  )}
-                  {invoice.validationFlag === 2 && (
-                    <ValidationContainer>
-                      <ValidationFail>
-                        <StatusCircleRed />
-                        Validation Failed
-                      </ValidationFail>
-                    </ValidationContainer>
-                  )}
-                  {invoice.validationFlag === 0 && (
-                    <ValidationContainer>
-                      <NotValidated>
-                        <StatusCircleGray />
-                        Not Validated
-                      </NotValidated>
-                    </ValidationContainer>
-                  )}
-                  {isIphone14ProMax() ? (
-                    <MoreOptionsContainer>
-                      <MoreOptions
-                        onClick={(event) =>
-                          handleMoreOptionsClick(event, invoice.invoiceId)
-                        }
-                      >
-                        ...
-                      </MoreOptions>
-                      {openDropdown === invoice.invoiceId && (
-                        <MoreOptionsDropdown>
-                          {invoice.pdfFlag === 1 && (
-                            <DownloadOption
-                              onClick={(event) =>
-                                handleDownloadClick(event, invoice.invoiceId, 3)
-                              }
-                            >
-                              PDF
-                              <BiDownload style={{ marginLeft: "8px" }} />
-                            </DownloadOption>
-                          )}
-                          {invoice.jsonFlag === 1 && (
-                            <DownloadOption
-                              onClick={(event) =>
-                                handleDownloadClick(event, invoice.invoiceId, 1)
-                              }
-                            >
-                              JSON
-                              <BiDownload style={{ marginLeft: "8px" }} />
-                            </DownloadOption>
-                          )}
-                          {invoice.xmlFlag === 1 && (
-                            <DownloadOption
-                              onClick={(event) =>
-                                handleDownloadClick(event, invoice.invoiceId, 2)
-                              }
-                            >
-                              XML
-                              <BiDownload style={{ marginLeft: "8px" }} />
-                            </DownloadOption>
-                          )}
-                          <DropdownOption
-                            onClick={(event) =>
-                              handleDeleteClick(event, invoice.invoiceId)
-                            }
-                          >
-                            Delete
-                          </DropdownOption>
-                        </MoreOptionsDropdown>
-                      )}
-                    </MoreOptionsContainer>
-                  ) : (
-                    <>
-                      <DownloadContainer>
-                        <Download
+      <PageContainer>
+        <Container>
+          <Title>
+            <Mytext>My </Mytext>Invoice
+          </Title>
+          <Maincontainer>
+            <Search>
+              <SearchBox>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      setCurrentPage(1);
+                      searchInvoices(1);
+                    }
+                  }}
+                />
+              </SearchBox>
+            </Search>
+            <Invoicecontainer>
+              <InvoiceList>
+                {invoiceData.map((invoice) => (
+                  <InvoiceItem
+                    key={invoice.invoiceId}
+                    onClick={() => handleInvoiceClick(invoice.invoiceId)}
+                  >
+                    <InvoiceNameContainer>
+                      <InvoiceName>
+                        {isIphone14ProMax()
+                          ? truncateText(
+                              getFileNameWithoutExtension(invoice.fileName),
+                              15
+                            )
+                          : getFileNameWithoutExtension(invoice.fileName)}
+                      </InvoiceName>
+                    </InvoiceNameContainer>
+                    {invoice.validationFlag === 1 && (
+                      <ValidationContainer>
+                        <ValidationPass>
+                          <StatusCircleGreen />
+                          Validation Passed
+                        </ValidationPass>
+                      </ValidationContainer>
+                    )}
+                    {invoice.validationFlag === 2 && (
+                      <ValidationContainer>
+                        <ValidationFail>
+                          <StatusCircleRed />
+                          Validation Failed
+                        </ValidationFail>
+                      </ValidationContainer>
+                    )}
+                    {invoice.validationFlag === 0 && (
+                      <ValidationContainer>
+                        <NotValidated>
+                          <StatusCircleGray />
+                          Not Validated
+                        </NotValidated>
+                      </ValidationContainer>
+                    )}
+                    {isIphone14ProMax() ? (
+                      <MoreOptionsContainer>
+                        <MoreOptions
                           onClick={(event) =>
-                            handleDropdownToggle(event, invoice.invoiceId)
+                            handleMoreOptionsClick(event, invoice.invoiceId)
                           }
-                        />
+                        >
+                          ...
+                        </MoreOptions>
                         {openDropdown === invoice.invoiceId && (
-                          <DownloadOptions>
-                            {invoice.pdfFlag === 1 &&
-                              invoice.validationFlag === 0 && (
-                                <DownloadOption
-                                  onClick={(event) =>
-                                    handleDownloadClick(
-                                      event,
-                                      invoice.invoiceId,
-                                      3
-                                    )
-                                  }
-                                >
-                                  PDF
-                                </DownloadOption>
-                              )}
+                          <MoreOptionsDropdown>
+                            {invoice.pdfFlag === 1 && (
+                              <DownloadOption
+                                onClick={(event) =>
+                                  handleDownloadClick(event, invoice.invoiceId, 3)
+                                }
+                              >
+                                PDF
+                                <BiDownload style={{ marginLeft: "8px" }} />
+                              </DownloadOption>
+                            )}
                             {invoice.jsonFlag === 1 && (
                               <DownloadOption
                                 onClick={(event) =>
-                                  handleDownloadClick(
-                                    event,
-                                    invoice.invoiceId,
-                                    1
-                                  )
+                                  handleDownloadClick(event, invoice.invoiceId, 1)
                                 }
                               >
                                 JSON
+                                <BiDownload style={{ marginLeft: "8px" }} />
                               </DownloadOption>
                             )}
                             {invoice.xmlFlag === 1 && (
                               <DownloadOption
                                 onClick={(event) =>
-                                  handleDownloadClick(
-                                    event,
-                                    invoice.invoiceId,
-                                    2
-                                  )
+                                  handleDownloadClick(event, invoice.invoiceId, 2)
                                 }
                               >
                                 XML
+                                <BiDownload style={{ marginLeft: "8px" }} />
                               </DownloadOption>
                             )}
-                          </DownloadOptions>
+                            <DropdownOption
+                              onClick={(event) =>
+                                handleDeleteClick(event, invoice.invoiceId)
+                              }
+                            >
+                              Delete
+                            </DropdownOption>
+                          </MoreOptionsDropdown>
                         )}
-                      </DownloadContainer>
-                      <DeleteButton
-                        onClick={(event) =>
-                          handleDeleteClick(event, invoice.invoiceId)
-                        }
-                      >
-                        Delete
-                      </DeleteButton>
-                    </>
-                  )}
-                </InvoiceItem>
-              ))}
-            </InvoiceList>
-            <PaginationControls />
-          </Invoicecontainer>
-        </Maincontainer>
-      </Container>
+                      </MoreOptionsContainer>
+                    ) : (
+                      <>
+                        <DownloadContainer>
+                          <Download
+                            onClick={(event) =>
+                              handleDropdownToggle(event, invoice.invoiceId)
+                            }
+                          />
+                          {openDropdown === invoice.invoiceId && (
+                            <DownloadOptions>
+                              {invoice.pdfFlag === 1 &&
+                                invoice.validationFlag === 0 && (
+                                  <DownloadOption
+                                    onClick={(event) =>
+                                      handleDownloadClick(
+                                        event,
+                                        invoice.invoiceId,
+                                        3
+                                      )
+                                    }
+                                  >
+                                    PDF
+                                  </DownloadOption>
+                                )}
+                              {invoice.jsonFlag === 1 && (
+                                <DownloadOption
+                                  onClick={(event) =>
+                                    handleDownloadClick(
+                                      event,
+                                      invoice.invoiceId,
+                                      1
+                                    )
+                                  }
+                                >
+                                  JSON
+                                </DownloadOption>
+                              )}
+                              {invoice.xmlFlag === 1 && (
+                                <DownloadOption
+                                  onClick={(event) =>
+                                    handleDownloadClick(
+                                      event,
+                                      invoice.invoiceId,
+                                      2
+                                    )
+                                  }
+                                >
+                                  XML
+                                </DownloadOption>
+                              )}
+                            </DownloadOptions>
+                          )}
+                        </DownloadContainer>
+                        <DeleteButton
+                          onClick={(event) =>
+                            handleDeleteClick(event, invoice.invoiceId)
+                          }
+                        >
+                          Delete
+                        </DeleteButton>
+                      </>
+                    )}
+                  </InvoiceItem>
+                ))}
+              </InvoiceList>
+              <PaginationControls />
+            </Invoicecontainer>
+          </Maincontainer>
+        </Container>
+      </PageContainer>
     </div>
   );
 }
@@ -410,13 +411,19 @@ const VideoBackground = styled.video`
   position: fixed;
   top: 0%;
   left: 0%;
-  min-width: 10%;
-  min-height: 130%;
   width: 90%;
   height: 100%;
   z-index: -1;
   transform: translate(-0%, -0%);
   object-fit: cover;
+`;
+
+const PageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
 `;
 
 const Container = styled.div`
@@ -449,8 +456,8 @@ const Maincontainer = styled.div`
   justify-content: flex-start;
   align-items: flex-start;
   flex-direction: column;
-  height: 480px;
-  width: 800px;
+  height: 80%;
+  width: 100%;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   backdrop-filter: invert(20%);
   border-radius: 10px;
@@ -516,7 +523,7 @@ const SearchBox = styled.div`
 
   input {
     padding: 10px;
-    width: 200px;
+    width: 16vw;
     border: none;
     border-radius: 20px;
     background: rgba(255, 255, 255, 0.2);
@@ -608,8 +615,8 @@ const DownloadOption = styled.div`
 const Invoicecontainer = styled.div`
   position: relative;
   margin: 0 20px 20px 20px;
-  height: 350px;
-  width: 760px;
+  height: 60vh;
+  width: 68vw;
   backdrop-filter: blur(10px);
   overflow: hidden;
   overflow-y: scroll;
@@ -678,8 +685,8 @@ const InvoiceName = styled.span`
 const ValidationContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-right: 160px;
-  width: 140px;
+  margin-right: 10vw;
+  width: 16vw;
 
   @media (max-width: 430px) {
     margin-right: 115px;

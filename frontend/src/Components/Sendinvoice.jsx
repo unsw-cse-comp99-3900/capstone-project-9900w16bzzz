@@ -12,6 +12,7 @@ const SendInvoice = ({
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   const { showPopup } = usePopup();
 
   const handleEmailChange = (event) => {
@@ -41,7 +42,8 @@ const SendInvoice = ({
       return;
     }
 
-    if (validationFlag !== 0 && selectedFileType === "pdf") {
+    if (validationFlag === 2) {
+      setModalMessage("A file that failed validation cannot be sent.");
       setIsModalOpen(true);
       return;
     }
@@ -110,7 +112,7 @@ const SendInvoice = ({
       )}
       {isModalOpen && (
         <Modal
-          message="The PDF file has been modified. Please send the JSON or XML file instead."
+          message={modalMessage}
           onClose={() => setIsModalOpen(false)}
         />
       )}
