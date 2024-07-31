@@ -76,7 +76,7 @@ function Invoicedetail() {
   }, [fetchInvoiceDetail]);
 
   const handleArrowClick = () => {
-    navigate("/my-invoice");
+    navigate(`/my-invoice?page=${page}`);
   };
 
   const handleFileTypeChange = (event) => {
