@@ -85,41 +85,50 @@ function ResetPassword() {
   };
 
   return (
-    <div id="main">
+    <div>
       <BackgroundVideo autoPlay muted loop id="background-video-signup">
         <source src={video} type="video/mp4" />
         Your browser does not support the video tag.
       </BackgroundVideo>
-      <MainContainer>
-        <ResetText>Reset Password</ResetText>
-        <InputContainer>
-          <StyledInput
-            type="password"
-            placeholder="Current Password"
-            value={oldPassword}
-            onChange={(e) => setOldPassword(e.target.value)}
-          />
-          <StyledInput
-            type="password"
-            placeholder="New Password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-          <StyledInput
-            type="password"
-            placeholder="Confirm New Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </InputContainer>
-        <ButtonContainer>
-          <SignupButton content="Reset"  onClick={handleResetPassword}/>
-        </ButtonContainer>
-      </MainContainer>
+      <PageContainer>
+        <MainContainer>
+          <ResetText>Reset Password</ResetText>
+          <InputContainer>
+            <StyledInput
+              type="password"
+              placeholder="Current Password"
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+            />
+            <StyledInput
+              type="password"
+              placeholder="New Password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <StyledInput
+              type="password"
+              placeholder="Confirm New Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </InputContainer>
+          <ButtonContainer>
+            <SignupButton content="Reset"  onClick={handleResetPassword}/>
+          </ButtonContainer>
+        </MainContainer>
+      </PageContainer>
     </div>
   );
 }
 
+const PageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+`;
 const BackgroundVideo = styled.video`
   position: fixed;
   right: 0;
@@ -175,7 +184,7 @@ const MainContainer = styled.div`
   color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 0.4rem;
-  z-index: 1;
+  z-index: 0;
 
   @media only screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) {
     margin-top: 15vh;

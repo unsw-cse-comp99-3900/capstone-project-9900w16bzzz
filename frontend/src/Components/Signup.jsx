@@ -83,50 +83,60 @@ function Signup() {
   };
 
   return (
-    <div id="main">
+    <div>
       <video autoPlay muted loop id="background-video-signup">
         <source src={video} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
-      <Maincontainer>
-        <WelcomeText>Welcome</WelcomeText>
-        <InputContainer>
-          <SignupInput
-            type="text"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          {emailError && <ErrorText>{emailError}</ErrorText>}
-          <SignupInput
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          {usernameError && <ErrorText>{usernameError}</ErrorText>}
-          <SignupInput
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <SignupInput
-            type="password"
-            placeholder="Confirm password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-          {passwordError && <ErrorText>{passwordError}</ErrorText>}
-        </InputContainer>
-        <ButtonContainer>
-          <SignupButton content="Sign up" onClick={handleSignUp} />
-        </ButtonContainer>
-        <StyledLink to="/log-in">Already have an account? Login</StyledLink>
-      </Maincontainer>
+      <PageContainer>
+        <Maincontainer>
+          <WelcomeText>Welcome</WelcomeText>
+          <InputContainer>
+            <SignupInput
+              type="text"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            {emailError && <ErrorText>{emailError}</ErrorText>}
+            <SignupInput
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            {usernameError && <ErrorText>{usernameError}</ErrorText>}
+            <SignupInput
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <SignupInput
+              type="password"
+              placeholder="Confirm password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            {passwordError && <ErrorText>{passwordError}</ErrorText>}
+          </InputContainer>
+          <ButtonContainer>
+            <SignupButton content="Sign up" onClick={handleSignUp} />
+          </ButtonContainer>
+          <StyledLink to="/log-in">Already have an account? Login</StyledLink>
+        </Maincontainer>
+      </PageContainer>
     </div>
   );
 }
+
+const PageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+`;
 
 const Maincontainer = styled.div`
   display: flex;

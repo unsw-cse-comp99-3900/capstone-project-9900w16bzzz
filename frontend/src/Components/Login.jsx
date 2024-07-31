@@ -97,38 +97,47 @@ function Login() {
   };
 
   return (
-    <div id="main">
+    <div>
       <video autoPlay muted loop id="background-video-signup">
         <source src={video} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
-      <Maincontainer>
-        <LoginText>Log in</LoginText>
-        <InputContainer>
-          <StyledInput
-            type="text"
-            placeholder="Email"
-            value={loginEmail}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          {emailError && <ErrorText>{emailError}</ErrorText>}
-          <StyledInput
-            type="password"
-            placeholder="Password"
-            value={loginPassword}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {passwordError && <ErrorText>{passwordError}</ErrorText>}
-        </InputContainer>
-        <ButtonContainer>
-          <SignupButton content="Log in"  onClick={handleLogin} />
-        </ButtonContainer>
-        <StyledLink to="/sign-up">Don't have an account? Sign up</StyledLink>
-      </Maincontainer>
+      <PageContainer>
+        <Maincontainer>
+          <LoginText>Log in</LoginText>
+          <InputContainer>
+            <StyledInput
+              type="text"
+              placeholder="Email"
+              value={loginEmail}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            {emailError && <ErrorText>{emailError}</ErrorText>}
+            <StyledInput
+              type="password"
+              placeholder="Password"
+              value={loginPassword}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            {passwordError && <ErrorText>{passwordError}</ErrorText>}
+          </InputContainer>
+          <ButtonContainer>
+            <SignupButton content="Log in"  onClick={handleLogin} />
+          </ButtonContainer>
+          <StyledLink to="/sign-up">Don't have an account? Sign up</StyledLink>
+        </Maincontainer>
+      </PageContainer>
     </div>
   );
 }
 
+const PageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+`;
 const StyledInput = styled.input`
   background: rgba(255, 255, 255, 0.15);
   border-radius: 2rem;

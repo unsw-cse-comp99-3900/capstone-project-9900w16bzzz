@@ -8,6 +8,7 @@ import { useCookies } from 'react-cookie';
 const UserMenuContainer = styled.div`
   position: relative;
   display: inline-block;
+  z-index: 1000;
   @media (max-width: 1100px) {
     display: flex;
     justify-content: center;
