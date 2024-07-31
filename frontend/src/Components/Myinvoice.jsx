@@ -136,7 +136,7 @@ function Myinvoice() {
 
   const handleDeleteClick = async (event, invoiceId) => {
     event.stopPropagation();
-    await deleteInvoice(invoiceId, setInvoiceData, invoiceData);
+    await deleteInvoice(invoiceId, setInvoiceData, invoiceData, showPopup);
     fetchInvoices(currentPage);
   };
 

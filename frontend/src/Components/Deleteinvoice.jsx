@@ -1,6 +1,6 @@
 import React from "react";
 
-const deleteInvoice = async (invoiceId, setInvoiceData, invoiceData) => {
+const deleteInvoice = async (invoiceId, setInvoiceData, invoiceData, showPopup) => {
   const token = localStorage.getItem("token");
   try {
     const response = await fetch(
@@ -21,11 +21,14 @@ const deleteInvoice = async (invoiceId, setInvoiceData, invoiceData) => {
       setInvoiceData(
         invoiceData.filter((invoice) => invoice.invoiceId !== invoiceId)
       );
+      showPopup("Delete successful!", "success");
     } else {
       console.error("Failed to delete invoice:", data);
+      showPopup("Failed to delete invoice!", "error");
     }
   } catch (error) {
     console.error("Error deleting invoice:", error);
+    showPopup("Error deleting invoice!", "error");
   }
 };
 

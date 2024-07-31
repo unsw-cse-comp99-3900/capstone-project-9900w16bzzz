@@ -80,7 +80,7 @@ const GlobalPopup = () => {
     if (popupState.isVisible && !isClosing) {
       timer = setTimeout(() => {
         setIsClosing(true);
-      }, 3000);
+      }, 5000);
     }
     return () => clearTimeout(timer);
   }, [popupState.isVisible, isClosing]);
