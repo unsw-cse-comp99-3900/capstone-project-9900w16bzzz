@@ -42,11 +42,19 @@ const SendInvoice = ({
       return;
     }
 
+
     if (validationFlag === 2) {
       setModalMessage("A file that failed validation cannot be sent.");
       setIsModalOpen(true);
       return;
     }
+
+    if (validationFlag !== 0 && selectedFileType === "pdf") {
+      setModalMessage("The PDF file has been modified. Please send the JSON or XML file instead.");
+      setIsModalOpen(true);
+      return;
+    }
+
 
     const token = localStorage.getItem("token");
     const requestBody = {
