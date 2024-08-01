@@ -88,47 +88,49 @@ function Invoicedetail() {
   };
 
   return (
-    <div id="main">
+    <div>
       <VideoBackground autoPlay muted loop id="background-video-signup">
         <source src={video} type="video/mp4" />
         Your browser does not support the video tag.
       </VideoBackground>
-      <Maincontainer>
-        <ArrowIcon onClick={handleArrowClick} />
-        {invoice ? (
-          <>
-            <InvoiceName>
-              <TruncatedTitle>
-                {getFileNameWithoutExtension(invoice.fileName)}
-              </TruncatedTitle>
-              <FileTypeDropdown>
-                <select
-                  onChange={handleFileTypeChange}
-                  value={selectedFileType}
-                >
-                  {invoice.pdfFlag === 1 && <option value="pdf">PDF</option>}
-                  {invoice.jsonFlag === 1 && <option value="json">JSON</option>}
-                  {invoice.xmlFlag === 1 && <option value="xml">XML</option>}
-                </select>
-              </FileTypeDropdown>
-              <Validate onClick={handleValidateClick}>Validate</Validate>
-            </InvoiceName>
-            <Preview
-              selectedFileType={selectedFileType}
-              invoiceId={invoiceId}
-              validationFlag={invoice.validationFlag}
-            />
-            <SendInvoice
-              invoiceId={invoiceId}
-              selectedFileType={selectedFileType}
-              fileName={getFileNameWithoutExtension(invoice.fileName)}
-              validationFlag={invoice.validationFlag}
-            />
-          </>
-        ) : (
-          <LoadingMessage>Loading invoice details...</LoadingMessage>
-        )}
-      </Maincontainer>
+      <PageContainer>
+        <Maincontainer>
+          <ArrowIcon onClick={handleArrowClick} />
+          {invoice ? (
+            <>
+              <InvoiceName>
+                <TruncatedTitle>
+                  {getFileNameWithoutExtension(invoice.fileName)}
+                </TruncatedTitle>
+                <FileTypeDropdown>
+                  <select
+                    onChange={handleFileTypeChange}
+                    value={selectedFileType}
+                  >
+                    {invoice.pdfFlag === 1 && <option value="pdf">PDF</option>}
+                    {invoice.jsonFlag === 1 && <option value="json">JSON</option>}
+                    {invoice.xmlFlag === 1 && <option value="xml">XML</option>}
+                  </select>
+                </FileTypeDropdown>
+                <Validate onClick={handleValidateClick}>Validate</Validate>
+              </InvoiceName>
+              <Preview
+                selectedFileType={selectedFileType}
+                invoiceId={invoiceId}
+                validationFlag={invoice.validationFlag}
+              />
+              <SendInvoice
+                invoiceId={invoiceId}
+                selectedFileType={selectedFileType}
+                fileName={getFileNameWithoutExtension(invoice.fileName)}
+                validationFlag={invoice.validationFlag}
+              />
+            </>
+          ) : (
+            <LoadingMessage>Loading invoice details...</LoadingMessage>
+          )}
+        </Maincontainer>
+      </PageContainer>
     </div>
   );
 }
@@ -139,13 +141,19 @@ const VideoBackground = styled.video`
   position: fixed;
   top: 0%;
   left: 0%;
-  min-width: 10%;
-  min-height: 130%;
   width: 90%;
   height: 100%;
   z-index: -1;
   transform: translate(-0%, -0%);
   object-fit: cover;
+`;
+
+const PageContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
 `;
 
 const Maincontainer = styled.div`

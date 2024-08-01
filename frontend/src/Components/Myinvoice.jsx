@@ -162,7 +162,7 @@ function Myinvoice() {
 
   const truncateText = (text, maxLength) => {
     if (text.length > maxLength) {
-      return text.substring(0, maxLength) + "...";
+      return text.substring(0, maxLength - 1 ) + "...";
     }
     return text;
   };
@@ -248,13 +248,11 @@ function Myinvoice() {
                   >
                     <InvoiceNameContainer>
                       <InvoiceName>
-                        {isIphone14ProMax()
-                          ? truncateText(
-                              getFileNameWithoutExtension(invoice.fileName),
-                              15
-                            )
-                          : getFileNameWithoutExtension(invoice.fileName)}
+                        {getFileNameWithoutExtension(invoice.fileName)}
                       </InvoiceName>
+                      <UpdateDate>
+                        Update: {new Date(invoice.updateTime).toLocaleDateString()}
+                      </UpdateDate>
                     </InvoiceNameContainer>
                     {invoice.validationFlag === 1 && (
                       <ValidationContainer>
@@ -581,7 +579,7 @@ const DownloadContainer = styled.div`
 
 const Download = styled(BiDownload)`
   color: rgba(255, 255, 255, 0.7);
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   &:hover {
     cursor: pointer;
   }
@@ -653,7 +651,7 @@ const InvoiceItem = styled.li`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 15px 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   &:hover {
     background: rgba(0, 0, 0, 0.3);
@@ -663,23 +661,24 @@ const InvoiceItem = styled.li`
 
 const InvoiceNameContainer = styled.div`
   flex: 1;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    width: 10%;
-  }
+  margin-right: 20px;
 `;
 
 const InvoiceName = styled.span`
   color: #ffffff;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
 
-  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    font-size: 1rem;
-    argin-right: 100px;
-  }
+const UpdateDate = styled.span`
+  color: #888;
+  font-size: 0.8rem;
+  margin-top: 4px;
 `;
 
 const ValidationContainer = styled.div`
@@ -687,6 +686,7 @@ const ValidationContainer = styled.div`
   align-items: center;
   margin-right: 10vw;
   width: 16vw;
+  flex-shrink: 0;
 
   @media (max-width: 430px) {
     margin-right: 115px;
@@ -698,7 +698,7 @@ const ValidationPass = styled.span`
   display: flex;
   align-items: center;
   color: #00ff80;
-  font-size: 1rem;
+  font-size: 1.1rem;
 
   @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
     font-size: 0.8rem;
@@ -719,7 +719,7 @@ const NotValidated = styled.span`
   display: flex;
   align-items: center;
   color: #eeeeee;
-  font-size: 1rem;
+  font-size: 1.1rem;
 
   @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
     font-size: 0.8rem;
@@ -740,7 +740,7 @@ const ValidationFail = styled.span`
   display: flex;
   align-items: center;
   color: #ff0000;
-  font-size: 1rem;
+  font-size: 1.1rem;
 
   @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
     font-size: 0.8rem;
@@ -763,7 +763,7 @@ const DeleteButton = styled.button`
   border: 1px solid #ff1a1a;
   color: rgba(255, 255, 255, 0.7);
   padding: 4px 15px;
-  font-size: 1rem;
+  font-size: 1.1rem;
   cursor: pointer;
   outline: none;
   &:hover {
