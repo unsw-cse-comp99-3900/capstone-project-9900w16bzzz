@@ -58,10 +58,8 @@ export default Preview;
 
 const PreviewBox = styled.div`
   position: relative;
-  margin-top: 20px;
-  margin-left: 30px;
-  margin-right: 30px;
-  height: 240px;
+  margin: 30px auto;
+  height: 40vh;
   width: 90%;
   background: rgba(0, 0, 0, 0.3);
   border-radius: 20px;

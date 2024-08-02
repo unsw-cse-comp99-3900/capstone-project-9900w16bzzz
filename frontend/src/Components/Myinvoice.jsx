@@ -430,9 +430,6 @@ const Container = styled.div`
   align-items: center;
   margin-top: 20px;
 
-  @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    margin-top: 250px;
-  }
 `;
 
 const Mytext = styled.span`

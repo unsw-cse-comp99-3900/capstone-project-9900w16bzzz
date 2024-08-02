@@ -162,8 +162,8 @@ const Maincontainer = styled.div`
   justify-content: flex-start;
   align-items: flex-start;
   flex-direction: column;
-  height: 500px;
-  width: 650px;
+  height: 76vh;
+  width: 50vw;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   backdrop-filter: invert(20%);
   border-radius: 10px;
@@ -174,7 +174,6 @@ const Maincontainer = styled.div`
     width: 90%;
     height: auto;
     padding: 20px;
-    margin-top: 300px;
   }
 `;
 
@@ -200,7 +199,7 @@ const InvoiceName = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  height: 60px;
+  height: 10vh;
   width: 100%;
   border-bottom: 3px solid rgba(255, 255, 255, 0.2);
   padding-right: 20px;

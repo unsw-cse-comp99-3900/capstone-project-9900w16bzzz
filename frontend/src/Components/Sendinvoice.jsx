@@ -134,7 +134,6 @@ const EmailBox = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin-top: 20px;
   height: 100px;
   margin-left: 30px;
   margin-right: 30px;
@@ -153,7 +152,7 @@ const EmailInput = styled.div`
 
   input {
     padding: 10px;
-    width: 280px;
+    width: 22vw;
     border: none;
     border-radius: 20px;
     background: rgba(255, 255, 255, 0.2);
