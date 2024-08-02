@@ -231,15 +231,8 @@ public class InvoiceFileServiceImpl implements InvoiceFileService {
     }
 
     private String jointFileName(String fileName, FileType fileType) {
-        int lastDotIndex = fileName.lastIndexOf('.');
-        if (lastDotIndex == -1) {
-            // add file suffix
-            fileName += "." + fileType.getDesc();
-        } else {
-            // replace file suffix
-            fileName = fileName.substring(0, lastDotIndex) + "." + fileType;
-        }
-        return fileName;
+        return fileName + ("." + fileType.getDesc().toLowerCase());
     }
+
 
 }

@@ -60,7 +60,7 @@ public class InvoiceUploadServiceImpl implements InvoiceUploadService {
         // generate uuid
         invoiceEntity.setInvoiceId(invoiceId);
         invoiceEntity.setUserId(userId);
-        invoiceEntity.setFileName(file.getOriginalFilename());
+        invoiceEntity.setFileName(removeFileExtension(file.getOriginalFilename()));
 
         InvoiceJsonVO invoiceJsonVO;
         FileType fileType = null;
@@ -124,6 +124,17 @@ public class InvoiceUploadServiceImpl implements InvoiceUploadService {
         } else {
             return null;
         }
+    }
+
+    private String removeFileExtension(String filename) {
+        if (filename == null) {
+            return null;
+        }
+        int dotIndex = filename.lastIndexOf('.');
+        if (dotIndex == -1) {
+            return filename;
+        }
+        return filename.substring(0, dotIndex);
     }
 
 
