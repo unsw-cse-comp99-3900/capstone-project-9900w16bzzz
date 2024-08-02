@@ -29,6 +29,7 @@ public class UserDaoTest {
 
     @BeforeEach
     void setUp() {
+        // Initialize a UserEntity object with test data
         userEntity = new UserEntity();
         userEntity.setUserId(new BigInteger("1"));
         userEntity.setLoginName("testUser");
@@ -40,45 +41,62 @@ public class UserDaoTest {
 
     @Test
     void testGetByLoginName() {
+        // Mock the userDao.getByLoginName() to return the userEntity
         when(userDao.getByLoginName(anyString())).thenReturn(userEntity);
 
+        // Call the getByLoginName method with a specific login name
         UserEntity found = userDao.getByLoginName("testUser");
 
+        // Verify the result is not null and matches the expected login name and password
         assertThat(found).isNotNull();
         assertThat(found.getLoginName()).isEqualTo("testUser");
         assertThat(found.getLoginPwd()).isEqualTo("password");
 
+        // Verify that the userDao.getByLoginName() method was called once
         verify(userDao, times(1)).getByLoginName("testUser");
     }
 
     @Test
     void testGetUserById() {
+        // Create a UserVO object to be returned by the mock
         UserVO userVO = new UserVO();
+        // Mock the userDao.getUserById() to return the userVO
         when(userDao.getUserById(any(BigInteger.class))).thenReturn(userVO);
 
+        // Call the getUserById method with a specific user ID
         UserVO found = userDao.getUserById(new BigInteger("1"));
 
+        // Verify the result is not null
         assertThat(found).isNotNull();
+        // Verify that the userDao.getUserById() method was called once
         verify(userDao, times(1)).getUserById(new BigInteger("1"));
     }
 
     @Test
     void testUpdatePassword() {
+        // Mock the userDao.updatePassword() to return 1, indicating success
         when(userDao.updatePassword(anyInt(), anyString())).thenReturn(1);
 
+        // Call the updatePassword method with specific parameters
         Integer result = userDao.updatePassword(1, "newPassword");
 
+        // Verify the result is 1, indicating success
         assertThat(result).isEqualTo(1);
+        // Verify that the userDao.updatePassword() method was called once
         verify(userDao, times(1)).updatePassword(1, "newPassword");
     }
 
     @Test
     void testAddUser() {
+        // Mock the userDao.addUser() to return 1, indicating success
         when(userDao.addUser(anyString(), anyString())).thenReturn(1);
 
+        // Call the addUser method with specific parameters
         Integer result = userDao.addUser("newUser", "newPassword");
 
+        // Verify the result is 1, indicating success
         assertThat(result).isEqualTo(1);
+        // Verify that the userDao.addUser() method was called once
         verify(userDao, times(1)).addUser("newUser", "newPassword");
     }
 }

@@ -33,7 +33,9 @@ public class LoginFailDaoTest {
 
     @BeforeEach
     void setUp() {
+        // Initialize mocks before each test
         MockitoAnnotations.openMocks(this);
+        // Set up a LoginFailEntity with test data
         loginFailEntity = LoginFailEntity.builder()
                 .userId(BigInteger.valueOf(1))
                 .userType(1)
@@ -48,10 +50,13 @@ public class LoginFailDaoTest {
 
     @Test
     void testSelectByUserIdAndUserType() {
+        // Mock the LoginFailDao to return the LoginFailEntity for specific userId and userType
         when(loginFailDao.selectByUserIdAndUserType(BigInteger.valueOf(1), 1)).thenReturn(loginFailEntity);
 
+        // Call the selectByUserIdAndUserType method and validate the result
         LoginFailEntity result = loginFailDao.selectByUserIdAndUserType(BigInteger.valueOf(1), 1);
 
+        // Verify the result is not null and matches the expected values
         assertNotNull(result);
         assertEquals(loginFailEntity.getUserId(), result.getUserId());
         assertEquals(loginFailEntity.getUserType(), result.getUserType());
@@ -59,22 +64,29 @@ public class LoginFailDaoTest {
 
     @Test
     void testDeleteByUserIdAndUserType() {
+        // Mock the deleteByUserIdAndUserType method to do nothing
         doNothing().when(loginFailDao).deleteByUserIdAndUserType(BigInteger.valueOf(1), 1);
+        // Mock the selectByUserIdAndUserType method to return null after deletion
         when(loginFailDao.selectByUserIdAndUserType(BigInteger.valueOf(1), 1)).thenReturn(null);
 
+        // Call the deleteByUserIdAndUserType method
         loginFailDao.deleteByUserIdAndUserType(BigInteger.valueOf(1), 1);
 
+        // Verify the record is deleted by checking the result of selectByUserIdAndUserType
         LoginFailEntity result = loginFailDao.selectByUserIdAndUserType(BigInteger.valueOf(1), 1);
         assertNull(result);
     }
 
     @Test
     void testQueryPage() {
+        // Set up a Page object for pagination
         Page<LoginFailVO> page = new Page<>(1, 10);
+        // Set up a LoginFailQueryForm with query criteria
         LoginFailQueryForm queryForm = new LoginFailQueryForm();
         queryForm.setLoginName("testUser");
         queryForm.setLockFlag(false);
 
+        // Create a mock list of LoginFailVO as the expected result
         List<LoginFailVO> mockResults = new ArrayList<>();
         LoginFailVO loginFailVO = new LoginFailVO();
         loginFailVO.setUserId(loginFailEntity.getUserId());
@@ -87,13 +99,17 @@ public class LoginFailDaoTest {
         loginFailVO.setUpdateTime(loginFailEntity.getUpdateTime());
         mockResults.add(loginFailVO);
 
+        // Mock the queryPage method to return the mock results
         when(loginFailDao.queryPage(any(Page.class), any(LoginFailQueryForm.class))).thenReturn(mockResults);
 
+        // Call the queryPage method and validate the result
         List<LoginFailVO> results = loginFailDao.queryPage(page, queryForm);
 
+        // Verify the results are not null and not empty
         assertNotNull(results);
         assertFalse(results.isEmpty());
 
+        // Validate the first result in the list
         LoginFailVO resultVO = results.get(0);
         assertEquals(loginFailEntity.getUserId(), resultVO.getUserId());
         assertEquals(loginFailEntity.getUserType(), resultVO.getUserType());
