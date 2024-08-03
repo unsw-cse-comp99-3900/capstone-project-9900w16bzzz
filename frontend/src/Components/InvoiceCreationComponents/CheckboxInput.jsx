@@ -1,6 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 
+/**
+ * CheckboxInput component to render a list of selected rules.
+ * @param {Array} options - The list of options for the rules.
+ * @param {Array} selectedRules - The list of currently selected rules.
+ * @param {Function} onChange - Function to handle changes to the selected rules.
+ */
 const CheckboxInput = ({ options, selectedRules, onChange }) => {
   return (
     <CheckboxWrapper>
@@ -19,6 +25,9 @@ const CheckboxInput = ({ options, selectedRules, onChange }) => {
   );
 };
 
+/**
+ * Wrapper for the list of checkboxes.
+ */
 const CheckboxWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -26,6 +35,9 @@ const CheckboxWrapper = styled.div`
   margin-top: 15px;
 `;
 
+/**
+ * Label for each checkbox to contain the input and custom styling.
+ */
 const CheckboxLabel = styled.label`
   display: flex;
   align-items: center;
@@ -35,6 +47,9 @@ const CheckboxLabel = styled.label`
   user-select: none;
 `;
 
+/**
+ * Hidden native checkbox input to be styled by CustomCheckbox.
+ */
 const CheckboxStyled = styled.input`
   position: absolute;
   opacity: 0;
@@ -43,6 +58,9 @@ const CheckboxStyled = styled.input`
   width: 0;
 `;
 
+/**
+ * Custom styled checkbox to replace the native checkbox appearance.
+ */
 const CustomCheckbox = styled.span`
   position: relative;
   display: inline-block;
@@ -68,6 +86,9 @@ const CustomCheckbox = styled.span`
   }
 `;
 
+/**
+ * Text label for the checkbox.
+ */
 const LabelText = styled.div`
   font-color: white;
   margin-left: 5px;

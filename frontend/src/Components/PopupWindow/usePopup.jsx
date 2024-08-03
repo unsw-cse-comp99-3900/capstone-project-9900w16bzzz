@@ -2,16 +2,19 @@ import React, { useEffect, useState } from "react";
 import styled, { keyframes, css } from "styled-components";
 import { usePopup } from "./PopupContext";
 
+// Keyframes for slide-in animation
 const slideIn = keyframes`
   from { transform: translateX(100%); }
   to { transform: translateX(0); }
 `;
 
+// Keyframes for slide-out animation
 const slideOut = keyframes`
   from { transform: translateX(0); }
   to { transform: translateX(100%); }
 `;
 
+// Styled component for the popup wrapper
 const PopupWrapper = styled.div`
   position: fixed;
   top: 9vh;
@@ -36,6 +39,7 @@ const PopupWrapper = styled.div`
     `}
 `;
 
+// Styled component for the popup content
 const PopupContent = styled.div`
   background-color: ${(props) =>
     props.type === "error" ? "#FF4136" : "#2ECC40"};
@@ -50,11 +54,13 @@ const PopupContent = styled.div`
   max-width: 350px;
 `;
 
+// Styled component for the message text
 const MessageText = styled.p`
   font-size: 16px;
   margin: 0;
 `;
 
+// Styled component for the close button
 const CloseButton = styled.button`
   background-color: transparent;
   border: none;
@@ -71,10 +77,14 @@ const CloseButton = styled.button`
   }
 `;
 
+/**
+ * Global popup component to display popup messages.
+ */
 const GlobalPopup = () => {
   const { popupState, hidePopup } = usePopup();
   const [isClosing, setIsClosing] = useState(false);
 
+  // Effect to start the closing animation after a delay when the popup is visible
   useEffect(() => {
     let timer;
     if (popupState.isVisible && !isClosing) {
@@ -85,6 +95,7 @@ const GlobalPopup = () => {
     return () => clearTimeout(timer);
   }, [popupState.isVisible, isClosing]);
 
+  // Effect to hide the popup after the closing animation completes
   useEffect(() => {
     let timer;
     if (isClosing) {
@@ -96,6 +107,9 @@ const GlobalPopup = () => {
     return () => clearTimeout(timer);
   }, [isClosing, hidePopup]);
 
+  /**
+   * Handler to manually trigger the closing animation.
+   */
   const handleClose = () => {
     setIsClosing(true);
   };
