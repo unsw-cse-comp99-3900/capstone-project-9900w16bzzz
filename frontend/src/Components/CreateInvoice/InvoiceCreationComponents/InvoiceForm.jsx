@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { ReactComponent as ArrowIcon } from "../../images/arrow.svg";
-import FormInput from "./FormInput";
-import SelectInput from "./FormSelector";
-import CheckboxInput from "./CheckboxInput";
-import { usePopup } from "../PopupWindow/PopupContext";
+import { ReactComponent as ArrowIcon } from "../../../images/arrow.svg";
+import FormInput from "./InvoiceFormComponents/FormInput";
+import SelectInput from "./InvoiceFormComponents/FormSelector";
+import CheckboxInput from "./InvoiceFormComponents/CheckboxInput";
+import { usePopup } from "../../PopupWindow/PopupContext";
 
 /**
  * InvoiceForm component to handle form input for invoice creation and validation.

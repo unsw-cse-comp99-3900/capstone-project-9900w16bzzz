@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import video from "../images/video1.mp4";
+import video from "../../images/video1.mp4";
 import SignupInput from "./SignupInput";
 import SignupButton from "./SignupButton";
 import { Link, useNavigate } from "react-router-dom";
-import { usePopup } from "./PopupWindow/PopupContext";
+import { usePopup } from "../PopupWindow/PopupContext";
 import CryptoJS from "crypto-js";
 
 /**

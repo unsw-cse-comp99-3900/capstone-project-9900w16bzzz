@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { ReactComponent as ArrowIcon } from "../../images/arrow.svg";
+import { ReactComponent as ArrowIcon } from "../../../images/arrow.svg";
 
 /**
  * UploadPage component to handle file upload for invoice creation.

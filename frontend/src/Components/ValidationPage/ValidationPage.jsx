@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import styled from "styled-components";
 import video from "../../images/video1.mp4";
-import InvoiceForm from ".././InvoiceCreationComponents/InvoiceForm";
+import InvoiceForm from "../CreateInvoice/InvoiceCreationComponents/InvoiceForm";
 import ValidationResultPage from ".././InvoiceCreationComponents/ValidationResultPage";
 import ValidationSucceedPage from ".././InvoiceCreationComponents/ValidationSucceedPage";
 import { usePopup } from "../PopupWindow/PopupContext";

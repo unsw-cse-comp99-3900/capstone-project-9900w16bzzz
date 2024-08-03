@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import video from "../images/video1.mp4";
+import video from "../../images/video1.mp4";
 import styled from "styled-components";
 import { BsBoxArrowInLeft } from "react-icons/bs";
 import Preview from "./Preview";

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { ReactComponent as ArrowIcon } from "../../images/arrow.svg";
+import { ReactComponent as ArrowIcon } from "../../../images/arrow.svg";
 
 /**
  * GetStarted component to display the initial "Get Started" screen.

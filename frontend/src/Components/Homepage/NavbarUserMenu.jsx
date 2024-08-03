@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { usePopup } from "./PopupWindow/PopupContext";
+import { usePopup } from "../PopupWindow/PopupContext";
 import { useCookies } from 'react-cookie';
 
 const UserMenuContainer = styled.div`

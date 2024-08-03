@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import UserMenu from "./NavbarUserMenu";
-import ProtectedLink from "./InvoiceCreationComponents/ProtectedPage";
+import ProtectedLink from "../CreateInvoice/InvoiceCreationComponents/ProtectedPage";
+
 
 /**
  * Navbar component for navigation.

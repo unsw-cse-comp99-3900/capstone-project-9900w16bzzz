@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
-import video from "../images/video1.mp4";
+import video from "../../images/video1.mp4";
 import styled from "styled-components";
 import { FaSearch } from "react-icons/fa";
 import { BiDownload } from "react-icons/bi";
 import { useNavigate, useLocation } from "react-router-dom";
 import deleteInvoice from "./Deleteinvoice";
 import DownloadInvoice from "./Downloadinvoice";
-import { usePopup } from "./PopupWindow/PopupContext";
+import { usePopup } from "../PopupWindow/PopupContext";
 
 /**
  * Custom hook to parse URL query parameters.

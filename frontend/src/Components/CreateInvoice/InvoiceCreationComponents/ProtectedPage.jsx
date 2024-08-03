@@ -1,6 +1,6 @@
 import React from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { usePopup } from "../PopupWindow/PopupContext";
+import { usePopup } from "../../PopupWindow/PopupContext";
 
 /**
  * ProtectedLink component to create a protected link that checks for authentication.

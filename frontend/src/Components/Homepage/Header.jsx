@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import video from "../images/video.mp4";
+import video from "../../images/video.mp4";
 
 /**
  * Home component for the landing page.

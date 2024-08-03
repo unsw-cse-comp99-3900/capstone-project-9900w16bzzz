@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { usePopup } from "./PopupWindow/PopupContext";
+import { usePopup } from "../PopupWindow/PopupContext";
 import Modal from "./Modal";
 
 /**
