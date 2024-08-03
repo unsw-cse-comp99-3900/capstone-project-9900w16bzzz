@@ -48,7 +48,7 @@ const UploadPage = ({ goToStep, setFile, file }) => {
 
   return (
     <Container className="name">
-      <ArrowBackButton onClick={() => goToStep(0)}>
+      <ArrowBackButton data-cy="arrow-back-button" onClick={() => goToStep(0)}>
         <ArrowIcon />
       </ArrowBackButton>
       <Content>
@@ -74,7 +74,7 @@ const UploadPage = ({ goToStep, setFile, file }) => {
           />
         </FileInputWrapper>
       </Content>
-      <ArrowButton onClick={() => goToStep(2)} disabled={!file}>
+      <ArrowButton data-cy="arrow-button" onClick={() => goToStep(2)} disabled={!file}>
         <ArrowIcon />
       </ArrowButton>
     </Container>
@@ -195,12 +195,16 @@ const ArrowButton = styled.button`
       fill: ${(props) => (props.disabled ? "grey" : "#6414FF")};
     }
   }
+
+  &.left {
+    border: 2px solid red;  // Add a red border for testing
+  }
+
+  &.right {
+    border: 2px solid blue;  // Add a blue border for testing
+  }
 `;
 
-/**
- * Styled component for the back arrow button.
- * Mirrors the arrow icon.
- */
 const ArrowBackButton = styled(ArrowButton)`
   svg {
     transform: scaleX(-1);

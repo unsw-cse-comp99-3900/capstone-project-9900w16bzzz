@@ -18,7 +18,7 @@ const GetStarted = ({ goToStep }) => {
         Follow the several steps to create your e-invoice.
       </p>
       {/* Button to proceed to the next step */}
-      <ArrowButton onClick={() => goToStep(1)}>
+      <ArrowButton data-cy="arrow-button" onClick={() => goToStep(1)}>
         <ArrowIcon />
       </ArrowButton>
     </div>

@@ -115,7 +115,10 @@ const ChooseConvertOption = ({
       {isUploading && <Loading />}
       <PageContainer>
         <ActionContainer className="name">
-          <ArrowBackButton onClick={() => goToStep(1)}>
+          <ArrowBackButton
+            data-cy="arrow-back-button"
+            onClick={() => goToStep(1)}
+          >
             <ArrowIcon />
           </ArrowBackButton>
           <Content>
@@ -143,6 +146,7 @@ const ChooseConvertOption = ({
             </ActionOptions>
           </Content>
           <ArrowButton
+            data-cy="arrow-button"
             onClick={async () => {
               const uploadSuccess = await handleUpload(selectedAction);
               if (uploadSuccess) {
