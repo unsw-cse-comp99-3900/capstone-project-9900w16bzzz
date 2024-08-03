@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { usePopup } from "./PopupWindow/PopupContext";
-
 import { useCookies } from 'react-cookie';
 
 const UserMenuContainer = styled.div`
@@ -89,13 +88,23 @@ const UsernameDisplay = styled.div`
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 `;
 
+/**
+ * UserMenu component for displaying user options in the navigation bar.
+ *
+ * This component displays the username and a dropdown menu with options to reset password and log out.
+ * It handles showing and hiding the dropdown menu on mouse enter and leave events.
+ *
+ * @param {string} username - The username of the logged-in user.
+ */
 const UserMenu = ({ username }) => {
-  
   const [cookies, setCookie, removeCookie] = useCookies(['x-access-token']);
   const [showDropdown, setShowDropdown] = useState(false);
   const timeoutRef = useRef(null);
   const { showPopup } = usePopup();
 
+  /**
+   * Sends a logout request to the server.
+   */
   const logoutRequest = async () => {
     try {
       let endpoint = `${process.env.REACT_APP_SERVER_URL}/login/logout`;
@@ -111,24 +120,27 @@ const UserMenu = ({ username }) => {
       );
   
       if (!response.ok) {
-        throw new Error("Response was not ok, plesea check your network.");
+        throw new Error("Response was not ok, please check your network.");
       }
   
       showPopup("Log out successfully", "success");
     } catch (error) {
       console.error("Error processing file:", error);
-      showPopup(
-        `${error}`,
-        "error"
-      );
+      showPopup(`${error}`, "error");
     }
   };
 
+  /**
+   * Handles mouse enter event to show the dropdown menu.
+   */
   const handleMouseEnter = () => {
     clearTimeout(timeoutRef.current);
     setShowDropdown(true);
   };
 
+  /**
+   * Handles mouse leave event to hide the dropdown menu after a delay.
+   */
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => {
       setShowDropdown(false);

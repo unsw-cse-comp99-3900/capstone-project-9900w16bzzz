@@ -6,10 +6,21 @@ import { BsBoxArrowInLeft } from "react-icons/bs";
 import Preview from "./Preview";
 import SendInvoice from "./Sendinvoice";
 
+/**
+ * Custom hook to parse URL query parameters.
+ *
+ * @returns {URLSearchParams} The URL search parameters.
+ */
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
+/**
+ * InvoiceDetail component for displaying invoice details.
+ *
+ * This component fetches and displays the details of a specific invoice based on the invoice ID
+ * from the URL parameters. It includes options to view, validate, and send the invoice.
+ */
 function Invoicedetail() {
   const { invoiceId } = useParams();
   const query = useQuery();
@@ -18,10 +29,19 @@ function Invoicedetail() {
   const navigate = useNavigate();
   const page = query.get("page") || 1;
 
+  /**
+   * Utility function to remove the file extension from a filename.
+   *
+   * @param {string} fileName - The filename with extension.
+   * @returns {string} The filename without extension.
+   */
   const getFileNameWithoutExtension = (fileName) => {
     return fileName.replace(/\.[^/.]+$/, "");
   };
 
+  /**
+   * Fetches invoice details from the server.
+   */
   const fetchInvoiceDetail = useCallback(async () => {
     const userId = localStorage.getItem("userId");
     const token = localStorage.getItem("token");
@@ -75,26 +95,39 @@ function Invoicedetail() {
     fetchInvoiceDetail();
   }, [fetchInvoiceDetail]);
 
+  /**
+   * Handles the click event to navigate back to the invoice list page.
+   */
   const handleArrowClick = () => {
     navigate(`/my-invoice?page=${page}`);
   };
 
+  /**
+   * Handles the change event for the file type dropdown.
+   *
+   * @param {Event} event - The change event.
+   */
   const handleFileTypeChange = (event) => {
     setSelectedFileType(event.target.value);
   };
 
+  /**
+   * Handles the click event to navigate to the validation page for the invoice.
+   */
   const handleValidateClick = () => {
     navigate(`/validation/${invoiceId}`);
   };
 
   return (
     <div>
+      {/* Background video */}
       <VideoBackground autoPlay muted loop id="background-video-signup">
         <source src={video} type="video/mp4" />
         Your browser does not support the video tag.
       </VideoBackground>
       <PageContainer>
         <Maincontainer>
+          {/* Back arrow icon */}
           <ArrowIcon onClick={handleArrowClick} />
           {invoice ? (
             <>
@@ -136,6 +169,8 @@ function Invoicedetail() {
 }
 
 export default Invoicedetail;
+
+// Styled components for the InvoiceDetail component
 
 const VideoBackground = styled.video`
   position: fixed;

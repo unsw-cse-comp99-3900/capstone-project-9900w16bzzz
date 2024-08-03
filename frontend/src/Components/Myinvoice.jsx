@@ -8,10 +8,21 @@ import deleteInvoice from "./Deleteinvoice";
 import DownloadInvoice from "./Downloadinvoice";
 import { usePopup } from "./PopupWindow/PopupContext";
 
+/**
+ * Custom hook to parse URL query parameters.
+ *
+ * @returns {URLSearchParams} The URL search parameters.
+ */
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
+/**
+ * MyInvoice component for managing and displaying user invoices.
+ *
+ * This component allows users to view, search, download, and delete their invoices.
+ * It also provides pagination controls and handles different file types and validation statuses.
+ */
 function Myinvoice() {
   const query = useQuery();
   const navigate = useNavigate();
@@ -25,6 +36,11 @@ function Myinvoice() {
   const [pageSize] = useState(10);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
+  /**
+   * Fetches a list of invoices from the server.
+   *
+   * @param {number} page - The current page number.
+   */
   const fetchInvoices = useCallback(
     async (page) => {
       const userId = localStorage.getItem("userId");
@@ -61,15 +77,20 @@ function Myinvoice() {
           setCurrentPage(data.data.pageNum);
         } else {
           console.error("Invalid API response structure:", data);
-          showPopup(`Failed to fetch invoices. Errors: ${data.msg}`,"error");
+          showPopup(`Failed to fetch invoices. Errors: ${data.msg}`, "error");
         }
       } catch (error) {
         console.error("Error fetching invoices:", error);
       }
     },
-    [pageSize]
+    [pageSize, showPopup]
   );
 
+  /**
+   * Searches for invoices by name.
+   *
+   * @param {number} page - The current page number.
+   */
   const searchInvoices = useCallback(
     async (page) => {
       const userId = localStorage.getItem("userId");
@@ -131,21 +152,45 @@ function Myinvoice() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  /**
+   * Handles the click event for an invoice item.
+   *
+   * @param {string} invoiceId - The ID of the invoice.
+   */
   const handleInvoiceClick = (invoiceId) => {
     navigate(`/invoice/${invoiceId}?page=${currentPage}`);
   };
 
+  /**
+   * Handles the delete button click event for an invoice.
+   *
+   * @param {Event} event - The click event.
+   * @param {string} invoiceId - The ID of the invoice.
+   */
   const handleDeleteClick = async (event, invoiceId) => {
     event.stopPropagation();
     await deleteInvoice(invoiceId, setInvoiceData, invoiceData, showPopup);
     fetchInvoices(currentPage);
   };
 
+  /**
+   * Toggles the dropdown for more options on an invoice item.
+   *
+   * @param {Event} event - The click event.
+   * @param {string} invoiceId - The ID of the invoice.
+   */
   const handleDropdownToggle = (event, invoiceId) => {
     event.stopPropagation();
     setOpenDropdown(openDropdown === invoiceId ? null : invoiceId);
   };
 
+  /**
+   * Handles the download button click event for an invoice.
+   *
+   * @param {Event} event - The click event.
+   * @param {string} invoiceId - The ID of the invoice.
+   * @param {number} fileType - The type of file to download (1 for JSON, 2 for XML, 3 for PDF).
+   */
   const handleDownloadClick = async (event, invoiceId, fileType) => {
     event.stopPropagation();
     event.preventDefault();
@@ -157,17 +202,35 @@ function Myinvoice() {
     }
   };
 
+  /**
+   * Utility function to remove the file extension from a filename.
+   *
+   * @param {string} fileName - The filename with extension.
+   * @returns {string} The filename without extension.
+   */
   const getFileNameWithoutExtension = (fileName) => {
     return fileName.replace(/\.[^/.]+$/, "");
   };
 
+  /**
+   * Truncates text to a specified maximum length, adding ellipsis if needed.
+   *
+   * @param {string} text - The text to truncate.
+   * @param {number} maxLength - The maximum length of the truncated text.
+   * @returns {string} The truncated text.
+   */
   const truncateText = (text, maxLength) => {
     if (text.length > maxLength) {
-      return text.substring(0, maxLength - 1 ) + "...";
+      return text.substring(0, maxLength - 1) + "...";
     }
     return text;
   };
 
+  /**
+   * Checks if the device is an iPhone 14 Pro Max.
+   *
+   * @returns {boolean} True if the device is an iPhone 14 Pro Max, false otherwise.
+   */
   const isIphone14ProMax = () => {
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -175,11 +238,20 @@ function Myinvoice() {
     return width === 430 && height === 932 && pixelRatio === 3;
   };
 
+  /**
+   * Handles the click event for the more options button on an invoice item.
+   *
+   * @param {Event} event - The click event.
+   * @param {string} invoiceId - The ID of the invoice.
+   */
   const handleMoreOptionsClick = (event, invoiceId) => {
     event.stopPropagation();
     setOpenDropdown(openDropdown === invoiceId ? null : invoiceId);
   };
 
+  /**
+   * Component for rendering pagination controls.
+   */
   const PaginationControls = () => (
     <PaginationContainer>
       <PageButton
@@ -214,6 +286,7 @@ function Myinvoice() {
 
   return (
     <div>
+      {/* Background video */}
       <VideoBackground autoPlay muted loop id="background-video-signup">
         <source src={video} type="video/mp4" />
         Your browser does not support the video tag.
@@ -406,6 +479,8 @@ function Myinvoice() {
 
 export default Myinvoice;
 
+// Styled components for the MyInvoice component
+
 const VideoBackground = styled.video`
   position: fixed;
   top: 0%;
@@ -430,7 +505,6 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: 20px;
-
 `;
 
 const Mytext = styled.span`

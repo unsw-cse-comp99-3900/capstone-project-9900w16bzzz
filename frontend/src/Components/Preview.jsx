@@ -3,9 +3,22 @@ import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import styled from "styled-components";
 import Modal from "./Modal";
 
+/**
+ * Preview component for displaying and handling file previews.
+ *
+ * This component provides a preview option for different file types (PDF, JSON, XML).
+ * It handles file preview actions and displays a modal for modified PDF files.
+ *
+ * @param {string} selectedFileType - The selected file type for preview.
+ * @param {string} invoiceId - The ID of the invoice.
+ * @param {number} validationFlag - The validation status of the invoice (0: not validated, 1: passed, 2: failed).
+ */
 const Preview = ({ selectedFileType, invoiceId, validationFlag }) => {
   const [showModal, setShowModal] = useState(false);
 
+  /**
+   * Handles the preview click event to open the file in a new tab.
+   */
   const handlePreviewClick = async () => {
     const token = localStorage.getItem("token");
     const fileTypeMap = {
@@ -29,10 +42,16 @@ const Preview = ({ selectedFileType, invoiceId, validationFlag }) => {
     window.open(url, "_blank");
   };
 
+  /**
+   * Handles the eye slash icon click event to show the modal.
+   */
   const handleEyeSlashClick = () => {
     setShowModal(true);
   };
 
+  /**
+   * Handles closing the modal.
+   */
   const handleCloseModal = () => {
     setShowModal(false);
   };
@@ -55,6 +74,8 @@ const Preview = ({ selectedFileType, invoiceId, validationFlag }) => {
 };
 
 export default Preview;
+
+// Styled components for the Preview component
 
 const PreviewBox = styled.div`
   position: relative;

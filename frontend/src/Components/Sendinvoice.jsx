@@ -3,6 +3,17 @@ import styled from "styled-components";
 import { usePopup } from "./PopupWindow/PopupContext";
 import Modal from "./Modal";
 
+/**
+ * SendInvoice component for sending invoices via email.
+ *
+ * This component provides a form for users to enter an email address and send an invoice.
+ * It handles validation, sending requests to the server, and displaying feedback to the user.
+ *
+ * @param {string} invoiceId - The ID of the invoice to be sent.
+ * @param {string} selectedFileType - The selected file type for the invoice.
+ * @param {string} fileName - The name of the invoice file.
+ * @param {number} validationFlag - The validation status of the invoice.
+ */
 const SendInvoice = ({
   invoiceId,
   selectedFileType,
@@ -15,10 +26,18 @@ const SendInvoice = ({
   const [modalMessage, setModalMessage] = useState("");
   const { showPopup } = usePopup();
 
+  /**
+   * Handles the change event for the email input.
+   *
+   * @param {Event} event - The change event.
+   */
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
   };
 
+  /**
+   * Handles the click event for sending the invoice.
+   */
   const handleSendInvoice = async () => {
     if (!email) {
       showPopup("Please enter an email address.", "error");
@@ -42,7 +61,6 @@ const SendInvoice = ({
       return;
     }
 
-
     if (validationFlag === 2) {
       setModalMessage("A file that failed validation cannot be sent.");
       setIsModalOpen(true);
@@ -54,7 +72,6 @@ const SendInvoice = ({
       setIsModalOpen(true);
       return;
     }
-
 
     const token = localStorage.getItem("token");
     const requestBody = {
@@ -129,6 +146,8 @@ const SendInvoice = ({
 };
 
 export default SendInvoice;
+
+// Styled components for the SendInvoice component
 
 const EmailBox = styled.div`
   display: flex;

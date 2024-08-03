@@ -1,10 +1,19 @@
 import React from "react";
 import styled from "styled-components";
 
+/**
+ * SignupButton component for rendering a styled button.
+ *
+ * This component renders a button used in the signup form.
+ *
+ * @param {string} content - The text content of the button.
+ * @param {function} onClick - The function to call when the button is clicked.
+ */
 export default function SignupButton({ content, onClick }) {
   return <StyledButton onClick={onClick}>{content}</StyledButton>;
 }
 
+// Styled component for the button
 const StyledButton = styled.button`
   background-color: #6414ff;
   text-transform: uppercase;

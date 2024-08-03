@@ -6,6 +6,12 @@ import { useNavigate } from "react-router-dom";
 import { usePopup } from "./PopupWindow/PopupContext";
 import CryptoJS from "crypto-js";
 
+/**
+ * ResetPassword component for handling password reset functionality.
+ *
+ * This component provides a form for users to reset their password.
+ * It includes validation, password hashing, and interaction with the server.
+ */
 function ResetPassword() {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -14,6 +20,12 @@ function ResetPassword() {
   const { showPopup } = usePopup();
   const navigate = useNavigate();
 
+  /**
+   * Validates the new password.
+   *
+   * @param {string} password - The new password.
+   * @returns {string} An error message if validation fails, otherwise an empty string.
+   */
   const validatePassword = (password) => {
     if (password.length < 6) {
       return "Password must be at least 6 characters long.";
@@ -21,6 +33,12 @@ function ResetPassword() {
     return "";
   };
 
+  /**
+   * Handles the password reset process.
+   *
+   * This function validates the passwords, hashes them, and sends a request to the server to update the password.
+   * It also handles the response and shows appropriate messages to the user.
+   */
   const handleResetPassword = async () => {
     const passwordError = validatePassword(newPassword);
     if (passwordError) {
@@ -86,6 +104,7 @@ function ResetPassword() {
 
   return (
     <div>
+      {/* Background video */}
       <BackgroundVideo autoPlay muted loop id="background-video-signup">
         <source src={video} type="video/mp4" />
         Your browser does not support the video tag.
@@ -114,13 +133,15 @@ function ResetPassword() {
             />
           </InputContainer>
           <ButtonContainer>
-            <SignupButton content="Reset"  onClick={handleResetPassword}/>
+            <SignupButton content="Reset" onClick={handleResetPassword} />
           </ButtonContainer>
         </MainContainer>
       </PageContainer>
     </div>
   );
 }
+
+// Styled components for the ResetPassword component
 
 const PageContainer = styled.div`
   display: flex;
@@ -129,6 +150,7 @@ const PageContainer = styled.div`
   min-height: 100vh;
   width: 100%;
 `;
+
 const BackgroundVideo = styled.video`
   position: fixed;
   right: 0;

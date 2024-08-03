@@ -7,6 +7,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { usePopup } from "./PopupWindow/PopupContext";
 import CryptoJS from "crypto-js";
 
+/**
+ * Signup component for user registration.
+ *
+ * This component provides a form for users to sign up with email, username, and password.
+ * It handles input validation, password hashing, and sending the registration request to the server.
+ */
 function Signup() {
   const { showPopup } = usePopup();
   const [email, setEmail] = useState("");
@@ -18,6 +24,12 @@ function Signup() {
   const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
 
+  /**
+   * Handles the sign-up process.
+   *
+   * This function validates the inputs, hashes the password, and sends a request to the server to register the user.
+   * It also handles the response and shows appropriate messages to the user.
+   */
   const handleSignUp = async () => {
     setEmailError("");
     setUsernameError("");
@@ -84,6 +96,7 @@ function Signup() {
 
   return (
     <div>
+      {/* Background video */}
       <video autoPlay muted loop id="background-video-signup">
         <source src={video} type="video/mp4" />
         Your browser does not support the video tag.
@@ -129,6 +142,8 @@ function Signup() {
     </div>
   );
 }
+
+// Styled components for the Signup component
 
 const PageContainer = styled.div`
   display: flex;

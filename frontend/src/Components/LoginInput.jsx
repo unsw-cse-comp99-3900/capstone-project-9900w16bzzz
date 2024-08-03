@@ -1,6 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 
+/**
+ * LoginInput component for rendering an input field.
+ *
+ * This component renders a styled input field used in the login form.
+ *
+ * @param {string} type - The type of the input field (e.g., text, password).
+ * @param {string} placeholder - The placeholder text for the input field.
+ * @param {string} value - The current value of the input field.
+ * @param {function} onChange - The function to call when the input value changes.
+ */
 export default function LoginInput({ type, placeholder, value, onChange }) {
   return (
     <StyledInput
@@ -12,6 +22,7 @@ export default function LoginInput({ type, placeholder, value, onChange }) {
   );
 }
 
+// Styled component for the input field
 const StyledInput = styled.input`
   background: rgba(255, 255, 255, 0.15);
   border-radius: 2rem;

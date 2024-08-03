@@ -3,6 +3,12 @@ import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import UserMenu from "./NavbarUserMenu";
 import ProtectedLink from "./InvoiceCreationComponents/ProtectedPage";
 
+/**
+ * Navbar component for navigation.
+ *
+ * This component provides a navigation bar with links to different pages,
+ * and it handles user authentication, background change on scroll, and menu toggle.
+ */
 function Navbar() {
   const [nav, setNav] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -11,6 +17,9 @@ function Navbar() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    /**
+     * Checks if the user is authenticated and sets the username state.
+     */
     const checkUserAuth = () => {
       const token = localStorage.getItem("token");
       const storedUsername = localStorage.getItem("username");
@@ -39,6 +48,9 @@ function Navbar() {
     setMenuOpen(false);
   }, [location]);
 
+  /**
+   * Changes the background of the navbar when the user scrolls.
+   */
   const changeBackground = () => {
     if (window.scrollY >= 50) {
       setNav(true);
@@ -47,12 +59,20 @@ function Navbar() {
     }
   };
 
+  /**
+   * Closes the menu if the user clicks outside of it.
+   *
+   * @param {Event} event - The click event.
+   */
   const handleClickOutside = (event) => {
     if (!event.target.closest('.nav') && !event.target.closest('.menu-icon')) {
       setMenuOpen(false);
     }
   };
 
+  /**
+   * Toggles the menu open and closed.
+   */
   const handleMenuToggle = () => {
     setMenuOpen((prevMenuOpen) => !prevMenuOpen);
   };

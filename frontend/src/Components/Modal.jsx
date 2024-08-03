@@ -1,6 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 
+/**
+ * Modal component for displaying alert messages.
+ *
+ * This component renders a modal with a message and a close button.
+ * The modal can be closed by clicking the backdrop or the close button.
+ *
+ * @param {string} message - The alert message to be displayed.
+ * @param {function} onClose - The function to call when the modal is closed.
+ */
 const Modal = ({ message, onClose }) => {
   return (
     <Backdrop onClick={onClose}>
@@ -14,6 +23,7 @@ const Modal = ({ message, onClose }) => {
 
 export default Modal;
 
+// Styled component for the backdrop
 const Backdrop = styled.div`
   position: fixed;
   top: 0;
@@ -27,6 +37,7 @@ const Backdrop = styled.div`
   z-index: 1000;
 `;
 
+// Styled component for the modal content
 const ModalContent = styled.div`
   background: black;
   padding: 30px 20px;
@@ -39,12 +50,14 @@ const ModalContent = styled.div`
   justify-content: center;
 `;
 
+// Styled component for the message
 const Message = styled.p`
   margin: 0;
   font-size: 1.2rem;
   color: white;
 `;
 
+// Styled component for the close icon
 const CloseIcon = styled.span`
   position: absolute;
   top: 10px;
@@ -56,3 +69,4 @@ const CloseIcon = styled.span`
     color: #6414ff;
   }
 `;
+

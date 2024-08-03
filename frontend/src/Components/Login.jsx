@@ -6,6 +6,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { usePopup } from "./PopupWindow/PopupContext";
 import CryptoJS from "crypto-js";
 
+/**
+ * Login component for user authentication.
+ *
+ * This component provides a login form for users to enter their email and password,
+ * validates the input, and sends a login request to the server. On successful login,
+ * it fetches user information and navigates to the home page.
+ */
 function Login() {
   const [loginEmail, setEmail] = useState("");
   const [loginPassword, setPassword] = useState("");
@@ -15,10 +22,18 @@ function Login() {
   const { showPopup } = usePopup();
   const navigate = useNavigate();
 
+  /**
+   * Handles the login process.
+   *
+   * This function validates the email and password, sends a login request to the server,
+   * and handles the response. On successful login, it stores the authentication token,
+   * fetches user information, and navigates to the home page.
+   */
   const handleLogin = async () => {
     setEmailError("");
     setPasswordError("");
     
+    // Email validation pattern
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(loginEmail)) {
       setEmailError("Please enter a valid email address.");
@@ -30,6 +45,7 @@ function Login() {
       return;
     }
 
+    // Hash the password using MD5
     const hashedPassword = CryptoJS.MD5(loginPassword).toString();
 
     const requestBody = {
@@ -52,6 +68,7 @@ function Login() {
       if (response.ok) {
         const data = await response.json();
         if (data.ok) {
+          // Store the authentication token in local storage
           localStorage.setItem("token", data.data.token);
           showPopup("Login successful!", "success");
           await getUserInformation();
@@ -67,6 +84,12 @@ function Login() {
     }
   };
 
+  /**
+   * Fetches user information after login.
+   *
+   * This function sends a request to the server to get the logged-in user's information,
+   * stores it in local storage, and dispatches an event to update the application state.
+   */
   const getUserInformation = async () => {
     const token = localStorage.getItem("token");
     try {
@@ -98,6 +121,7 @@ function Login() {
 
   return (
     <div>
+      {/* Background video */}
       <video autoPlay muted loop id="background-video-signup">
         <source src={video} type="video/mp4" />
         Your browser does not support the video tag.
@@ -122,7 +146,7 @@ function Login() {
             {passwordError && <ErrorText>{passwordError}</ErrorText>}
           </InputContainer>
           <ButtonContainer>
-            <SignupButton content="Log in"  onClick={handleLogin} />
+            <SignupButton content="Log in" onClick={handleLogin} />
           </ButtonContainer>
           <StyledLink to="/sign-up">Don't have an account? Sign up</StyledLink>
         </Maincontainer>
@@ -131,6 +155,8 @@ function Login() {
   );
 }
 
+// Styled components for the Login component
+
 const PageContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -138,6 +164,7 @@ const PageContainer = styled.div`
   min-height: 100vh;
   width: 100%;
 `;
+
 const StyledInput = styled.input`
   background: rgba(255, 255, 255, 0.15);
   border-radius: 2rem;
