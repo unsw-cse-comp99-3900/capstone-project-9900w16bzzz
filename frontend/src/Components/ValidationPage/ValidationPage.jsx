@@ -8,32 +8,43 @@ import ValidationResultPage from ".././InvoiceCreationComponents/ValidationResul
 import ValidationSucceedPage from ".././InvoiceCreationComponents/ValidationSucceedPage";
 import { usePopup } from "../PopupWindow/PopupContext";
 
+/**
+ * ValidationPage component to handle the validation of a specific invoice.
+ */
 const ValidationPage = () => {
   const { showPopup } = usePopup();
-  const { invoiceId } = useParams();
-  const [step, setStep] = useState(0);
+  const { invoiceId } = useParams(); // Get the invoice ID from the URL parameters
+  const [step, setStep] = useState(0); // State to manage the current step
   const [invoice, setInvoice] = useState({
     invoiceId: invoiceId,
     invoiceJsonVO: null,
-  });
-  const [validationResult, setValidationResult] = useState(null);
-  const [shouldRefresh, setShouldRefresh] = useState(false);
+  }); // State to manage the invoice details
+  const [validationResult, setValidationResult] = useState(null); // State to manage the validation result
+  const [shouldRefresh, setShouldRefresh] = useState(false); // State to manage the page refresh
 
+  /**
+   * Function to navigate to a specific step.
+   * @param {number} stepNumber - The step number to navigate to.
+   */
   const goToStep = useCallback((stepNumber) => {
     setStep(stepNumber);
     if (stepNumber === 0) {
-      setShouldRefresh(true);
+      setShouldRefresh(true); // Trigger refresh if navigating back to the first step
     }
   }, []);
 
+  // Transition settings for animations
   const transition = {
     duration: 2,
   };
 
+  /**
+   * Function to load the invoice details from the server.
+   */
   const loadPage = useCallback(async () => {
     try {
-      let endpoint = `${process.env.REACT_APP_SERVER_URL}/invoice/json`;
-      let token = localStorage.getItem("token");
+      const endpoint = `${process.env.REACT_APP_SERVER_URL}/invoice/json`;
+      const token = localStorage.getItem("token");
       const response = await fetch(
         `${endpoint}?invoiceId=${invoice.invoiceId}`,
         {
@@ -54,8 +65,7 @@ const ValidationPage = () => {
           ...prevInvoice,
           invoiceJsonVO: data.data,
         }));
-      }
-      if (!data.ok) {
+      } else {
         throw new Error("Server response was not ok");
       }
     } catch (error) {
@@ -67,10 +77,12 @@ const ValidationPage = () => {
     }
   }, [invoice.invoiceId, showPopup]);
 
+  // Effect to load the page when the component mounts
   useEffect(() => {
     loadPage();
   }, [loadPage]);
 
+  // Effect to refresh the page when necessary
   useEffect(() => {
     if (shouldRefresh && step === 0) {
       loadPage();
@@ -81,10 +93,13 @@ const ValidationPage = () => {
   return (
     <div>
       <MainContainer id="main" style={{ height: "auto" }}>
+        {/* Background video */}
         <BackgroundVideo autoPlay muted loop id="background-video">
           <source src={video} type="video/mp4" />
           Your browser does not support the video tag.
         </BackgroundVideo>
+        {/* Conditional rendering for each step with animations */}
+        {/* Step 1: Read invoice JSON file and load invoice form */}
         {step === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -100,6 +115,7 @@ const ValidationPage = () => {
             />
           </motion.div>
         )}
+        {/* Step 2: Validation succeed page */}
         {step === 5 && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -110,6 +126,7 @@ const ValidationPage = () => {
             <ValidationSucceedPage goToStep={goToStep} />
           </motion.div>
         )}
+        {/* Step 3: Validation report */}
         {step === 6 && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -129,6 +146,7 @@ const ValidationPage = () => {
   );
 };
 
+// Styled component for the main container
 const MainContainer = styled.div`
   position: relative;
   width: 100%;
@@ -139,6 +157,7 @@ const MainContainer = styled.div`
   z-index: 1;
 `;
 
+// Styled component for the background video
 const BackgroundVideo = styled.video`
   position: absolute;
   top: 0;

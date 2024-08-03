@@ -6,6 +6,13 @@ import SelectInput from "./FormSelector";
 import CheckboxInput from "./CheckboxInput";
 import { usePopup } from "../PopupWindow/PopupContext";
 
+/**
+ * InvoiceForm component to handle form input for invoice creation and validation.
+ * @param {Function} goToStep - Function to navigate to a specific step.
+ * @param {Object} invoice - The invoice data.
+ * @param {Function} setValidationResult - Function to set the validation result.
+ * @param {string} [type="creation"] - The type of form, either "creation" or "validation".
+ */
 function InvoiceForm({
   goToStep,
   invoice,
@@ -23,6 +30,7 @@ function InvoiceForm({
 
   const [isUploading, setIsUploading] = useState(false);
 
+  // update unfilledFields
   useEffect(() => {
     const unfilledFields = validateForm(formData);
     setUnfilledFields(unfilledFields);
@@ -30,6 +38,7 @@ function InvoiceForm({
     console.log(unfilledFields);
   }, [formData]);
 
+  // manage sections to expand and field focus.
   useEffect(() => {
     if (showValidation && unfilledFields.length > 0) {
       const sectionsToExpand = sections
@@ -57,6 +66,7 @@ function InvoiceForm({
     }
   }, [showValidation, unfilledFields]);
 
+  // initial form data
   useEffect(() => {
     if (invoice && invoice.invoiceJsonVO) {
       let modifiedData = { ...invoice.invoiceJsonVO };
@@ -67,6 +77,8 @@ function InvoiceForm({
       setFormData(modifiedData);
     }
   }, [invoice]);
+
+  // expand section button
   const toggleSection = (section) => {
     setExpandedSections((prev) => {
       const prevArray = Array.isArray(prev) ? prev : [];
@@ -78,6 +90,7 @@ function InvoiceForm({
     });
   };
 
+  // further initialize invoice data, filled unchangeable fields
   const setDefaultValues = (data) => {
     let newData = JSON.parse(JSON.stringify(data));
 
@@ -175,6 +188,7 @@ function InvoiceForm({
     return newData;
   };
 
+  // handle validation rule change
   const handleRuleChange = (rule) => {
     setSelectedRules((prevRules) =>
       prevRules.includes(rule)
@@ -183,6 +197,7 @@ function InvoiceForm({
     );
   };
 
+  // check if the form is validate
   const validateForm = (data) => {
     const unfilledFields = [];
 
@@ -203,6 +218,7 @@ function InvoiceForm({
     return unfilledFields;
   };
 
+  // change invoice data after user change any field in form
   const handleInputChange = (field, value) => {
     setShowValidation(false);
     const currentSection = sections.find((section) =>
@@ -254,6 +270,7 @@ function InvoiceForm({
     }
   };
 
+  //render a specific field
   const renderField = (key, value, prefix = "") => {
     const fullKey = prefix ? `${prefix}.${key}` : key;
     const isInvalid = showValidation && unfilledFields.includes(fullKey);
@@ -353,6 +370,7 @@ function InvoiceForm({
     }
   };
 
+  //render a specific section
   const renderSection = (title, data) => {
     const isUBLStandardRuleSelected =
       selectedRules.includes("AUNZ_UBL_1_0_10") && selectedRules.length === 1;
@@ -390,7 +408,11 @@ function InvoiceForm({
       </Section>
     );
   };
+
+  // control which fields should be hidden
   const hiddenFields = ["typeCode", "schemeId"];
+
+  // control which sections should be packaged or shown
   const sections = [
     {
       title: "Invoice Details",
@@ -411,6 +433,8 @@ function InvoiceForm({
     { title: "allowance", fields: ["allowance"] },
     { title: "Invoice Lines", fields: ["invoiceLine"] },
   ];
+
+  // Mapping reason code and description
   const typeReasonMapping = {
     SAA: "Shipping and Handling",
     AA: "Advertising Allowance",
@@ -428,6 +452,8 @@ function InvoiceForm({
     AM: "Trade Discount",
     AN: "Volume Discount",
   };
+
+  // manage label and value in selector field
   const optionMappings = {
     schemeId: [
       { value: "GLN", label: "Global Location Number" },
@@ -490,10 +516,12 @@ function InvoiceForm({
     ],
   };
 
+  // format number fields
   const roundToTwoDecimals = (num) => {
     return Number(parseFloat(num).toFixed(2)).toFixed(2);
   };
 
+  // format number fields
   const shouldRound = (key, value) => {
     const nonRoundFields = [
       "id",
@@ -536,6 +564,7 @@ function InvoiceForm({
     return result;
   };
 
+  // change json format before sending
   const handleUBLStandardRule = (dataToSend) => {
     const modifiedData = JSON.parse(JSON.stringify(dataToSend));
 
@@ -543,7 +572,7 @@ function InvoiceForm({
     delete modifiedData.payment;
     delete modifiedData.deliveryAddress;
 
-    //delete allowance for all invoice line
+    // delete allowance for all invoice line
     if (Array.isArray(modifiedData.invoiceLine)) {
       modifiedData.invoiceLine = modifiedData.invoiceLine.map((line) => {
         const { allowance, ...lineWithoutAllowance } = line;
@@ -556,6 +585,7 @@ function InvoiceForm({
     return roundedData;
   };
 
+  // upload edited invoice, save changes in database and send invoice to validate
   const uploadEditedInvoice = async () => {
     if (!selectedRules) {
       showPopup("You have to select validation rule!", "error");
@@ -579,6 +609,7 @@ function InvoiceForm({
       JSON.stringify(formattedData, null, 2)
     );
     setIsUploading(true);
+    // uploading edited invoice
     try {
       let endpoint = `${process.env.REACT_APP_SERVER_URL}/invoice/update?invoiceId=${invoiceId}`;
       let token = localStorage.getItem("token");
@@ -610,15 +641,14 @@ function InvoiceForm({
       );
       return;
     }
+    // prefix invoice format based on selected rule and send it to validate
     try {
-      //const rules = "rules=AUNZ_PEPPOL_1_0_10,AUNZ_PEPPOL_SB_1_0_10,AUNZ_UBL_1_0_10";
       const validationResults = [];
       let token = localStorage.getItem("token");
 
       for (const rule of selectedRules) {
         let dataToSend = formattedData;
 
-        //if (rule === 'AUNZ_UBL_1_0_10') {
         if (true) {
           dataToSend = handleUBLStandardRule(formattedData);
           console.log("data to validate", dataToSend);
@@ -673,6 +703,15 @@ function InvoiceForm({
       );
     }
   };
+
+  const Loading = () => (
+    <>
+      <BlurredBackground />
+      <LoadingScreen>
+        <LoadingMessage>Validating... Please wait.</LoadingMessage>
+      </LoadingScreen>
+    </>
+  );
 
   const buttonStyle = isValidation
     ? { opacity: 0, cursor: "not-allowed", pointerEvents: "none" }
@@ -793,6 +832,7 @@ function InvoiceForm({
     </>
   );
 }
+
 const BlurredBackground = styled.div`
   position: fixed;
   top: 0;
@@ -824,14 +864,6 @@ const LoadingMessage = styled.div`
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
-const Loading = () => (
-  <>
-    <BlurredBackground />
-    <LoadingScreen>
-      <LoadingMessage>Validating... Please wait.</LoadingMessage>
-    </LoadingScreen>
-  </>
-);
 
 const ValidationWrapper = styled.div`
   display: flex;

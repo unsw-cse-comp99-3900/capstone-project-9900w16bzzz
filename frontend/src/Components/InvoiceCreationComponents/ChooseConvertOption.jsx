@@ -3,6 +3,14 @@ import styled from "styled-components";
 import { ReactComponent as ArrowIcon } from "../../images/arrow.svg";
 import { usePopup } from "../PopupWindow/PopupContext";
 
+/**
+ * ChooseConvertOption component to handle the selection of saving or converting an invoice.
+ * @param {Function} goToStep - Function to navigate to a specific step.
+ * @param {Function} setFile - Function to set the selected file.
+ * @param {File} file - The currently selected file.
+ * @param {Function} setInvoice - Function to set the invoice data.
+ * @param {Object} invoice - The invoice data.
+ */
 const ChooseConvertOption = ({
   goToStep,
   setFile,
@@ -14,14 +22,24 @@ const ChooseConvertOption = ({
   const [selectedAction, setSelectedAction] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
 
+  /**
+   * Handler for selecting an action (save or convert).
+   * @param {string} action - The selected action.
+   */
   const handleActionChange = (action) => {
     setSelectedAction(action);
   };
 
+  /**
+   * Effect to log the updated invoice data.
+   */
   useEffect(() => {
     console.log("Updated invoice:", invoice);
   }, [invoice]);
 
+  /**
+   * Handler for navigating to the next step based on the selected action.
+   */
   const handleNext = () => {
     if (selectedAction === "save") {
       goToStep(4);
@@ -30,12 +48,17 @@ const ChooseConvertOption = ({
     }
   };
 
+  /**
+   * Handler for uploading the selected file.
+   * @param {string} action - The selected action.
+   * @returns {boolean} - True if the upload was successful, false otherwise.
+   */
   const handleUpload = async (action) => {
     console.log(file);
 
     if (!file) {
       showPopup("No file to upload!", "error");
-      return;
+      return false;
     }
     setIsUploading(true);
 
@@ -103,6 +126,7 @@ const ChooseConvertOption = ({
               Upload the original file <b>OR</b> convert it to standard UBL
               e-Invoice.
             </p>
+            {/* Options to choose save or convert action */}
             <ActionOptions>
               <ActionOption
                 selected={selectedAction === "save"}
@@ -134,6 +158,10 @@ const ChooseConvertOption = ({
     </>
   );
 };
+
+/**
+ * Styled components for various UI elements.
+ */
 
 const BlurredBackground = styled.div`
   position: fixed;

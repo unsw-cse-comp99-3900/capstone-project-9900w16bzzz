@@ -2,7 +2,17 @@ import React from "react";
 import styled from "styled-components";
 import { ReactComponent as ArrowIcon } from "../../images/arrow.svg";
 
+/**
+ * UploadPage component to handle file upload for invoice creation.
+ * @param {Function} goToStep - Function to navigate to a specific step.
+ * @param {Function} setFile - Function to set the selected file.
+ * @param {File} file - The currently selected file.
+ */
 const UploadPage = ({ goToStep, setFile, file }) => {
+  /**
+   * Handler for file input change event.
+   * @param {Event} event - The change event.
+   */
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
     if (typeof setFile === "function") {
@@ -12,6 +22,12 @@ const UploadPage = ({ goToStep, setFile, file }) => {
     }
   };
 
+  /**
+   * Function to truncate text to a specific length.
+   * @param {string} text - The text to truncate.
+   * @param {number} maxLength - The maximum length of the truncated text.
+   * @returns {string} - The truncated text.
+   */
   const truncateText = (text, maxLength) => {
     if (text.length > maxLength) {
       return text.substring(0, maxLength) + "...";
@@ -19,6 +35,10 @@ const UploadPage = ({ goToStep, setFile, file }) => {
     return text;
   };
 
+  /**
+   * Function to check if the device is a mobile device.
+   * @returns {boolean} - True if the device is a mobile device, false otherwise.
+   */
   const isIphone14ProMax = () => {
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -33,7 +53,7 @@ const UploadPage = ({ goToStep, setFile, file }) => {
       </ArrowBackButton>
       <Content>
         <Heading>
-          <span>Step 1 </span> Upload File{" "}
+          <span>Step 1 </span> Upload File
         </Heading>
         <p className="details">
           Please upload your invoice file. Accepted formats are PDF or JSON.
@@ -61,6 +81,9 @@ const UploadPage = ({ goToStep, setFile, file }) => {
   );
 };
 
+/**
+ * Styled component for the main container.
+ */
 const Container = styled.div`
   width: 80%;
   display: flex;
@@ -79,6 +102,9 @@ const Container = styled.div`
   }
 `;
 
+/**
+ * Styled component for the heading.
+ */
 const Heading = styled.h1`
   margin: 0;
   font-size: 24px;
@@ -88,12 +114,18 @@ const Heading = styled.h1`
   }
 `;
 
+/**
+ * Styled component for the file input wrapper.
+ */
 const FileInputWrapper = styled.div`
   margin-top: 20px;
   position: relative;
   display: inline-block;
 `;
 
+/**
+ * Styled component for the file input label.
+ */
 const FileInputLabel = styled.label`
   background-color: ${(props) => (props.selected ? "#6414FF" : "transparent")};
   color: white;
@@ -112,6 +144,9 @@ const FileInputLabel = styled.label`
   }
 `;
 
+/**
+ * Styled component for the file input.
+ */
 const FileInput = styled.input`
   opacity: 0;
   width: 0;
@@ -119,9 +154,11 @@ const FileInput = styled.input`
   position: absolute;
 `;
 
+/**
+ * Styled component for the content.
+ */
 const Content = styled.div`
   text-align: center;
-
   margin-bottom: 20px;
 
   h1 {
@@ -137,23 +174,33 @@ const Content = styled.div`
   }
 `;
 
+/**
+ * Styled component for the arrow button.
+ */
 const ArrowButton = styled.button`
   background-color: transparent;
   cursor: pointer;
   border: none;
   padding: 0;
+
   svg {
     width: auto;
     height: 50px;
+
     path {
       fill: ${(props) => (props.disabled ? "grey" : "white")};
     }
+
     &:hover path {
       fill: ${(props) => (props.disabled ? "grey" : "#6414FF")};
     }
   }
 `;
 
+/**
+ * Styled component for the back arrow button.
+ * Mirrors the arrow icon.
+ */
 const ArrowBackButton = styled(ArrowButton)`
   svg {
     transform: scaleX(-1);

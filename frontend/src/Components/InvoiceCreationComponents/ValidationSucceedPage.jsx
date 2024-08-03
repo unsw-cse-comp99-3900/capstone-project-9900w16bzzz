@@ -3,7 +3,12 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
+/**
+ * ValidationSucceedPage component to display a success message after invoice validation.
+ * @param {Function} goToStep - Function to navigate to a specific step.
+ */
 const ValidationSucceedPage = ({ goToStep }) => {
+  // Transition settings for the framer-motion animations
   const transition = {
     duration: 2,
   };
@@ -29,6 +34,8 @@ const ValidationSucceedPage = ({ goToStep }) => {
     </motion.div>
   );
 };
+
+// Styled components for the UI elements
 
 const MainContainer = styled.div`
   display: flex;

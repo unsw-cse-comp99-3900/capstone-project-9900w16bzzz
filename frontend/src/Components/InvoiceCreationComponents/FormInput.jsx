@@ -1,7 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 
+/**
+ * FormInput component to render an input field with a floating label.
+ * @param {string} type - The type of the input (e.g., "text", "date").
+ * @param {string} placeholder - The placeholder text for the input.
+ * @param {string} value - The current value of the input.
+ * @param {Function} onChange - Function to handle changes to the input value.
+ * @param {boolean} isInvalid - Flag to indicate if the input is invalid.
+ */
 const FormInput = ({ type, placeholder, value, onChange, isInvalid }) => {
+  // Map of placeholder text to more user-friendly labels
   const placeholderLabels = {
     invoiceId: "Invoice Number",
     invoiceDate: "Invoice Date",
@@ -33,6 +42,7 @@ const FormInput = ({ type, placeholder, value, onChange, isInvalid }) => {
     mail: "Mail",
     type: "Type",
   };
+  // Label for the input field
   const label = placeholderLabels[placeholder] || placeholder;
 
   return (
@@ -52,12 +62,18 @@ const FormInput = ({ type, placeholder, value, onChange, isInvalid }) => {
   );
 };
 
+/**
+ * Wrapper for the input field and label.
+ */
 const InputWrapper = styled.div`
   position: relative;
   width: 100%;
   margin: 10px 0;
 `;
 
+/**
+ * Styled input field with floating label functionality.
+ */
 const StyledInput = styled.input`
   &[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
@@ -94,11 +110,14 @@ const StyledInput = styled.input`
   ${(props) =>
     props.isInvalid &&
     `
-        border-color: #ff0000;
-        box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.3);
-      `}
+    border-color: #ff0000;
+    box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.3);
+  `}
 `;
 
+/**
+ * Styled label for the input field.
+ */
 const StyledLabel = styled.label`
   position: absolute;
   left: 1rem;

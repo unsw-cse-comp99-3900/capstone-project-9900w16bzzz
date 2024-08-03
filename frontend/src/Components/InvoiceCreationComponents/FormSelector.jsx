@@ -1,6 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 
+/**
+ * SelectInput component to render a select input field with a floating label.
+ * @param {string} placeholder - The placeholder text for the input.
+ * @param {string} value - The current value of the input.
+ * @param {Function} onChange - Function to handle changes to the input value.
+ * @param {Array} options - Array of options for the select input.
+ * @param {Function} [onRelatedChange] - Optional function to handle related field changes.
+ * @param {string} [relatedField] - Optional related field to handle.
+ * @param {Object} [typeReasonMapping] - Optional mapping between types and reasons.
+ */
 const SelectInput = ({
   placeholder,
   value,
@@ -10,6 +20,10 @@ const SelectInput = ({
   relatedField,
   typeReasonMapping,
 }) => {
+  /**
+   * Handler for select input change event.
+   * @param {Event} e - The change event.
+   */
   const handleChange = (e) => {
     const newValue = e.target.value;
     onChange(newValue);
@@ -25,6 +39,8 @@ const SelectInput = ({
       }
     }
   };
+
+  // Map of placeholder text to more user-friendly labels
   const placeholderLabels = {
     invoiceId: "Invoice Number",
     invoiceDate: "Invoice Date",
@@ -56,6 +72,7 @@ const SelectInput = ({
     mail: "Mail",
     type: "Type",
   };
+  // Label for the select input field
   const label = placeholderLabels[placeholder] || placeholder;
 
   return (
@@ -78,12 +95,18 @@ const SelectInput = ({
   );
 };
 
+/**
+ * Wrapper for the select input field and label.
+ */
 const InputWrapper = styled.div`
   position: relative;
   width: 100%;
   margin: 10px 0;
 `;
 
+/**
+ * Styled select input field with floating label functionality.
+ */
 const StyledSelect = styled.select`
   background: rgba(255, 255, 255, 0.15);
   border-radius: 2rem;
@@ -118,6 +141,10 @@ const StyledSelect = styled.select`
     padding: 10px;
   }
 `;
+
+/**
+ * Styled label for the select input field.
+ */
 const StyledLabel = styled.label`
   position: absolute;
   left: 1rem;
@@ -137,6 +164,9 @@ const StyledLabel = styled.label`
   }
 `;
 
+/**
+ * Styled arrow for the select input field.
+ */
 const SelectArrow = styled.div`
   position: absolute;
   right: 1rem;

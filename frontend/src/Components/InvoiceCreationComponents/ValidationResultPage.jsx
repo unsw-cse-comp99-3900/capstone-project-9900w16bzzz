@@ -2,12 +2,24 @@ import React from "react";
 import styled from "styled-components";
 import { useNavigate, useLocation } from "react-router-dom";
 
+/**
+ * ValidationResultPage component to display the validation results of an invoice.
+ * @param {Array} validationResult - The validation results to display.
+ * @param {string} invoiceId - The ID of the invoice being validated.
+ * @param {Function} setStep - Function to set the current step in the process.
+ */
 const ValidationResultPage = ({ validationResult, invoiceId, setStep }) => {
+  // Determine if all validations were successful
   const overallSuccessful = validationResult.every(
     (result) => result.result.successful
   );
   const navigate = useNavigate();
   const location = useLocation();
+
+  /**
+   * Handler for the "Edit Invoice" button click.
+   * If on the validation page, reset to step 0, otherwise navigate to the validation page.
+   */
   const handleValidateClick = () => {
     if (location.pathname.includes("/validation")) {
       setStep(0);
@@ -82,6 +94,9 @@ const ValidationResultPage = ({ validationResult, invoiceId, setStep }) => {
     </MainContainer>
   );
 };
+
+// Styled components for the UI elements
+
 const Title = styled.h1`
   font-size: 64px;
 
@@ -89,11 +104,13 @@ const Title = styled.h1`
     font-size: 38px;
   }
 `;
+
 const SubSectionHeader = styled.h4`
   margin-top: 20px;
   margin-bottom: 10px;
   color: #ffffff;
 `;
+
 const MainContainer = styled.div`
   width: 80%;
   margin: 3% auto;
@@ -136,6 +153,7 @@ const HeaderContent = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
+
 const ButtonContainer = styled.div`
   display: flex;
   gap: 10px;
@@ -145,7 +163,6 @@ const ButtonContainer = styled.div`
     top: 8px;  
     right: -20px; 
   }
-    
 `;
 
 const Button = styled.button`
@@ -163,12 +180,11 @@ const Button = styled.button`
   }
 
   @media only screen and (max-width: 430px) and (max-height: 932px) and (-webkit-device-pixel-ratio: 3) {
-    padding: 5px 10px; /* Adjust the padding to make the buttons smaller */
-    font-size: 0.8rem; /* Adjust the font size to make the text smaller */
-    top: -50px;  /* 向上移动 */
-    right: -10px; /* 向右移动 */
+    padding: 5px 10px; 
+    font-size: 0.8rem; 
+    top: -50px;  
+    right: -10px; 
   }
-
 `;
 
 const Status = styled.span`

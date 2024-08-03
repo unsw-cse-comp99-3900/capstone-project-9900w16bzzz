@@ -61,6 +61,7 @@ function Myinvoice() {
           setCurrentPage(data.data.pageNum);
         } else {
           console.error("Invalid API response structure:", data);
+          showPopup(`Failed to fetch invoices. Errors: ${data.msg}`,"error");
         }
       } catch (error) {
         console.error("Error fetching invoices:", error);
