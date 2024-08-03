@@ -1,0 +1,113 @@
+{
+  "customizationId" : null,
+  "profileId" : null,
+  "invoiceId" : "000562",
+  "invoiceDate" : "2020-11-05",
+  "dueDate" : null,
+  "typeCode" : "380",
+  "currencyCode" : "USD",
+  "buyer" : {
+    "id" : null,
+    "schemeId" : null,
+    "name" : "Acme Industries",
+    "address" : {
+      "address" : "Riverside Drive\nPanama City, FL 32404",
+      "street" : "Riverside Drive",
+      "postalCode" : "32404",
+      "city" : "Panama City",
+      "countryCode" : "null"
+    },
+    "phone" : null,
+    "mail" : null
+  },
+  "seller" : {
+    "id" : null,
+    "schemeId" : null,
+    "name" : null,
+    "address" : {
+      "address" : "582 Grand Drive\nLithonia, GA 30038",
+      "street" : "582 Grand Drive",
+      "postalCode" : "30038",
+      "city" : "Lithonia",
+      "countryCode" : "null"
+    },
+    "phone" : null,
+    "mail" : null
+  },
+  "subTotal" : "12800.0",
+  "invoiceTotal" : "12512.0",
+  "taxTotal" : "12.0",
+  "allowance" : {
+    "type" : null,
+    "amount" : "300.0",
+    "reason" : null,
+    "taxPercent" : null,
+    "currencyCode" : "USD"
+  },
+  "invoiceLine" : [ {
+    "id" : "0",
+    "amount" : "9500.0",
+    "currencyCode" : "USD",
+    "description" : "Laser Mouse",
+    "quantity" : "10",
+    "unit" : null,
+    "unitPrice" : "950.0",
+    "tax" : null,
+    "taxRate" : null,
+    "allowance" : {
+      "type" : null,
+      "amount" : null,
+      "reason" : null,
+      "taxPercent" : null,
+      "currencyCode" : null
+    }
+  }, {
+    "id" : "1",
+    "amount" : "3000.0",
+    "currencyCode" : "USD",
+    "description" : "Dual XL Monitors",
+    "quantity" : "20",
+    "unit" : null,
+    "unitPrice" : "150.0",
+    "tax" : null,
+    "taxRate" : null,
+    "allowance" : {
+      "type" : null,
+      "amount" : null,
+      "reason" : null,
+      "taxPercent" : null,
+      "currencyCode" : null
+    }
+  }, {
+    "id" : "2",
+    "amount" : "300.0",
+    "currencyCode" : "USD",
+    "description" : "Multi-jet Printer",
+    "quantity" : "02",
+    "unit" : null,
+    "unitPrice" : "150.0",
+    "tax" : null,
+    "taxRate" : null,
+    "allowance" : {
+      "type" : null,
+      "amount" : null,
+      "reason" : null,
+      "taxPercent" : null,
+      "currencyCode" : null
+    }
+  } ],
+  "payment" : {
+    "code" : null,
+    "accountName" : null,
+    "accountNumber" : null,
+    "bsbNumber" : null,
+    "paymentNote" : null
+  },
+  "deliveryAddress" : {
+    "address" : "52 Indian Summer Lane\nAustin, MN 55912",
+    "street" : "52 Indian Summer Lane",
+    "postalCode" : "55912",
+    "city" : "Austin",
+    "countryCode" : "null"
+  }
+}
