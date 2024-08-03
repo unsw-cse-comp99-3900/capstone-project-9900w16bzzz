@@ -25,17 +25,14 @@ export const PopupProvider = ({ children }) => {
   const showPopup = useCallback((message, type = "success") => {
     setPopupState({ isVisible: true, message, type });
 
-    const errorPattern = /Error:\s*(.*)/;
-    const match = message.match(errorPattern);
-    
-    if (match && (
-      match[1] === "Long time without operating system, need to log in again" || 
-      match[1] === "You are not logged in or your login is not working, please log in again!"
-    )) {
+    if (
+      message.includes("Long time without operating system, need to log in again") || 
+      message.includes("You are not logged in or your login is not working, please log in again!")
+    ) {
       localStorage.removeItem("username");
       localStorage.removeItem("token");
       removeCookie('x-access-token', { path: '/' });
-      window.location.href = '/';
+      window.dispatchEvent(new Event("localStorageChange"));
     }
   }, [removeCookie]);
 

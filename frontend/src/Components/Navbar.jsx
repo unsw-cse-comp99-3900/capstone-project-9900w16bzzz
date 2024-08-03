@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link as RouterLink, useLocation } from "react-router-dom";
+import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import UserMenu from "./NavbarUserMenu";
 import ProtectedLink from "./InvoiceCreationComponents/ProtectedPage";
 
@@ -8,6 +8,7 @@ function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [username, setUsername] = useState(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkUserAuth = () => {
@@ -16,6 +17,7 @@ function Navbar() {
       if (token && storedUsername) {
         setUsername(storedUsername);
       } else {
+        navigate('/');
         setUsername(null);
       }
     };
