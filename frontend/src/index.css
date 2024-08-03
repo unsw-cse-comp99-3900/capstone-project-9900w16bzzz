@@ -142,7 +142,7 @@ nav .menu-btn,
 .header-btns{
     display: flex;
     margin-top: 40px;
-    margin-left: 40%;
+    justify-content: center;
 }
 .header-btn{
 	width:160px;
@@ -470,7 +470,6 @@ nav .menu-btn,
         display:none;
     }
     .header-btn{
-        margin-left: 20%;
         margin-top: 20px;
     }
     .pr-btn{
