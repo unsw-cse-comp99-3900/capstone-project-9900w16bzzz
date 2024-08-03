@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { ReactComponent as ArrowIcon } from "../../images/arrow.svg";
+import { ReactComponent as ArrowIcon } from "../../../images/arrow.svg";
 import { usePopup } from "../../PopupWindow/PopupContext";
 
 /**
