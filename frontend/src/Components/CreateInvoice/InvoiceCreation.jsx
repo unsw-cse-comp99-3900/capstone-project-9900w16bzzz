@@ -5,10 +5,10 @@ import video from "../../images/video1.mp4";
 import InvoiceForm from "./InvoiceCreationComponents/InvoiceForm";
 import GetStarted from "./InvoiceCreationComponents/GetStarted";
 import UploadPage from "./InvoiceCreationComponents/UploadPage";
-import ChooseConvertOption from "../InvoiceCreationComponents/ChooseConvertOption";
-import SucceedPage from "../InvoiceCreationComponents/SucceedPage";
-import ValidationResultPage from "../InvoiceCreationComponents/ValidationResultPage";
-import ValidationSucceedPage from "../InvoiceCreationComponents/ValidationSucceedPage";
+import ChooseConvertOption from "./InvoiceCreationComponents/ChooseConvertOption";
+import SucceedPage from "./InvoiceCreationComponents/SucceedPage";
+import ValidationResultPage from "./InvoiceCreationComponents/ValidationResultPage";
+import ValidationSucceedPage from "./InvoiceCreationComponents/ValidationSucceedPage";
 
 /**
  * Main component for the invoice creation process.

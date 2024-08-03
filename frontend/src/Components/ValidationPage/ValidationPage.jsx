@@ -4,8 +4,8 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 import video from "../../images/video1.mp4";
 import InvoiceForm from "../CreateInvoice/InvoiceCreationComponents/InvoiceForm";
-import ValidationResultPage from ".././InvoiceCreationComponents/ValidationResultPage";
-import ValidationSucceedPage from ".././InvoiceCreationComponents/ValidationSucceedPage";
+import ValidationResultPage from "../CreateInvoice/InvoiceCreationComponents/ValidationResultPage";
+import ValidationSucceedPage from "../CreateInvoice/InvoiceCreationComponents/ValidationSucceedPage";
 import { usePopup } from "../PopupWindow/PopupContext";
 
 /**
